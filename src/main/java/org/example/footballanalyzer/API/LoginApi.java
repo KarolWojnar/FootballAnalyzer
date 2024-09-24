@@ -1,12 +1,15 @@
 package org.example.footballanalyzer.API;
 
+import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 @RequestMapping
 public interface LoginApi {
-    @GetMapping("/hello")
-    ResponseEntity<String> hello(@RequestParam String name, @RequestParam String password);
+    @PreAuthorize("permitAll()")
+    @GetMapping("/login")
+    ResponseEntity<?> login();
+    @PostMapping("/register")
+    ResponseEntity<String> register(@RequestBody UserDTO user);
 }
