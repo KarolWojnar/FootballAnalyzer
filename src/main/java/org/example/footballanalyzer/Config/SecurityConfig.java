@@ -1,6 +1,7 @@
 package org.example.footballanalyzer.Config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.footballanalyzer.Service.UserDetailsServiceImpl;
 import org.example.footballanalyzer.Service.Util.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +28,8 @@ public class SecurityConfig {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register").permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers("/auth/**", "/register").permitAll()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
