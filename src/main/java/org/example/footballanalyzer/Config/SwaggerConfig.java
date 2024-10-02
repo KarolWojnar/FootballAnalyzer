@@ -10,7 +10,7 @@ public class SwaggerConfig {
     @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
-                .group("sprigboot-public")
+                .group("football app")
                 .pathsToMatch("/**")
                 .build();
     }

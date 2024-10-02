@@ -18,4 +18,6 @@ public class User {
     private String email;
     @ManyToOne
     private Role role;
+    @OneToOne
+    private Team team;
 }
