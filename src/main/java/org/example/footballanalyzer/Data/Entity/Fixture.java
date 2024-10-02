@@ -3,7 +3,7 @@ package org.example.footballanalyzer.Data.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Set;
 
 @Data
@@ -13,9 +13,9 @@ public class Fixture {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Date matchDate;
-    private String referee;
-    private String status;
+    private Long fixtureId;
+
+    private Date date;
     private int season;
 
     private int homeGoals;

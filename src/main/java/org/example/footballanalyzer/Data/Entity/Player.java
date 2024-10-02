@@ -10,7 +10,7 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    private Long playerId;
     private String name;
     private String position;
     private String photo;
