@@ -12,7 +12,6 @@ public class Player {
     private Long id;
     private Long playerId;
     private String name;
-    private String position;
     private String photo;
 
     @ManyToOne
