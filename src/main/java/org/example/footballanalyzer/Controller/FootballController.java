@@ -21,4 +21,10 @@ public class FootballController implements FootballApi {
         footballService.saveAllByLeagueSeason(league, season);
         return ResponseEntity.ok().build();
     }
+
+    @Override
+    public ResponseEntity<?> collectFixtures() {
+        footballService.collectFixtures();
+        return ResponseEntity.ok().build();
+    }
 }

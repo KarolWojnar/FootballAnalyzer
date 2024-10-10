@@ -3,6 +3,7 @@ package org.example.footballanalyzer.Data.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+
 @Entity
 @Data
 public class FixturesStats {

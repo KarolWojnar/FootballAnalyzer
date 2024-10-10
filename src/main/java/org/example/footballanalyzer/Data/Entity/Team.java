@@ -23,8 +23,7 @@ public class Team {
     @OneToMany(mappedBy = "awayTeam")
     private Set<Fixture> awayFixtures;
 
-    @OneToOne
-    (mappedBy = "team")
+    @OneToOne(mappedBy = "team")
     private User user;
 
     @ManyToOne

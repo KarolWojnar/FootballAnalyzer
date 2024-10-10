@@ -17,6 +17,9 @@ public interface FootballApi {
     @GetMapping("/fixtures/save-all-by-league-season")
     ResponseEntity<?> saveAllByLeagueSeason(@RequestParam Long league, @RequestParam Long season) throws IOException, InterruptedException, JSONException, ParseException;
 
+    @GetMapping("/fixtures/collect")
+    ResponseEntity<?> collectFixtures();
+
 
 
 }

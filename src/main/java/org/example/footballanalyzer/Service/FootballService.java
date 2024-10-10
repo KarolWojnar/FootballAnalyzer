@@ -3,24 +3,20 @@ package org.example.footballanalyzer.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Config.ApiKeyManager;
-import org.example.footballanalyzer.Data.Entity.Fixture;
-import org.example.footballanalyzer.Data.Entity.League;
-import org.example.footballanalyzer.Data.Entity.Player;
-import org.example.footballanalyzer.Data.Entity.Team;
-import org.example.footballanalyzer.Repository.FixtureRepository;
-import org.example.footballanalyzer.Repository.LeagueRepository;
-import org.example.footballanalyzer.Repository.PlayerRepository;
-import org.example.footballanalyzer.Repository.TeamRepository;
+import org.example.footballanalyzer.Data.Entity.*;
+import org.example.footballanalyzer.Repository.*;
 import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.example.footballanalyzer.Service.Util.FootballApiUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.springframework.stereotype.Service;
 import org.json.JSONObject;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.text.ParseException;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -35,6 +31,8 @@ public class FootballService {
     private final DataUtil dataUtil;
     private final FixtureRepository fixtureRepository;
     private final PlayerRepository playerRepository;
+    private final FixturesStatsRepository fixturesStatsRepository;
+    private final FixtureStatsTeamRepository fixtureStatsTeamRepository;
 
     public void saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
         int attempts = 0;
@@ -75,9 +73,7 @@ public class FootballService {
             if (fixture.getAwayGoals() == -1 || fixture.getHomeGoals() == -1) {
                 continue;
             }
-
             saveStatsFixureByPlayer(fixture);
-            log.info("Saved new fixture: {}", fixture.getFixtureId());
         }
 
     }
@@ -144,8 +140,8 @@ public class FootballService {
                 Player player = getPlayer(jsonPlayer.getJSONObject("player"), jsonTeam);
                 savePlayerStats(player, fixture, jsonPlayer.getJSONArray("statistics"));
             }
-            log.info("Saved players stats for fixture: {}", fixture.getFixtureId());
         }
+        log.info("Saved players stats for fixture: {}", fixture.getFixtureId());
     }
 
     private Player getPlayer(JSONObject jsonPlayer, JSONObject jsonTeam) {
@@ -167,5 +163,65 @@ public class FootballService {
         JSONObject cards = jsonStatistics.getJSONObject("cards");
         JSONObject penalty = jsonStatistics.getJSONObject("penalty");
         dataUtil.savePlayerStats(player, fixture, offsides, games, shots, goals, passes, tackles, duels, dribbles, fouls, cards, penalty);
+    }
+
+    public void collectFixtures() {
+        List<Fixture> fixtures = fixtureRepository.findAllCompleted();
+        fixtures.forEach(
+                this::saveCollectedFixture
+        );
+    }
+
+    @Transactional
+    public void saveCollectedFixture(Fixture fixture) {
+        List<FixturesStats> playersStatsFixture = fixturesStatsRepository.getFixturesStatsByFixture(fixture);
+        List<FixturesStats> playersHome = playersStatsFixture.stream()
+                .filter(stat -> stat.getPlayer().getTeam().getName().equals(fixture.getHomeTeam().getName()))
+                .toList();
+
+        List<FixturesStats> playersAway = playersStatsFixture.stream()
+                .filter(stat -> stat.getPlayer().getTeam().getName().equals(fixture.getAwayTeam().getName()))
+                .toList();
+
+        collectStatsAndSave(playersHome, fixture);
+        collectStatsAndSave(playersAway, fixture);
+    }
+
+    private void collectStatsAndSave(List<FixturesStats> players, Fixture fixture) {
+
+        FixtureStatsTeam teamStats = new FixtureStatsTeam();
+
+        int playersCount = players.size();
+
+        teamStats.setFixture(fixture);
+        teamStats.setAssists(players.stream().mapToDouble(FixturesStats::getAssists).sum() / playersCount);
+        teamStats.setCardsRed(players.stream().mapToDouble(FixturesStats::getCardsRed).sum() / playersCount);
+        teamStats.setCardsYellow(players.stream().mapToDouble(FixturesStats::getCardsYellow).sum() / playersCount);
+        teamStats.setDribblesAttempts(players.stream().mapToDouble(FixturesStats::getDribblesAttempts).sum() / playersCount);
+        teamStats.setDribblesSuccess(players.stream().mapToDouble(FixturesStats::getDribblesSuccess).sum() / playersCount);
+        teamStats.setDuelsTotal(players.stream().mapToDouble(FixturesStats::getDuelsTotal).sum() / playersCount);
+        teamStats.setDuelsWon(players.stream().mapToDouble(FixturesStats::getDuelsWon).sum() / playersCount);
+        teamStats.setFoulsCommitted(players.stream().mapToDouble(FixturesStats::getFoulsCommitted).sum() / playersCount);
+        teamStats.setFoulsDrawn(players.stream().mapToDouble(FixturesStats::getFoulsDrawn).sum() / playersCount);
+        teamStats.setGoalsConceded(players.stream().mapToDouble(FixturesStats::getGoalsConceded).sum() / playersCount);
+        teamStats.setGoalsTotal(players.stream().mapToDouble(FixturesStats::getGoalsTotal).sum() / playersCount);
+        teamStats.setPassesAccuracy(players.stream().mapToDouble(FixturesStats::getPassesAccuracy).sum() / playersCount);
+        teamStats.setPassesKey(players.stream().mapToDouble(FixturesStats::getPassesKey).sum() / playersCount);
+        teamStats.setPassesTotal(players.stream().mapToDouble(FixturesStats::getPassesTotal).sum() / playersCount);
+        teamStats.setShotsOnGoal(players.stream().mapToDouble(FixturesStats::getShotsOnGoal).sum() / playersCount);
+        teamStats.setOffsides(players.stream().mapToDouble(FixturesStats::getOffsides).sum() / playersCount);
+        teamStats.setTacklesBlocks(players.stream().mapToDouble(FixturesStats::getTacklesBlocks).sum() / playersCount);
+        teamStats.setTacklesInterceptions(players.stream().mapToDouble(FixturesStats::getTacklesInterceptions).sum() / playersCount);
+        teamStats.setTacklesTotal(players.stream().mapToDouble(FixturesStats::getTacklesTotal).sum() / playersCount);
+        teamStats.setPenaltyCommitted(players.stream().mapToDouble(FixturesStats::getPenaltyCommitted).sum() / playersCount);
+        teamStats.setPenaltyMissed(players.stream().mapToDouble(FixturesStats::getPenaltyMissed).sum() / playersCount);
+        teamStats.setPenaltySaved(players.stream().mapToDouble(FixturesStats::getPenaltySaved).sum() / playersCount);
+        teamStats.setPenaltyScored(players.stream().mapToDouble(FixturesStats::getPenaltyScored).sum() / playersCount);
+        teamStats.setPenaltyWon(players.stream().mapToDouble(FixturesStats::getPenaltyWon).sum() / playersCount);
+        teamStats.setSaves(players.stream().mapToDouble(FixturesStats::getSaves).sum() / playersCount);
+        teamStats.setShotsTotal(players.stream().mapToDouble(FixturesStats::getShotsTotal).sum() / playersCount);
+        teamStats.setMinutes(players.stream().mapToDouble(FixturesStats::getMinutes).sum() / playersCount);
+
+        fixtureStatsTeamRepository.save(teamStats);
     }
 }
