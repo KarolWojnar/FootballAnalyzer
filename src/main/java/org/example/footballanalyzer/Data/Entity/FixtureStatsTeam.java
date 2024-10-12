@@ -14,6 +14,10 @@ public class FixtureStatsTeam {
     @JoinColumn(name = "fixture_id")
     private Fixture fixture;
 
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
+
     private double minutes;
     private double rating;
     private double offsides;

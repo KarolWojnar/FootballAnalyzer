@@ -23,6 +23,9 @@ public class Team {
     @OneToMany(mappedBy = "awayTeam")
     private Set<Fixture> awayFixtures;
 
+    @OneToMany(mappedBy = "team")
+    private Set<FixtureStatsTeam> team;
+
     @OneToOne(mappedBy = "team")
     private User user;
 

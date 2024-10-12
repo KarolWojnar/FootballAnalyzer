@@ -31,4 +31,6 @@ public class Fixture {
 
     @OneToMany(mappedBy = "fixture", cascade = CascadeType.ALL)
     private Set<FixturesStats> fixtureStats;
+
+    private boolean isCounted = false;
 }

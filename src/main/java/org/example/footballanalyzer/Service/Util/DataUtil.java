@@ -1,5 +1,6 @@
 package org.example.footballanalyzer.Service.Util;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.Entity.*;
@@ -23,6 +24,7 @@ public class DataUtil {
     private final FixtureRepository fixtureRepository;
     private final PlayerRepository playerRepository;
     private final FixturesStatsRepository fixturesStatsRepository;
+    private final FixtureStatsTeamRepository fixtureStatsTeamRepository;
 
     public League saveLeague(JSONObject league) throws JSONException {
         League newLeague = new League();
@@ -125,5 +127,20 @@ public class DataUtil {
 
         fixturesStatsRepository.save(newFixturesStats);
 
+    }
+
+    @Transactional
+    public void collectStatsAndSave(Fixture fixture, FixtureStatsTeam teamStats) {
+        fixtureStatsTeamRepository.save(teamStats);
+
+        Optional<Fixture> optionalFixture = fixtureRepository.findByFixtureId(fixture.getFixtureId());
+
+        if (optionalFixture.isPresent()) {
+            Fixture existingFixture = optionalFixture.get();
+            existingFixture.setCounted(true);
+            fixtureRepository.save(existingFixture);
+        }
+
+        log.info("Stats collected for fixture: {}", fixture.getFixtureId());
     }
 }

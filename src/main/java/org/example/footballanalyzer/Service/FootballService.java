@@ -3,12 +3,14 @@ package org.example.footballanalyzer.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Config.ApiKeyManager;
+import org.example.footballanalyzer.Data.Dto.GroupRecord;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
 import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.example.footballanalyzer.Service.Util.FootballApiUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.json.JSONObject;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,8 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.text.ParseException;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -33,6 +36,7 @@ public class FootballService {
     private final PlayerRepository playerRepository;
     private final FixturesStatsRepository fixturesStatsRepository;
     private final FixtureStatsTeamRepository fixtureStatsTeamRepository;
+    private final RatingService ratingService;
 
     public void saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
         int attempts = 0;
@@ -193,6 +197,7 @@ public class FootballService {
 
         int playersCount = players.size();
 
+        teamStats.setTeam(players.get(0).getPlayer().getTeam());
         teamStats.setFixture(fixture);
         teamStats.setAssists(players.stream().mapToDouble(FixturesStats::getAssists).sum() / playersCount);
         teamStats.setCardsRed(players.stream().mapToDouble(FixturesStats::getCardsRed).sum() / playersCount);
@@ -222,6 +227,78 @@ public class FootballService {
         teamStats.setShotsTotal(players.stream().mapToDouble(FixturesStats::getShotsTotal).sum() / playersCount);
         teamStats.setMinutes(players.stream().mapToDouble(FixturesStats::getMinutes).sum() / playersCount);
 
-        fixtureStatsTeamRepository.save(teamStats);
+        dataUtil.collectStatsAndSave(fixture, teamStats);
     }
+
+    public ResponseEntity<?> getStatsTeamCoach(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
+        Long teamId = teamRepository.findByName(teamName).map(Team::getId).orElseThrow(() -> new RuntimeException("Team not found"));
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("coach", "Adam Nawałka");
+        response.put("startDate", startDate);
+        response.put("endDate", endDate);
+
+        response.putAll(populateRatingsAndPlayers(teamId, startDate, endDate, rounding));
+        return ResponseEntity.ok(response);
+    }
+
+    private Map<String,Object> populateRatingsAndPlayers(Long teamId, LocalDate startDate, LocalDate endDate, String rounding) {
+        Map<String, Object> response = new HashMap<>(populateRatings(teamId, startDate, endDate, rounding));
+//        response.putAll(populatePlayers(teamId, startDate, endDate));
+        return response;
+    }
+
+    private Map<String, Object> populateRatings(Long teamId, LocalDate startDate, LocalDate endDate, String rounding) {
+        Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        List<Fixture> teamStats = fixtureRepository.findAllByDateBetween(dateStart, endStart);
+        List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureIn(teamStats);
+        List<GroupRecord> grouppedStats = groupRatings(teamStatsList);
+        Map<String, Object> ratings = new HashMap<>();
+        int i = 0;
+        for (GroupRecord record : grouppedStats) {
+
+            ratings.put("aggression: " + i, record.aggression());
+            ratings.put("attacking: " + i++, record.attacking());
+            ratings.put("defending: " + i, record.defending());
+            ratings.put("creativity: " + i++, record.creativity());
+        }
+        return ratings;
+    }
+
+    private List<GroupRecord> groupRatings(List<FixtureStatsTeam> teamStatsList) {
+        Map<String, Double> maxValues = ratingService.initializeMaxValues();
+        Map<String, Double> sumValues = ratingService.initializeSumValues();
+
+        int fixturesCount = teamStatsList.size();
+        
+        for (FixtureStatsTeam fixture : teamStatsList) {
+            ratingService.updateMaxValues(maxValues, fixture);
+            ratingService.updateSumValues(sumValues, fixture);
+        }
+
+        ratingService.normalizeSums(sumValues, fixturesCount);
+        double[] weights = ratingService.calculateWeights(sumValues.values().stream().mapToDouble(Double::doubleValue).toArray());
+
+        return calculateStats(weights, teamStatsList, maxValues);
+    }
+
+    private List<GroupRecord> calculateStats(double[] weights, List<FixtureStatsTeam> teamStatsList, Map<String, Double> maxValues) {
+        List<GroupRecord> records = new ArrayList<>();
+
+        for (FixtureStatsTeam teamStats : teamStatsList) {
+            GroupRecord record = new GroupRecord(
+                    teamStats.getTeam(),
+                    ratingService.setAttacking(teamStats, maxValues, weights),
+                    ratingService.setDefending(teamStats, maxValues, weights),
+                    ratingService.setAgression(teamStats, maxValues, weights),
+                    ratingService.setCreativity(teamStats, maxValues, weights)
+            );
+            records.add(record);
+        }
+
+        return records;
+    }
+
+
 }
