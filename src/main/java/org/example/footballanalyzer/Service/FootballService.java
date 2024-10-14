@@ -77,7 +77,7 @@ public class FootballService {
             if (fixture.getAwayGoals() == -1 || fixture.getHomeGoals() == -1) {
                 continue;
             }
-            saveStatsFixureByPlayer(fixture);
+            saveStatsFixtureByPlayer(fixture);
         }
 
     }
@@ -107,7 +107,7 @@ public class FootballService {
         return optionalLeague.orElseGet(() -> dataUtil.saveLeague(league));
     }
 
-    private void saveStatsFixureByPlayer(Fixture fixture) throws IOException, InterruptedException {
+    private void saveStatsFixtureByPlayer(Fixture fixture) throws IOException, InterruptedException {
         int attempts = 0;
 
         while(attempts < apiKeyManager.getApiKeysLength()) {
@@ -231,38 +231,31 @@ public class FootballService {
     }
 
     public ResponseEntity<?> getStatsTeamCoach(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
-        Long teamId = teamRepository.findByName(teamName).map(Team::getId).orElseThrow(() -> new RuntimeException("Team not found"));
+        Optional<Long> teamId = teamRepository.findByName(teamName).map(Team::getId);
 
-        Map<String, Object> response = new HashMap<>();
-        response.put("coach", "Adam Nawałka");
-        response.put("startDate", startDate);
-        response.put("endDate", endDate);
+        if (teamId.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        response.putAll(populateRatingsAndPlayers(teamId, startDate, endDate, rounding));
+        Map<String, Object> response = new HashMap<>(populateRatingsAndPlayers(teamName, startDate, endDate, rounding));
         return ResponseEntity.ok(response);
     }
 
-    private Map<String,Object> populateRatingsAndPlayers(Long teamId, LocalDate startDate, LocalDate endDate, String rounding) {
-        Map<String, Object> response = new HashMap<>(populateRatings(teamId, startDate, endDate, rounding));
-//        response.putAll(populatePlayers(teamId, startDate, endDate));
-        return response;
-    }
-
-    private Map<String, Object> populateRatings(Long teamId, LocalDate startDate, LocalDate endDate, String rounding) {
+    private Map<String,Object> populateRatingsAndPlayers(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         List<Fixture> teamStats = fixtureRepository.findAllByDateBetween(dateStart, endStart);
-        List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureIn(teamStats);
-        List<GroupRecord> grouppedStats = groupRatings(teamStatsList);
+        List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureInAndMinutesGreaterThan(teamStats, 0);
+        List<GroupRecord> groupedStats = groupRatings(teamStatsList);
+        List<GroupRecord> coachTeam = groupedStats.stream().filter(record -> record.team().equals(teamName)).toList();
         Map<String, Object> ratings = new HashMap<>();
-        int i = 0;
-        for (GroupRecord record : grouppedStats) {
 
-            ratings.put("aggression: " + i, record.aggression());
-            ratings.put("attacking: " + i++, record.attacking());
-            ratings.put("defending: " + i, record.defending());
-            ratings.put("creativity: " + i++, record.creativity());
-        }
+        ratings.putAll(ratingService.getAvgOfList("avgOfAllTeams", groupedStats));
+        ratings.putAll(ratingService.getAvgOfList("coachTeam", coachTeam));
+
+        ratings.putAll(ratingService.getAvgByDates("avgRatings", groupedStats, rounding, startDate, endDate));
+        ratings.putAll(ratingService.getAvgByDates("coachTeamRatings", coachTeam, rounding, startDate, endDate));
+
         return ratings;
     }
 
@@ -288,7 +281,8 @@ public class FootballService {
 
         for (FixtureStatsTeam teamStats : teamStatsList) {
             GroupRecord record = new GroupRecord(
-                    teamStats.getTeam(),
+                    teamStats.getTeam().getName(),
+                    teamStats.getFixture().getDate(),
                     ratingService.setAttacking(teamStats, maxValues, weights),
                     ratingService.setDefending(teamStats, maxValues, weights),
                     ratingService.setAgression(teamStats, maxValues, weights),

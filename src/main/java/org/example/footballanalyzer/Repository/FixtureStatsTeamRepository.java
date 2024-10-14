@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface FixtureStatsTeamRepository extends JpaRepository<FixtureStatsTeam, Long> {
 
-    List<FixtureStatsTeam> findAllByFixtureIn(List<Fixture> fixture);
+    List<FixtureStatsTeam> findAllByFixtureInAndMinutesGreaterThan(List<Fixture> fixture, double minutes);
 }
