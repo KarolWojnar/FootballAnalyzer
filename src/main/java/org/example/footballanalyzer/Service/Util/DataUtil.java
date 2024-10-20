@@ -3,15 +3,16 @@ package org.example.footballanalyzer.Service.Util;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.footballanalyzer.Data.Dto.PlayerStatsDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -142,5 +143,11 @@ public class DataUtil {
         }
 
         log.info("Stats collected for fixture: {}", fixture.getFixtureId());
+    }
+
+    public List<PlayerStatsDto> findAllPlayersStatsByTeam(Team team) {
+        List<Player> playersFromTeam = playerRepository.findAllByTeam(team);
+
+        return fixturesStatsRepository.findAllPlayerStatsByPlayers(playersFromTeam);
     }
 }

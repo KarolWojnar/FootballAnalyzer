@@ -290,9 +290,16 @@ public class FootballService {
             );
             records.add(record);
         }
-
         return records;
     }
 
 
+    public ResponseEntity<?> getPlayerStatsByTeam(String teamName) {
+        Optional<Team> optionalTeam = teamRepository.findByName(teamName);
+        if (optionalTeam.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Team team = optionalTeam.get();
+        return ResponseEntity.ok(dataUtil.findAllPlayersStatsByTeam(team));
+    }
 }

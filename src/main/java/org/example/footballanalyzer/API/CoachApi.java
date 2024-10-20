@@ -10,9 +10,12 @@ import java.time.LocalDate;
 
 @RequestMapping("/api/coach")
 public interface CoachApi {
-    @GetMapping("/statistics")
+    @GetMapping("/stats/team")
     ResponseEntity<?> getStatsTeamCoach(@RequestParam String teamName,
                                                @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                                                @RequestParam(value = "rounding", required = false, defaultValue = "week") String rounding);
+
+    @GetMapping("/stats/players")
+    ResponseEntity<?> getStatsPlayers(@RequestParam String teamName);
 }

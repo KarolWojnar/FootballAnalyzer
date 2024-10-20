@@ -17,4 +17,9 @@ public class CoachController implements CoachApi {
     public ResponseEntity<?> getStatsTeamCoach(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
         return footballService.getStatsTeamCoach(teamName, startDate, endDate, rounding);
     }
+
+    @Override
+    public ResponseEntity<?> getStatsPlayers(String teamName) {
+        return footballService.getPlayerStatsByTeam(teamName);
+    }
 }
