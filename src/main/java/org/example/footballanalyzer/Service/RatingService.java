@@ -200,7 +200,7 @@ public class RatingService {
         }
 
         GroupRecord record = new GroupRecord(
-                (responseName.equals("avgOfAllTeams") ? null : groupedStats.get(0).team()),
+                (responseName.equals("allTeamsRating") ? null : groupedStats.get(0).team()),
                 null, aggression / i, attacking / i, defending / i, creativity / i
         );
 
@@ -212,7 +212,7 @@ public class RatingService {
         Map<String, RatingRecord> result = new HashMap<>();
         Map<String, Double> periodRatings = new HashMap<>();
 
-        var teamName = groupedStats.isEmpty() ? "Unknown" : (label.equals("avgRatings")? null : groupedStats.get(0).team());
+        var teamName = groupedStats.isEmpty() ? "Unknown" : (label.equals("allTeamsForm")? null : groupedStats.get(0).team());
         int intervalDays = 0;
         if ("week".equals(rounding)) {
             intervalDays = 7;
