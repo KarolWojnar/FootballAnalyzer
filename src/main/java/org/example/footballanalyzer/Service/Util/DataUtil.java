@@ -3,14 +3,20 @@ package org.example.footballanalyzer.Service.Util;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.footballanalyzer.Data.Dto.FixturesDto;
 import org.example.footballanalyzer.Data.Dto.PlayerStatsDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -149,5 +155,24 @@ public class DataUtil {
         List<Player> playersFromTeam = playerRepository.findAllByTeam(team);
 
         return fixturesStatsRepository.findAllPlayerStatsByPlayers(playersFromTeam);
+    }
+
+    public ResponseEntity<?> closestMatches(Date startDate, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        Page<Fixture> fixtures = fixtureRepository.findAllByDateAfterOrderByDateAsc(startDate, pageable);
+        if (fixtures.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        List<FixturesDto> fixturesDtos = new ArrayList<>();
+
+        for (Fixture fixture : fixtures) {
+            FixturesDto fixturesDto = new FixturesDto();
+            fixturesDto.setDate(fixture.getDate());
+            fixturesDto.setHomeTeam(fixture.getHomeTeam().getName());
+            fixturesDto.setAwayTeam(fixture.getAwayTeam().getName());
+            fixturesDtos.add(fixturesDto);
+        }
+        log.info("Found {} fixtures", fixturesDtos.size());
+        return ResponseEntity.ok(fixturesDtos);
     }
 }

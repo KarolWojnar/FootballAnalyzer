@@ -1,6 +1,8 @@
 package org.example.footballanalyzer.Repository;
 
 import org.example.footballanalyzer.Data.Entity.Fixture;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +19,5 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
     List<Fixture> findAllCompleted();
 
     List<Fixture> findAllByDateBetween(Date startDate, Date endDate);
+    Page<Fixture> findAllByDateAfterOrderByDateAsc(Date startDate, Pageable pageable);
 }
