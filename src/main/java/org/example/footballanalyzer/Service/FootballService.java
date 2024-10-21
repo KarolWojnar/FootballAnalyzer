@@ -250,11 +250,11 @@ public class FootballService {
         List<GroupRecord> coachTeam = groupedStats.stream().filter(record -> record.team().equals(teamName)).toList();
         Map<String, Object> ratings = new HashMap<>();
 
-        ratings.putAll(ratingService.getAvgOfList("avgOfAllTeams", groupedStats));
-        ratings.putAll(ratingService.getAvgOfList("coachTeam", coachTeam));
+        ratings.putAll(ratingService.getAvgOfList("allTeamsRating", groupedStats));
+        ratings.putAll(ratingService.getAvgOfList("teamRating", coachTeam));
 
-        ratings.putAll(ratingService.getAvgByDates("avgRatings", groupedStats, rounding, startDate, endDate));
-        ratings.putAll(ratingService.getAvgByDates("coachTeamRatings", coachTeam, rounding, startDate, endDate));
+        ratings.putAll(ratingService.getAvgByDates("allTeamsForm", groupedStats, rounding, startDate, endDate));
+        ratings.putAll(ratingService.getAvgByDates("teamForm", coachTeam, rounding, startDate, endDate));
 
         return ratings;
     }
@@ -290,9 +290,21 @@ public class FootballService {
             );
             records.add(record);
         }
-
         return records;
     }
 
 
+    public ResponseEntity<?> getPlayerStatsByTeam(String teamName) {
+        Optional<Team> optionalTeam = teamRepository.findByName(teamName);
+        if (optionalTeam.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Team team = optionalTeam.get();
+        return ResponseEntity.ok(dataUtil.findAllPlayersStatsByTeam(team));
+    }
+
+    public ResponseEntity<?> closestMatches(LocalDate startDate, int page) {
+        Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        return dataUtil.closestMatches(dateStart, page);
+    }
 }
