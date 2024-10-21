@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import {
   ChartComponent,
   ApexAxisChartSeries,
@@ -42,9 +42,8 @@ export class TeamChartComponent implements OnChanges {
     const allTeamsData = sortedDates.map(
       (date) => this.teamStats.allTeamsForm.rating[date] ?? 0,
     );
-    this.sortedDates = sortedDates;
-    this.myTeamForm = teamData;
-    this.allTeamForm = allTeamsData;
+
+    this.deleteEmptyValues(sortedDates, teamData, allTeamsData);
     this.initializeDataChart();
   }
 
@@ -63,6 +62,7 @@ export class TeamChartComponent implements OnChanges {
         },
       ],
       chart: {
+        foreColor: 'white',
         height: 500,
         type: 'area',
       },
@@ -73,7 +73,7 @@ export class TeamChartComponent implements OnChanges {
         curve: 'smooth',
       },
       xaxis: {
-        type: 'category',
+        type: 'datetime',
         categories: this.sortedDates.length > 0 ? this.sortedDates : [],
       },
       tooltip: {
@@ -107,7 +107,7 @@ export class TeamChartComponent implements OnChanges {
         curve: 'smooth',
       },
       xaxis: {
-        type: 'datetime',
+        type: 'category',
         categories: ['2022-09-25', '2022-09-25', '2022-09-25', '2022-09-25'],
       },
       tooltip: {
@@ -116,5 +116,25 @@ export class TeamChartComponent implements OnChanges {
         },
       },
     };
+  }
+
+  private deleteEmptyValues(
+    _sortedDates: string[],
+    _teamData: number[],
+    _allTeamsData: number[],
+  ) {
+    let i = 0;
+    _teamData.forEach((index) => {
+      if (index === 0.0) {
+        _teamData.splice(i, 1);
+        _allTeamsData.splice(i, 1);
+        _sortedDates.splice(i, 1);
+      }
+      i++;
+    });
+
+    this.sortedDates = _sortedDates;
+    this.myTeamForm = _teamData;
+    this.allTeamForm = _allTeamsData;
   }
 }

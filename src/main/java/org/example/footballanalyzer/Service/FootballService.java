@@ -41,7 +41,7 @@ public class FootballService {
     public void saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
         int attempts = 0;
 
-        while(attempts < apiKeyManager.getApiKeysLength()) {
+        while (attempts < apiKeyManager.getApiKeysLength()) {
             HttpResponse<String> responseFixturesByLeagueAndSeason = footballApiUtil.getFixturesByLeagueAndSeason(league, season, apiKeyManager.getApiKey());
 
             if (responseFixturesByLeagueAndSeason.statusCode() == 429) {
@@ -110,7 +110,7 @@ public class FootballService {
     private void saveStatsFixtureByPlayer(Fixture fixture) throws IOException, InterruptedException {
         int attempts = 0;
 
-        while(attempts < apiKeyManager.getApiKeysLength()) {
+        while (attempts < apiKeyManager.getApiKeysLength()) {
             HttpResponse<String> responsePlayerStats = footballApiUtil.getPlayersStatsByFixture(fixture.getFixtureId(), apiKeyManager.getApiKey());
 
             if (responsePlayerStats.statusCode() == 429) {
@@ -241,7 +241,7 @@ public class FootballService {
         return ResponseEntity.ok(response);
     }
 
-    private Map<String,Object> populateRatingsAndPlayers(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
+    private Map<String, Object> populateRatingsAndPlayers(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         List<Fixture> teamStats = fixtureRepository.findAllByDateBetween(dateStart, endStart);
@@ -264,7 +264,7 @@ public class FootballService {
         Map<String, Double> sumValues = ratingService.initializeSumValues();
 
         int fixturesCount = teamStatsList.size();
-        
+
         for (FixtureStatsTeam fixture : teamStatsList) {
             ratingService.updateMaxValues(maxValues, fixture);
             ratingService.updateSumValues(sumValues, fixture);
