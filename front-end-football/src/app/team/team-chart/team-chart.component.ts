@@ -73,7 +73,7 @@ export class TeamChartComponent implements OnChanges {
         curve: 'smooth',
       },
       xaxis: {
-        type: 'datetime',
+        type: 'category',
         categories: this.sortedDates.length > 0 ? this.sortedDates : [],
       },
       tooltip: {
@@ -124,13 +124,18 @@ export class TeamChartComponent implements OnChanges {
     _allTeamsData: number[],
   ) {
     let i = 0;
+    let indexToDelete: number[] = [];
     _teamData.forEach((index) => {
       if (index === 0.0) {
-        _teamData.splice(i, 1);
-        _allTeamsData.splice(i, 1);
-        _sortedDates.splice(i, 1);
+        indexToDelete.push(i);
       }
       i++;
+    });
+
+    indexToDelete.reverse().forEach((index) => {
+      _sortedDates.splice(index, 1);
+      _teamData.splice(index, 1);
+      _allTeamsData.splice(index, 1);
     });
 
     this.sortedDates = _sortedDates;

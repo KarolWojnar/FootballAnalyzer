@@ -1,12 +1,10 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { HomePageFixture } from '../models/home-page-fixture';
 import { MatPaginator } from '@angular/material/paginator';
 import {
   catchError,
   map,
   merge,
-  Observable,
   of,
   startWith,
   switchMap,
@@ -22,7 +20,6 @@ export class HomeComponent implements AfterViewInit {
   constructor(private apiService: ApiService) {}
 
   displayedColumns: string[] = ['matchDate', 'homeTeam', 'awayTeam'];
-  exampleDatabase!: null;
   today: Date = new Date();
   data: HomePageFixture[] = [];
   resultsLength = 0;

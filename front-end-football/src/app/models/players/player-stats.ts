@@ -1,6 +1,7 @@
 export class PlayerStats {
-  date: Date;
+  date!: Date | undefined;
   player: string;
+  position: string;
   minutes: number;
   rating: number;
   offsides: number;
@@ -18,6 +19,7 @@ export class PlayerStats {
 
   constructor(
     date: Date,
+    position: string,
     player: string,
     minutes: number,
     rating: number,
@@ -46,6 +48,7 @@ export class PlayerStats {
     penaltyCommitted: number,
   ) {
     this.date = date;
+    this.position = position;
     this.player = player;
     this.minutes = minutes;
     this.rating = rating;

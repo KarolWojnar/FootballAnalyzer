@@ -15,7 +15,7 @@ public interface FixturesStatsRepository extends JpaRepository<FixturesStats, Lo
     List<FixturesStats> getFixturesStatsByFixture(Fixture fixture);
 
     @Query("SELECT new org.example.footballanalyzer.Data.Dto.PlayerStatsDto(" +
-            "f.fixture.date, f.player.name, f.minutes, f.rating, f.offsides, f.shotsTotal, " +
+            "f.fixture.date, f.position, f.player.name, f.minutes, f.rating, f.offsides, f.shotsTotal, " +
             "f.shotsOnGoal, f.goalsTotal, f.goalsConceded, f.assists, f.saves, f.passesTotal, " +
             "f.passesKey, f.passesAccuracy, f.tacklesTotal, f.tacklesBlocks, f.tacklesInterceptions, " +
             "f.duelsTotal, f.duelsWon, f.dribblesAttempts, f.dribblesSuccess, f.foulsDrawn, " +
