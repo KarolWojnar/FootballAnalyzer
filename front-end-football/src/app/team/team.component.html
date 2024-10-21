@@ -1,1 +1,42 @@
-<p>team works!</p>
+<div class="team-container">
+  <h1 *ngIf="teamStats">{{ teamStats.teamRating.team }}</h1>
+
+  <div *ngIf="teamStats">
+    <ul class="nav nav-tabs">
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{ active: selectedChart === 'line' }" (click)="selectChart('line')">Wykres liniowy</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" [ngClass]="{ active: selectedChart === 'radar' }" (click)="selectChart('radar')">Wykres pajęczynowy</a>
+      </li>
+    </ul>
+
+    <div *ngIf="selectedChart === 'line'">
+      <app-team-chart [teamStats]="teamStats"></app-team-chart>
+    </div>
+
+    <div *ngIf="selectedChart === 'radar'">
+      <app-team-radar-chart [teamStats]="teamStats"></app-team-radar-chart>
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="team-form">
+    <label for="teamName">Nazwa drużyny:</label>
+    <input id="teamName" formControlName="teamName" required />
+
+    <label for="startDate">Data początkowa:</label>
+    <input id="startDate" type="date" formControlName="startDate" required />
+
+    <label for="endDate">Data końcowa:</label>
+    <input id="endDate" type="date" formControlName="endDate" required />
+
+    <label for="rounding">Zaokrąglenie:</label>
+    <select id="rounding" formControlName="rounding">
+      <option value="week">Tydzień</option>
+      <option value="month">Miesiąc</option>
+    </select>
+
+    <button type="submit">Pobierz statystyki</button>
+  </form>
+
+</div>

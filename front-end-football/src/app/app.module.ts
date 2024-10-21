@@ -10,6 +10,15 @@ import { ProfileComponent } from './profile/profile.component';
 import { HomeComponent } from './home/home.component';
 import { AdminComponent } from './admin/admin.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { TeamChartComponent } from './team/team-chart/team-chart.component';
+import { TeamRadarChartComponent } from './team/team-radar-chart/team-radar-chart.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +30,20 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     HomeComponent,
     AdminComponent,
     PageNotFoundComponent,
+    TeamChartComponent,
+    TeamRadarChartComponent,
   ],
-  imports: [BrowserModule, AppRoutingModule],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatPaginatorModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    NgApexchartsModule,
+  ],
   providers: [],
   bootstrap: [AppComponent],
 })
