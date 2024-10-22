@@ -19,6 +19,11 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { TeamChartComponent } from './team/team-chart/team-chart.component';
 import { TeamRadarChartComponent } from './team/team-radar-chart/team-radar-chart.component';
+import localePl from '@angular/common/locales/pl';
+import { registerLocaleData } from '@angular/common';
+import { MatSortModule } from '@angular/material/sort';
+
+registerLocaleData(localePl);
 
 @NgModule({
   declarations: [
@@ -43,6 +48,7 @@ import { TeamRadarChartComponent } from './team/team-radar-chart/team-radar-char
     HttpClientModule,
     ReactiveFormsModule,
     NgApexchartsModule,
+    MatSortModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

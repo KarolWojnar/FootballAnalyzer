@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
-import { PlayerStats } from "../../models/players/player-stats";
+import { PlayerStats } from '../../models/players/player-stats';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class PlayerService {
-
-  constructor() { }
+  constructor() {}
 
   calcualtePlayers(players: PlayerStats[]): PlayerStats[] {
     // todo: na przyszłość: dodać filtrowanie stat po określonej dacie
@@ -32,10 +31,18 @@ export class PlayerService {
   private aggregatePlayerStats(playerGroup: PlayerStats[]): PlayerStats {
     const totalRecords = playerGroup.length;
 
-    const aggregatedStats = playerGroup.reduce((acc, curr) => ({
+    const aggregatedStats = playerGroup.reduce(
+      (acc, curr) => ({
         date: undefined,
         player: curr.player,
-        position: curr.position,
+        position:
+          curr.position === 'G'
+            ? 'Bramkarz'
+            : curr.position === 'D'
+              ? 'Obrońca'
+              : curr.position === 'M'
+                ? 'Pomocnik'
+                : 'Napastnik',
         minutes: acc.minutes + curr.minutes,
         rating: acc.rating + curr.rating,
         offsides: acc.offsides + curr.offsides,
@@ -50,7 +57,8 @@ export class PlayerService {
         passesAccuracy: acc.passesAccuracy + curr.passesAccuracy,
         tacklesTotal: acc.tacklesTotal + curr.tacklesTotal,
         tacklesBlocks: acc.tacklesBlocks + curr.tacklesBlocks,
-        tacklesInterceptions: acc.tacklesInterceptions + curr.tacklesInterceptions,
+        tacklesInterceptions:
+          acc.tacklesInterceptions + curr.tacklesInterceptions,
         duelsTotal: acc.duelsTotal + curr.duelsTotal,
         duelsWon: acc.duelsWon + curr.duelsWon,
         dribblesAttempts: acc.dribblesAttempts + curr.dribblesAttempts,
@@ -61,8 +69,12 @@ export class PlayerService {
         cardsRed: acc.cardsRed + curr.cardsRed,
         penaltyWon: acc.penaltyWon + curr.penaltyWon,
         penaltyCommitted: acc.penaltyCommitted + curr.penaltyCommitted,
-      }), this.createEmptyPlayerStats(playerGroup[0].player));
-    aggregatedStats.rating = parseFloat((aggregatedStats.rating / totalRecords).toFixed(2));
+      }),
+      this.createEmptyPlayerStats(playerGroup[0].player),
+    );
+    aggregatedStats.rating = parseFloat(
+      (aggregatedStats.rating / totalRecords).toFixed(2),
+    );
     return aggregatedStats;
   }
 
@@ -95,7 +107,7 @@ export class PlayerService {
       cardsYellow: 0,
       cardsRed: 0,
       penaltyWon: 0,
-      penaltyCommitted: 0
+      penaltyCommitted: 0,
     };
   }
 }
