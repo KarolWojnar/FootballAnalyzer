@@ -19,14 +19,39 @@
     }
   }
 
+  .example-table-container::-webkit-scrollbar {
+    width: 13px;
+    height: 13px;
+  }
+
+  .example-table-container::-webkit-scrollbar-track {
+    background: #2e2e2e;
+    border: 1px dashed #007bff;
+    border-radius: 10px;
+  }
+
+  .example-table-container::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+    border: 0 solid #2e2e2e;
+  }
+
+  .example-table-container::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(67, 162, 250);
+  }
+
+  .example-table-container::-webkit-scrollbar-corner {
+    background: rgba(46, 46, 46, 0);
+  }
+
   .example-table-container {
     margin-top: 20px;
     height: 70vh;
     border-radius: 15px;
-    overflow-y: auto;
+    overflow: auto;
 
     table {
-      width: 80%;
+      width: max-content;
       background-color: #2e2e2e;
       color: #f1f1f1;
       border-collapse: collapse;
@@ -36,7 +61,7 @@
         top: 0;
         background-color: #333;
         color: #fff;
-        z-index: 10;
+        z-index: 1000;
         padding: 12px;
         text-align: left;
       }
@@ -45,6 +70,7 @@
         padding: 10px;
         border-top: 1px solid #444;
         position: relative;
+        z-index: 2;
       }
 
       tr:nth-child(even) {
@@ -54,22 +80,21 @@
       tr:hover {
         background-color: #3a3a3a;
       }
+
+      .sticky-column {
+        position: sticky;
+        left: 0;
+        background-color: #2e2e2e;
+        z-index: 11;
+        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+      }
+
+      th {
+        z-index: 1000;
+      }
     }
 
-    .sticky-header {
-      position: sticky;
-      left: 0;
-      background-color: #333;
-      z-index: 10;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-    }
-    td:first-child {
-      position: sticky;
-      left: 0;
-      background-color: #2e2e2e;
-      z-index: 5;
-      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
-    }
+
   }
 
   .team-form {

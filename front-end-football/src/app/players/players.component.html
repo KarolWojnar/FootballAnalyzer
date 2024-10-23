@@ -7,8 +7,8 @@
       <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
 
         <ng-container matColumnDef="player">
-          <th mat-header-cell mat-sort-header *matHeaderCellDef class="sticky-header" >Gracz</th>
-          <td mat-cell *matCellDef="let player">{{ player.player }}</td>
+            <th mat-header-cell mat-sort-header *matHeaderCellDef>Gracz</th>
+            <td mat-cell *matCellDef="let player" class="sticky-column">{{ player.player }}</td>
         </ng-container>
 
         <ng-container matColumnDef="position">

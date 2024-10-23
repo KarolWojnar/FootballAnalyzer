@@ -10,10 +10,10 @@ import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.example.footballanalyzer.Service.Util.FootballApiUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
@@ -238,17 +238,26 @@ public class FootballService {
             return ResponseEntity.notFound().build();
         }
 
-        Map<String, Object> response = new HashMap<>(populateRatingsAndPlayers(teamName, startDate, endDate, rounding));
-        return ResponseEntity.ok(response);
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(teamName, startDate, endDate, rounding));
+
+        if (ratings.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(ratings);
     }
 
     private Map<String, Object> populateRatingsAndPlayers(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        List<Fixture> teamStats = fixtureRepository.findAllByDateBetween(dateStart, endStart);
+        List<Fixture> teamStats = fixtureRepository.findAllByDateBetweenAndIsCollectedAndIsCounted(dateStart, endStart, false, false);
         List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureInAndMinutesGreaterThan(teamStats, 0);
         List<GroupRecord> groupedStats = groupRatings(teamStatsList);
         List<GroupRecord> coachTeam = groupedStats.stream().filter(record -> record.team().equals(teamName)).toList();
+        if (coachTeam.isEmpty()) {
+            return new HashMap<>();
+        }
+
         Map<String, Object> ratings = new HashMap<>();
 
         ratings.putAll(ratingService.getAvgOfList("allTeamsRating", groupedStats));

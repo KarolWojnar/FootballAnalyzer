@@ -20,7 +20,7 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
     @Query("SELECT f FROM Fixture f WHERE NOT f.isCollected AND f.awayGoals != -1")
     List<Fixture> findAllCompleted();
 
-    List<Fixture> findAllByDateBetween(Date startDate, Date endDate);
+    List<Fixture> findAllByDateBetweenAndIsCollectedAndIsCounted(Date startDate, Date endDate, boolean collected, boolean counted);
     Page<Fixture> findAllByDateAfterOrderByDateAsc(Date startDate, Pageable pageable);
 
     @Modifying
