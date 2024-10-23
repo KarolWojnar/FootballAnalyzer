@@ -8,12 +8,12 @@ import { ProfileComponent } from './profile/profile.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, pathMatch: 'full' },
-  { path: 'players', component: PlayersComponent },
-  { path: 'team', component: TeamComponent },
-  { path: 'admin', component: AdminComponent },
-  { path: 'profile', component: ProfileComponent },
-  { path: '**', component: PageNotFoundComponent },
+  { path: '', component: HomeComponent, pathMatch: 'full', title: 'Home' },
+  { path: 'players', component: PlayersComponent, title: 'Players' },
+  { path: 'team', component: TeamComponent, title: 'Team' },
+  { path: 'admin', component: AdminComponent, title: 'Admin' },
+  { path: 'profile', component: ProfileComponent, title: 'Profile' },
+  { path: '**', component: PageNotFoundComponent, title: 'Page Not Found' },
 ];
 
 @NgModule({

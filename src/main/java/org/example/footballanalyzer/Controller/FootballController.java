@@ -18,13 +18,11 @@ public class FootballController implements FootballApi {
 
     @Override
     public ResponseEntity<?> saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
-        footballService.saveAllByLeagueSeason(league, season);
-        return ResponseEntity.ok().build();
+        return footballService.saveAllByLeagueSeason(league, season);
     }
 
     @Override
     public ResponseEntity<?> collectFixtures() {
-        footballService.collectFixtures();
-        return ResponseEntity.ok().build();
+        return footballService.collectFixtures();
     }
 }

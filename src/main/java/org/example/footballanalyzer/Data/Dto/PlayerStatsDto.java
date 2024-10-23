@@ -7,6 +7,7 @@ import java.util.Date;
 @Data
 public class PlayerStatsDto {
     private Date date;
+    private String position;
     private String player;
     private int minutes;
     double rating;
@@ -34,7 +35,7 @@ public class PlayerStatsDto {
     private int penaltyWon;
     private int penaltyCommitted;
 
-    public PlayerStatsDto(Date date, String player, int minutes,
+    public PlayerStatsDto(Date date, String position, String player, int minutes,
                           double rating, int offsides, int shotsTotal, int shotsOnGoal,
                           int goalsTotal, int goalsConceded, int assists, int saves,
                           int passesTotal, int passesKey, double passesAccuracy,
@@ -45,6 +46,7 @@ public class PlayerStatsDto {
                           int penaltySaved, int penaltyMissed
                           ) {
         this.date = date;
+        this.position = position;
         this.penaltyMissed = penaltyMissed;
         this.penaltySaved = penaltySaved;
         this.penaltyScored = penaltyScored;
