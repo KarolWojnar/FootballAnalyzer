@@ -143,8 +143,9 @@ public class DataUtil {
 
         if (optionalFixture.isPresent()) {
             Fixture existingFixture = optionalFixture.get();
-            existingFixture.setCounted(true);
-            fixtureRepository.save(existingFixture);
+            existingFixture.setCollected(true);
+            fixtureRepository.setFixtureAsCollected(existingFixture.getId());
+            log.info("Fixture with id: {} marked as collected", fixture.getFixtureId());
         }
     }
 
@@ -176,7 +177,7 @@ public class DataUtil {
         Optional<Fixture> optionalFixture = fixtureRepository.findById(fixtureId);
         if (optionalFixture.isPresent()) {
             Fixture fixture = optionalFixture.get();
-            fixtureRepository.updateFixture(fixture.getId());
+            fixtureRepository.setFixtureAsCounted(fixture.getId());
         }
         log.info("Fixture with id: {} marked as counted", fixtureId);
     }

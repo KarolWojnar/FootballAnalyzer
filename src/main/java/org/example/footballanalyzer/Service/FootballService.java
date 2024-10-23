@@ -168,11 +168,14 @@ public class FootballService {
         dataUtil.savePlayerStats(player, fixture, offsides, games, shots, goals, passes, tackles, duels, dribbles, fouls, cards, penalty);
     }
 
-    public void collectFixtures() {
+    public ResponseEntity<?> collectFixtures() {
         List<Fixture> fixtures = fixtureRepository.findAllCompleted();
+        log.info("Collected fixtures: {}", fixtures.size());
         fixtures.forEach(
                 this::saveCollectedFixture
         );
+        String response = !fixtures.isEmpty() ? "Successfull collect " + fixtures.size() + " fixtures" : "Nothing to collect";
+        return ResponseEntity.ok(response);
     }
 
     public void saveCollectedFixture(Fixture fixture) {

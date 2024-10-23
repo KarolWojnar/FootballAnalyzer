@@ -23,7 +23,6 @@ public class FootballController implements FootballApi {
 
     @Override
     public ResponseEntity<?> collectFixtures() {
-        footballService.collectFixtures();
-        return ResponseEntity.ok().build();
+        return footballService.collectFixtures();
     }
 }

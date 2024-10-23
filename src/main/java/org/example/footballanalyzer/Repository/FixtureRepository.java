@@ -17,7 +17,7 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
     Optional<Fixture> findByFixtureId(Long fixtureId);
 
     @EntityGraph(attributePaths = {"homeTeam", "awayTeam"})
-    @Query("SELECT f FROM Fixture f WHERE NOT f.isCounted AND f.awayGoals != -1")
+    @Query("SELECT f FROM Fixture f WHERE NOT f.isCollected AND f.awayGoals != -1")
     List<Fixture> findAllCompleted();
 
     List<Fixture> findAllByDateBetween(Date startDate, Date endDate);
@@ -26,5 +26,10 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
     @Modifying
     @Transactional
     @Query("update Fixture f set f.isCounted = true where f.id = ?1")
-    void updateFixture(Long id);
+    void setFixtureAsCounted(Long id);
+
+    @Modifying
+    @Transactional
+    @Query("update Fixture f set f.isCollected = true where f.id = ?1")
+    void setFixtureAsCollected(Long id);
 }
