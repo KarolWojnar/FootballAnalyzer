@@ -1,14 +1,7 @@
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { HomePageFixture } from '../models/home-page-fixture';
 import { MatPaginator } from '@angular/material/paginator';
-import {
-  catchError,
-  map,
-  merge,
-  of,
-  startWith,
-  switchMap,
-} from 'rxjs';
+import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../services/api.service';
 
 @Component({
@@ -46,8 +39,8 @@ export class HomeComponent implements AfterViewInit {
             return [];
           }
 
-          this.resultsLength = 50;
-          return data;
+          this.resultsLength = data.emelents;
+          return data.fixtures;
         }),
       )
       .subscribe((data) => (this.data = data));

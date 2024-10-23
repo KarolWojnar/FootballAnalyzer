@@ -8,18 +8,15 @@ import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -161,6 +158,8 @@ public class DataUtil {
         if (fixtures.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        HashMap<String, Object> response = new HashMap<>();
         List<FixturesDto> fixturesDtos = new ArrayList<>();
 
         for (Fixture fixture : fixtures) {
@@ -170,7 +169,11 @@ public class DataUtil {
             fixturesDto.setAwayTeam(fixture.getAwayTeam().getName());
             fixturesDtos.add(fixturesDto);
         }
-        return ResponseEntity.ok(fixturesDtos);
+        response.put("fixtures", fixturesDtos);
+        response.put("emelents", fixtures.getTotalElements());
+
+        return ResponseEntity.ok(response);
+
     }
 
     public void setFixtureAsCounted(long fixtureId) {

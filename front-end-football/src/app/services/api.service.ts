@@ -23,13 +23,18 @@ export class ApiService {
     return this.httpClient.get<Stats>(apiUrl);
   }
 
-  getMatches(today: Date, page: number): Observable<HomePageFixture[]> {
-    const requestUrl = `${this.href}coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page + 1}`;
-    return this.httpClient.get<HomePageFixture[]>(requestUrl);
+  getMatches(today: Date, page: number): Observable<ApiMatches> {
+    const requestUrl = `${this.href}coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}`;
+    return this.httpClient.get<ApiMatches>(requestUrl);
   }
 
   fetchPlayerData(teamName: string): Observable<PlayerStats[]> {
     const requestUrl = `${this.href}coach/stats/players?teamName=${teamName}`;
     return this.httpClient.get<PlayerStats[]>(requestUrl);
   }
+}
+
+export interface ApiMatches {
+  fixtures: HomePageFixture[];
+  emelents: number;
 }
