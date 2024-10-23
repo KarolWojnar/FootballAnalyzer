@@ -1,6 +1,5 @@
 package org.example.footballanalyzer.Service.Util;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.Dto.FixturesDto;
@@ -137,7 +136,6 @@ public class DataUtil {
 
     }
 
-    @Transactional
     public void collectStatsAndSave(Fixture fixture, FixtureStatsTeam teamStats) {
         fixtureStatsTeamRepository.save(teamStats);
 
@@ -148,8 +146,6 @@ public class DataUtil {
             existingFixture.setCounted(true);
             fixtureRepository.save(existingFixture);
         }
-
-        log.info("Stats collected for fixture: {}", fixture.getFixtureId());
     }
 
     public List<PlayerStatsDto> findAllPlayersStatsByTeam(Team team) {
@@ -173,7 +169,15 @@ public class DataUtil {
             fixturesDto.setAwayTeam(fixture.getAwayTeam().getName());
             fixturesDtos.add(fixturesDto);
         }
-        log.info("Found {} fixtures", fixturesDtos.size());
         return ResponseEntity.ok(fixturesDtos);
+    }
+
+    public void setFixtureAsCounted(long fixtureId) {
+        Optional<Fixture> optionalFixture = fixtureRepository.findById(fixtureId);
+        if (optionalFixture.isPresent()) {
+            Fixture fixture = optionalFixture.get();
+            fixtureRepository.updateFixture(fixture.getId());
+        }
+        log.info("Fixture with id: {} marked as counted", fixtureId);
     }
 }

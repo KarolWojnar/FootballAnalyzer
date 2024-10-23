@@ -33,4 +33,5 @@ public class Fixture {
     private Set<FixturesStats> fixtureStats;
 
     private boolean isCounted = false;
+    private boolean isCollected = false;
 }
