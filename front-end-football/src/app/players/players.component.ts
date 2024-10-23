@@ -65,7 +65,6 @@ export class PlayersComponent implements OnDestroy {
           setTimeout(() => {
             this.dataSource = new MatTableDataSource(this.playerStats);
             this.sub.unsubscribe();
-            alert('popraw aby nazwiska były przyklejane');
           }, 500);
         },
       });

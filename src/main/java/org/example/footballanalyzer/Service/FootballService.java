@@ -233,13 +233,11 @@ public class FootballService {
 
     public ResponseEntity<?> getStatsTeamCoach(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
         Optional<Long> teamId = teamRepository.findByName(teamName).map(Team::getId);
-
         if (teamId.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(teamName, startDate, endDate, rounding));
-
         if (ratings.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -250,10 +248,12 @@ public class FootballService {
     private Map<String, Object> populateRatingsAndPlayers(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        List<Fixture> teamStats = fixtureRepository.findAllByDateBetweenAndIsCollectedAndIsCounted(dateStart, endStart, false, false);
+        List<Fixture> teamStats = fixtureRepository.findAllByDateBetweenAndIsCollectedAndIsCounted(dateStart, endStart, true, true);
         List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureInAndMinutesGreaterThan(teamStats, 0);
         List<GroupRecord> groupedStats = groupRatings(teamStatsList);
+        log.info("Collected stats: {}", groupedStats.size());
         List<GroupRecord> coachTeam = groupedStats.stream().filter(record -> record.team().equals(teamName)).toList();
+        log.info("Collected team stats: {}", coachTeam.size());
         if (coachTeam.isEmpty()) {
             return new HashMap<>();
         }
