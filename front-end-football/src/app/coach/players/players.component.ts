@@ -1,21 +1,24 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ApiService } from '../services/api.service';
-import { PlayerStats } from '../models/players/player-stats';
 import { Subscription } from 'rxjs';
-import { PlayerService } from '../services/players/player.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
+import { PlayerStats } from '../../models/players/player-stats';
+import { ApiService } from '../../services/api.service';
+import { PlayerService } from '../../services/players/player.service';
 
 @Component({
   selector: 'app-players',
   templateUrl: './players.component.html',
   styleUrls: ['./players.component.scss'],
 })
-export class PlayersComponent implements OnDestroy {
+export class PlayersComponent implements OnDestroy, AfterViewInit {
   form!: FormGroup;
   playerStats!: PlayerStats[];
-  dataSource!: MatTableDataSource<PlayerStats>;
+  dataSource: MatTableDataSource<PlayerStats> =
+    new MatTableDataSource<PlayerStats>(
+      JSON.parse(localStorage.getItem('dataSource')!) as PlayerStats[],
+    );
   sub!: Subscription;
   @ViewChild(MatSort) sort!: MatSort;
   displayedColumns: string[] = [
@@ -56,6 +59,10 @@ export class PlayersComponent implements OnDestroy {
     this.form = this.fb.group({ teamName: ['Arsenal'] });
   }
 
+  ngAfterViewInit(): void {
+    this.dataSource.sort = this.sort;
+  }
+
   getPlayersData() {
     this.sub = this.apiService
       .fetchPlayerData(this.form.value.teamName)
@@ -64,6 +71,11 @@ export class PlayersComponent implements OnDestroy {
           this.playerStats = this.playerService.calcualtePlayers(player);
           setTimeout(() => {
             this.dataSource = new MatTableDataSource(this.playerStats);
+            localStorage.setItem(
+              'dataSource',
+              JSON.stringify(this.playerStats),
+            );
+            this.dataSource.sort = this.sort;
             this.sub.unsubscribe();
           }, 500);
         },
@@ -72,9 +84,6 @@ export class PlayersComponent implements OnDestroy {
 
   onSubmit(): void {
     this.getPlayersData();
-    setTimeout(() => {
-      this.dataSource.sort = this.sort;
-    }, 1500);
   }
 
   applyFilter(event: Event) {

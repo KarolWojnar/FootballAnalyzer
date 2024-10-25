@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { ApiService } from '../services/api.service';
 import { Subscription } from 'rxjs';
-import { Stats } from '../models/stats';
+import { Stats } from '../../models/stats';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-team',
@@ -10,7 +10,7 @@ import { Stats } from '../models/stats';
   styleUrls: ['./team.component.scss'],
 })
 export class TeamComponent {
-  teamStats!: Stats;
+  teamStats: Stats = JSON.parse(localStorage.getItem('teamStats')!);
   form!: FormGroup;
   sub!: Subscription;
   selectedChart = 'line';
@@ -22,7 +22,7 @@ export class TeamComponent {
     this.form = this.fb.group({
       teamName: ['Barcelona'],
       startDate: ['2022-09-11'],
-      endDate: ['2022-12-02'],
+      endDate: ['2024-12-02'],
       rounding: ['week'],
     });
   }
@@ -38,6 +38,7 @@ export class TeamComponent {
       .subscribe({
         next: (teamStats) => {
           this.teamStats = teamStats;
+          localStorage.setItem('teamStats', JSON.stringify(teamStats));
           this.selectedChart = 'line';
         },
       });
