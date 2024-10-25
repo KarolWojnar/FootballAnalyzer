@@ -142,7 +142,6 @@ public class DataUtil {
             Fixture existingFixture = optionalFixture.get();
             existingFixture.setCollected(true);
             fixtureRepository.setFixtureAsCollected(existingFixture.getId());
-            log.info("Fixture with id: {} marked as collected", fixture.getFixtureId());
         }
     }
 
@@ -182,6 +181,5 @@ public class DataUtil {
             Fixture fixture = optionalFixture.get();
             fixtureRepository.setFixtureAsCounted(fixture.getId());
         }
-        log.info("Fixture with id: {} marked as counted", fixtureId);
     }
 }
