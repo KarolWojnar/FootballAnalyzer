@@ -19,24 +19,23 @@
       <app-team-radar-chart [teamStats]="teamStats"></app-team-radar-chart>
     </div>
   </div>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="team-form">
+      <label for="teamName">Nazwa drużyny:</label>
+      <input id="teamName" formControlName="teamName" required />
 
-  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="team-form">
-    <label for="teamName">Nazwa drużyny:</label>
-    <input id="teamName" formControlName="teamName" required />
+      <label for="startDate">Data początkowa:</label>
+      <input id="startDate" type="date" formControlName="startDate" required />
 
-    <label for="startDate">Data początkowa:</label>
-    <input id="startDate" type="date" formControlName="startDate" required />
+      <label for="endDate">Data końcowa:</label>
+      <input id="endDate" type="date" formControlName="endDate" required />
 
-    <label for="endDate">Data końcowa:</label>
-    <input id="endDate" type="date" formControlName="endDate" required />
+      <label for="rounding">Zaokrąglenie:</label>
+      <select id="rounding" formControlName="rounding">
+        <option value="week">Tydzień</option>
+        <option value="month">Miesiąc</option>
+      </select>
 
-    <label for="rounding">Zaokrąglenie:</label>
-    <select id="rounding" formControlName="rounding">
-      <option value="week">Tydzień</option>
-      <option value="month">Miesiąc</option>
-    </select>
-
-    <button type="submit">Pobierz statystyki</button>
-  </form>
+      <button type="submit">Pobierz statystyki</button>
+    </form>
 
 </div>

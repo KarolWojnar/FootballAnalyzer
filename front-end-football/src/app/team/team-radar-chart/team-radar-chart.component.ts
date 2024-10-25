@@ -1,11 +1,4 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
-  ViewChild,
-} from '@angular/core';
+import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import { Stats } from '../../models/stats';
 
 import {
@@ -17,6 +10,7 @@ import {
   ChartComponent,
   ApexStroke,
   ApexMarkers,
+  ApexTheme,
 } from 'ng-apexcharts';
 
 export type ChartOptions = {
@@ -66,6 +60,7 @@ export class TeamRadarChartComponent implements OnChanges {
         },
       ],
       chart: {
+        foreColor: 'white',
         height: 500,
         type: 'radar',
         dropShadow: {
@@ -77,6 +72,9 @@ export class TeamRadarChartComponent implements OnChanges {
       },
       title: {
         text: 'Radar statystyk',
+        style: {
+          color: 'white',
+        },
       },
       stroke: {
         width: 0,

@@ -20,7 +20,7 @@ export class TeamComponent {
     private apiService: ApiService,
   ) {
     this.form = this.fb.group({
-      teamName: ['Arsenal'],
+      teamName: ['Barcelona'],
       startDate: ['2022-09-11'],
       endDate: ['2022-12-02'],
       rounding: ['week'],

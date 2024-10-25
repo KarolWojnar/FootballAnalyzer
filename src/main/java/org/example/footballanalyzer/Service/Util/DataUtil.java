@@ -1,6 +1,5 @@
 package org.example.footballanalyzer.Service.Util;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.Dto.FixturesDto;
@@ -9,17 +8,15 @@ import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor
@@ -136,7 +133,6 @@ public class DataUtil {
 
     }
 
-    @Transactional
     public void collectStatsAndSave(Fixture fixture, FixtureStatsTeam teamStats) {
         fixtureStatsTeamRepository.save(teamStats);
 
@@ -144,11 +140,10 @@ public class DataUtil {
 
         if (optionalFixture.isPresent()) {
             Fixture existingFixture = optionalFixture.get();
-            existingFixture.setCounted(true);
-            fixtureRepository.save(existingFixture);
+            existingFixture.setCollected(true);
+            fixtureRepository.setFixtureAsCollected(existingFixture.getId());
+            log.info("Fixture with id: {} marked as collected", fixture.getFixtureId());
         }
-
-        log.info("Stats collected for fixture: {}", fixture.getFixtureId());
     }
 
     public List<PlayerStatsDto> findAllPlayersStatsByTeam(Team team) {
@@ -163,6 +158,8 @@ public class DataUtil {
         if (fixtures.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        HashMap<String, Object> response = new HashMap<>();
         List<FixturesDto> fixturesDtos = new ArrayList<>();
 
         for (Fixture fixture : fixtures) {
@@ -172,7 +169,19 @@ public class DataUtil {
             fixturesDto.setAwayTeam(fixture.getAwayTeam().getName());
             fixturesDtos.add(fixturesDto);
         }
-        log.info("Found {} fixtures", fixturesDtos.size());
-        return ResponseEntity.ok(fixturesDtos);
+        response.put("fixtures", fixturesDtos);
+        response.put("emelents", fixtures.getTotalElements());
+
+        return ResponseEntity.ok(response);
+
+    }
+
+    public void setFixtureAsCounted(long fixtureId) {
+        Optional<Fixture> optionalFixture = fixtureRepository.findById(fixtureId);
+        if (optionalFixture.isPresent()) {
+            Fixture fixture = optionalFixture.get();
+            fixtureRepository.setFixtureAsCounted(fixture.getId());
+        }
+        log.info("Fixture with id: {} marked as counted", fixtureId);
     }
 }

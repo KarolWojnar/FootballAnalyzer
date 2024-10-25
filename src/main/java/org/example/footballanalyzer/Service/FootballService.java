@@ -10,10 +10,10 @@ import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.example.footballanalyzer.Service.Util.FootballApiUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.json.JSONObject;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.net.http.HttpResponse;
@@ -38,10 +38,10 @@ public class FootballService {
     private final FixtureStatsTeamRepository fixtureStatsTeamRepository;
     private final RatingService ratingService;
 
-    public void saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
+    public ResponseEntity<?> saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
         int attempts = 0;
 
-        while(attempts < apiKeyManager.getApiKeysLength()) {
+        while (attempts < apiKeyManager.getApiKeysLength()) {
             HttpResponse<String> responseFixturesByLeagueAndSeason = footballApiUtil.getFixturesByLeagueAndSeason(league, season, apiKeyManager.getApiKey());
 
             if (responseFixturesByLeagueAndSeason.statusCode() == 429) {
@@ -49,37 +49,37 @@ public class FootballService {
                 attempts++;
             } else if (responseFixturesByLeagueAndSeason.statusCode() == 200) {
                 JSONObject jsonResponse = new JSONObject(responseFixturesByLeagueAndSeason.body());
-
                 if (jsonResponse.has("response")) {
                     JSONArray fixtures = jsonResponse.getJSONArray("response");
-                    saveFixtures(fixtures);
-                    return;
+                    return saveFixtures(fixtures);
                 } else {
-                    throw new IOException("Fixture not found");
+                    return ResponseEntity.notFound().build();
                 }
             } else {
-                throw new IOException("Unexpected response status: " + responseFixturesByLeagueAndSeason.statusCode());
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
 
-        throw new IOException("Failed to retrieve data from API after trying all API keys.");
+        return new ResponseEntity<Error>(HttpStatus.CONFLICT);
     }
 
-    private void saveFixtures(JSONArray fixtures) throws JSONException, ParseException, IOException, InterruptedException {
+    private ResponseEntity<?> saveFixtures(JSONArray fixtures) throws JSONException, ParseException, IOException, InterruptedException {
         League league = getLeague(fixtures.getJSONObject(0).getJSONObject("league"));
+        if (fixtures.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
         for (int i = 0; i < fixtures.length(); i++) {
             JSONObject jsonFixture = fixtures.getJSONObject(i);
             JSONObject teams = jsonFixture.getJSONObject("teams");
             Team homeTeam = getTeam(teams.getJSONObject("home"), league);
             Team awayTeam = getTeam(teams.getJSONObject("away"), league);
             Fixture fixture = getFixture(jsonFixture, homeTeam, awayTeam);
-
-            if (fixture.getAwayGoals() == -1 || fixture.getHomeGoals() == -1) {
-                continue;
+            if (fixture.getAwayGoals() != -1 && fixture.getHomeGoals() != -1 && !fixture.isCounted()) {
+                saveStatsFixtureByPlayer(fixture);
+                dataUtil.setFixtureAsCounted(fixture.getId());
             }
-            saveStatsFixtureByPlayer(fixture);
         }
-
+        return ResponseEntity.ok().build();
     }
 
     private Fixture getFixture(JSONObject fixture, Team homeTeam, Team awayTeam) throws JSONException, ParseException {
@@ -88,7 +88,7 @@ public class FootballService {
 
         if (optionalFixture.isPresent()) {
             Fixture existingFixture = optionalFixture.get();
-            if (existingFixture.getAwayGoals() != -1 && existingFixture.getHomeGoals() != -1) {
+            if (existingFixture.getAwayGoals() != -1) {
                 return existingFixture;
             }
             fixtureRepository.delete(existingFixture);
@@ -110,9 +110,8 @@ public class FootballService {
     private void saveStatsFixtureByPlayer(Fixture fixture) throws IOException, InterruptedException {
         int attempts = 0;
 
-        while(attempts < apiKeyManager.getApiKeysLength()) {
+        while (attempts < apiKeyManager.getApiKeysLength()) {
             HttpResponse<String> responsePlayerStats = footballApiUtil.getPlayersStatsByFixture(fixture.getFixtureId(), apiKeyManager.getApiKey());
-
             if (responsePlayerStats.statusCode() == 429) {
                 apiKeyManager.switchToNextApiKey();
                 attempts++;
@@ -169,14 +168,16 @@ public class FootballService {
         dataUtil.savePlayerStats(player, fixture, offsides, games, shots, goals, passes, tackles, duels, dribbles, fouls, cards, penalty);
     }
 
-    public void collectFixtures() {
+    public ResponseEntity<?> collectFixtures() {
         List<Fixture> fixtures = fixtureRepository.findAllCompleted();
+        log.info("Collected fixtures: {}", fixtures.size());
         fixtures.forEach(
                 this::saveCollectedFixture
         );
+        String response = !fixtures.isEmpty() ? "Successfull collect " + fixtures.size() + " fixtures" : "Nothing to collect";
+        return ResponseEntity.ok(response);
     }
 
-    @Transactional
     public void saveCollectedFixture(Fixture fixture) {
         List<FixturesStats> playersStatsFixture = fixturesStatsRepository.getFixturesStatsByFixture(fixture);
         List<FixturesStats> playersHome = playersStatsFixture.stream()
@@ -237,17 +238,26 @@ public class FootballService {
             return ResponseEntity.notFound().build();
         }
 
-        Map<String, Object> response = new HashMap<>(populateRatingsAndPlayers(teamName, startDate, endDate, rounding));
-        return ResponseEntity.ok(response);
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(teamName, startDate, endDate, rounding));
+
+        if (ratings.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(ratings);
     }
 
-    private Map<String,Object> populateRatingsAndPlayers(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
+    private Map<String, Object> populateRatingsAndPlayers(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        List<Fixture> teamStats = fixtureRepository.findAllByDateBetween(dateStart, endStart);
+        List<Fixture> teamStats = fixtureRepository.findAllByDateBetweenAndIsCollectedAndIsCounted(dateStart, endStart, true, true);
         List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureInAndMinutesGreaterThan(teamStats, 0);
         List<GroupRecord> groupedStats = groupRatings(teamStatsList);
         List<GroupRecord> coachTeam = groupedStats.stream().filter(record -> record.team().equals(teamName)).toList();
+        if (coachTeam.isEmpty()) {
+            return new HashMap<>();
+        }
+
         Map<String, Object> ratings = new HashMap<>();
 
         ratings.putAll(ratingService.getAvgOfList("allTeamsRating", groupedStats));
@@ -264,7 +274,7 @@ public class FootballService {
         Map<String, Double> sumValues = ratingService.initializeSumValues();
 
         int fixturesCount = teamStatsList.size();
-        
+
         for (FixtureStatsTeam fixture : teamStatsList) {
             ratingService.updateMaxValues(maxValues, fixture);
             ratingService.updateSumValues(sumValues, fixture);
