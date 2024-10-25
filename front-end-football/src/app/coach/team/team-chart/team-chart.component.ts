@@ -1,14 +1,15 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
 import {
-  ChartComponent,
   ApexAxisChartSeries,
   ApexChart,
-  ApexXAxis,
   ApexDataLabels,
-  ApexTooltip,
   ApexStroke,
+  ApexTitleSubtitle,
+  ApexTooltip,
+  ApexXAxis,
+  ChartComponent,
 } from 'ng-apexcharts';
-import { Stats } from '../../models/stats';
+import { Stats } from '../../../models/stats';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -17,6 +18,7 @@ export type ChartOptions = {
   stroke: ApexStroke;
   tooltip: ApexTooltip;
   dataLabels: ApexDataLabels;
+  title: ApexTitleSubtitle;
 };
 
 @Component({
@@ -81,6 +83,13 @@ export class TeamChartComponent implements OnChanges {
           format: 'dd/MM/yy',
         },
       },
+      title: {
+        text: 'Forma drużyny',
+        align: 'left',
+        style: {
+          color: 'white',
+        },
+      },
     };
   }
 
@@ -113,6 +122,13 @@ export class TeamChartComponent implements OnChanges {
       tooltip: {
         x: {
           format: 'dd/MM/yy',
+        },
+      },
+      title: {
+        text: 'Forma drużyny',
+        align: 'left',
+        style: {
+          color: 'white',
         },
       },
     };

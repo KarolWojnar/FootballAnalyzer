@@ -1,17 +1,16 @@
 import { Component, Input, OnChanges, ViewChild } from '@angular/core';
-import { Stats } from '../../models/stats';
 
 import {
   ApexAxisChartSeries,
-  ApexTitleSubtitle,
   ApexChart,
-  ApexXAxis,
   ApexFill,
-  ChartComponent,
-  ApexStroke,
   ApexMarkers,
-  ApexTheme,
+  ApexStroke,
+  ApexTitleSubtitle,
+  ApexXAxis,
+  ChartComponent,
 } from 'ng-apexcharts';
+import { Stats } from '../../../models/stats';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -38,6 +37,7 @@ export class TeamRadarChartComponent implements OnChanges {
   }
 
   initializeRadarChart() {
+    this.cutNumbers();
     this.chartOptions = {
       series: [
         {
@@ -61,9 +61,10 @@ export class TeamRadarChartComponent implements OnChanges {
       ],
       chart: {
         foreColor: 'white',
-        height: 500,
+        height: 600,
         type: 'radar',
         dropShadow: {
+          opacity: 0.5,
           enabled: true,
           blur: 1,
           left: 1,
@@ -89,6 +90,25 @@ export class TeamRadarChartComponent implements OnChanges {
         categories: ['Agresja', 'Atak', 'Kreatywność', 'Obrona'],
       },
     };
+  }
+
+  private cutNumbers() {
+    this.teamStats.teamRating.defending =
+      Math.floor(this.teamStats.teamRating.defending * 10000) / 100;
+    this.teamStats.allTeamsRating.defending =
+      Math.floor(this.teamStats.allTeamsRating.defending * 10000) / 100;
+    this.teamStats.teamRating.creativity =
+      Math.floor(this.teamStats.teamRating.creativity * 10000) / 100;
+    this.teamStats.allTeamsRating.creativity =
+      Math.floor(this.teamStats.allTeamsRating.creativity * 10000) / 100;
+    this.teamStats.teamRating.attacking =
+      Math.floor(this.teamStats.teamRating.attacking * 10000) / 100;
+    this.teamStats.allTeamsRating.attacking =
+      Math.floor(this.teamStats.allTeamsRating.attacking * 10000) / 100;
+    this.teamStats.teamRating.aggression =
+      Math.floor(this.teamStats.teamRating.aggression * 10000) / 100;
+    this.teamStats.allTeamsRating.aggression =
+      Math.floor(this.teamStats.allTeamsRating.aggression * 10000) / 100;
   }
 
   private addExampleChart(): ChartOptions {

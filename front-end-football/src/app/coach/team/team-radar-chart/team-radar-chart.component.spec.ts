@@ -8,9 +8,8 @@ describe('TeamRadarChartComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TeamRadarChartComponent ]
-    })
-    .compileComponents();
+      declarations: [TeamRadarChartComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(TeamRadarChartComponent);
     component = fixture.componentInstance;

@@ -67,6 +67,7 @@
 
       td {
         padding: 10px;
+        text-align: center;
         border-top: 1px solid #444;
         position: relative;
         z-index: 2;
@@ -84,12 +85,16 @@
         position: sticky;
         left: 0;
         background-color: #2e2e2e;
-        z-index: 11;
+        z-index: 3;
         box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
       }
 
+      .playerCorner {
+        z-index: 5;
+      }
+
       th {
-        z-index: 1000;
+        z-index: 4;
       }
     }
 
