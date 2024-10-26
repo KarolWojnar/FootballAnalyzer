@@ -1,15 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent {
-  ulr = '';
+export class HeaderComponent implements OnInit {
+  url: string = '';
 
-  setUrl(name: string) {
-    this.ulr = name;
+  constructor(private route: Router) {}
 
+  ngOnInit(): void {
+    this.setUrl();
+  }
+
+  setUrl() {
+    setTimeout(() => {
+      this.url = this.route.url.split('/')[1];
+      console.log(this.url);
+    }, 10);
   }
 }
