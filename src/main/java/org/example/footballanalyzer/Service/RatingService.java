@@ -272,11 +272,10 @@ public class RatingService {
         double rating = 0.0;
 
         for (GroupRecord record : filteredStats) {
-            rating += record.aggression() * sumValues.get("aggression") +
-                    record.attacking() * sumValues.get("attacking") +
+            rating += record.attacking() * sumValues.get("attacking") +
                     record.defending() * sumValues.get("defending") +
-                    record.creativity() * sumValues.get("creativity");
-
+                    record.creativity() * sumValues.get("creativity") -
+                    record.aggression() * sumValues.get("aggression") * 0.3;
         }
 
         double weights = sumValues.values().stream().mapToDouble(Double::doubleValue).sum();
