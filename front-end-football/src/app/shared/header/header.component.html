@@ -9,39 +9,31 @@
       <ul class="navbar-nav">
         <li class="nav-item">
           <a routerLink="" (click)="setUrl()" class="text-white nav-link"
-             [ngClass]="{'fw-bold bg-gradient bg-primary rounded': url === ''}">
-            {{ [url === '' ? '_Stona główna' : 'Strona główna'] }}
-          </a>
+             [ngClass]="{'fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded': url === ''}">Strona
+            główna</a>
         </li>
         <li class="nav-item">
           <a routerLink="players" (click)="setUrl()" class="text-white nav-link"
-             [ngClass]="{'fw-bold bg-gradient bg-primary rounded': url === 'players'}">
-            {{ [url === 'players' ? '_Statystyki graczy' : 'Statystyki graczy'] }}
-          </a>
+             [ngClass]="{'fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded': url === 'players'}">Statystyki
+            graczy</a>
         </li>
         <li class="nav-item">
           <a routerLink="team" (click)="setUrl()" class="text-white nav-link"
-             [ngClass]="{'fw-bold bg-gradient bg-primary rounded': url === 'team'}">
-            {{ [url === 'team' ? '_Statystyki drużyny' : 'Statystyki drużyny'] }}
-            </a>
+             [ngClass]="{'fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded': url === 'team'}">Statystyki
+            drużyny</a>
         </li>
         <li class="nav-item">
           <a routerLink="admin" (click)="setUrl()" class="text-white nav-link"
-             [ngClass]="{'fw-bold bg-gradient bg-primary rounded': url === 'admin'}">
-            {{ [url === 'admin' ? '_Panel admina' : 'Panel admina'] }}
-          </a>
+             [ngClass]="{'fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded': url === 'admin'}">Panel
+            admina</a>
         </li>
         <li class="nav-item">
           <a routerLink="login" (click)="setUrl()" class="text-white nav-link justify-content-end"
-             [ngClass]="{'fw-bold bg-gradient bg-primary rounded': url === 'login'}">
-            {{ [url === 'login' ? '_Zaloguj' : 'Zaloguj'] }}
-          </a>
+             [ngClass]="{'fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded': url === 'login'}">Zaloguj</a>
         </li>
         <li class="nav-item">
           <a routerLink="logout" (click)="setUrl()" class="text-white nav-link justify-content-end"
-             [ngClass]="{'fw-bold bg-gradient bg-primary rounded': url === 'logout'}">
-            {{ [url === 'logout' ? '_Wyloguj' : 'Wyloguj'] }}
-          </a>
+             [ngClass]="{'fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded': url === 'logout'}">Wyloguj</a>
         </li>
       </ul>
     </div>

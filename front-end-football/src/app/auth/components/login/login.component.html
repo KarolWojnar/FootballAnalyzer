@@ -1,5 +1,5 @@
 <div class="login-wrapper w-50 mt-3 container bg-light rounded-4 bg-opacity-10">
-  <h2 class="text-white justify-content-center d-flex">Zaloguj się:</h2>
+  <h2 class="text-white justify-content-center d-flex">Zaloguj się</h2>
   <form #f='ngForm' (ngSubmit)="onLogin()">
     <div class="justify-content-center d-flex">
       <mat-form-field color="accent" class="w-75" appearance="fill">
@@ -26,7 +26,7 @@
     </div>
     <div class="d-flex justify-content-end">
       <button class="bg-primary m-2" [disabled]="!f.valid" mat-raised-button>Zaloguj</button>
-      <button class="bg-primary m-2" mat-raised-button>Zarejestruj</button>
+      <a routerLink="/register" class="bg-primary m-2" mat-raised-button>Zarejestruj</a>
     </div>
   </form>
 </div>

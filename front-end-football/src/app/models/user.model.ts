@@ -14,5 +14,9 @@ export interface UserResponse {
   };
   token: string;
   role: string;
-  team: string;
+  team: {
+    id: number;
+    name: string;
+    logo: string;
+  };
 }

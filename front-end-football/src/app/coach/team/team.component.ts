@@ -11,6 +11,7 @@ import { ApiService } from '../../services/api.service';
 })
 export class TeamComponent {
   teamStats: Stats = JSON.parse(localStorage.getItem('teamStats')!);
+  //todo: on logout delete localStorage
   form!: FormGroup;
   sub!: Subscription;
   selectedChart = 'line';
