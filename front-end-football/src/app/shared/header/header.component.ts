@@ -18,7 +18,6 @@ export class HeaderComponent implements OnInit {
   setUrl() {
     setTimeout(() => {
       this.url = this.route.url.split('/')[1];
-      console.log(this.url);
     }, 10);
   }
 }

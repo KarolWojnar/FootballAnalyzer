@@ -82,6 +82,8 @@ export class PlayersComponent implements OnDestroy, AfterViewInit {
       });
   }
 
+  //todo: on logout delete localStorage
+
   onSubmit(): void {
     this.getPlayersData();
   }
