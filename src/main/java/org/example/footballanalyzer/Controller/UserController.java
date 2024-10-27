@@ -30,7 +30,7 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<?> authenticate(AuthRequest authRequest) {
-        return ResponseEntity.ok().body(userService.getAuthority(authRequest));
+        return userService.getAuthority(authRequest);
     }
 
 }
