@@ -10,6 +10,7 @@ import org.example.footballanalyzer.Repository.TeamRepository;
 import org.example.footballanalyzer.Repository.UserRepository;
 import org.example.footballanalyzer.Service.Auth.AuthRequest;
 import org.example.footballanalyzer.Service.Auth.JwtService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -62,18 +63,18 @@ public class UserService {
                 .build()).toList();
     }
 
-    public Object getAuthority(AuthRequest authRequest) {
+    public ResponseEntity<?> getAuthority(AuthRequest authRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
             );
             if (authentication.isAuthenticated()) {
-                return jwtService.generateToken(authRequest.getUsername());
+                return ResponseEntity.ok().body(jwtService.generateToken(authRequest.getUsername()));
             } else {
-                return "Invalid user credentials";
+                return ResponseEntity.badRequest().body("Invalid user credentials");
             }
         } catch (AuthenticationException e) {
-            return "Authentication failed: " + e.getMessage();
+            return ResponseEntity.badRequest().body("Authentication failed: " + e.getMessage());
         }
     }
 }
