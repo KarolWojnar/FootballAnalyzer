@@ -1,8 +1,9 @@
 package org.example.footballanalyzer.Data.Entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import org.example.footballanalyzer.Data.RoleName;
+
+import javax.persistence.*;
 
 @Entity
 @Data

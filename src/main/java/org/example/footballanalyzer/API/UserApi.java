@@ -2,9 +2,12 @@ package org.example.footballanalyzer.API;
 
 import jdk.jfr.Description;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Service.Auth.AuthRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
@@ -13,8 +16,12 @@ import java.util.List;
 @Description("API for managing users")
 public interface UserApi {
     @GetMapping
+    @PreAuthorize("hasAuthority('ADMIN')")
     ResponseEntity<List<UserDTO>> getAllUsers();
 
-    @GetMapping("/{id}")
-    ResponseEntity<UserDTO> getUserById(@PathVariable Long id);
+    @PostMapping
+    ResponseEntity<?> createUser(@RequestBody UserDTO user);
+
+    @PostMapping("/authenticate")
+    ResponseEntity<?> authenticate(@RequestBody AuthRequest authRequest);
 }

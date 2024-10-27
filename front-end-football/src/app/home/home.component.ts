@@ -13,12 +13,12 @@ export class HomeComponent implements AfterViewInit {
   constructor(private apiService: ApiService) {}
 
   displayedColumns: string[] = ['matchDate', 'homeTeam', 'awayTeam'];
+
   today: Date = new Date();
   data: HomePageFixture[] = [];
   resultsLength = 0;
   isLoadingResults = true;
   isRateLimitReached = false;
-
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
   ngAfterViewInit(): void {
@@ -38,6 +38,15 @@ export class HomeComponent implements AfterViewInit {
           if (data === null) {
             return [];
           }
+
+          this.paginator._intl.itemsPerPageLabel = 'Mecze na stronie:';
+          this.paginator._intl.nextPageLabel = 'Następna strona';
+          this.paginator._intl.previousPageLabel = 'Poprzednia strona';
+          this.paginator._intl.lastPageLabel = 'Ostatnia strona';
+          this.paginator._intl.firstPageLabel = 'Pierwsza strona';
+          this.paginator._intl.getRangeLabel = (page, pageSize, length) => {
+            return `Strona ${page + 1} z ${Math.ceil(length / pageSize)}`;
+          };
 
           this.resultsLength = data.emelents;
           return data.fixtures;
