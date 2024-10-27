@@ -1,7 +1,8 @@
 package org.example.footballanalyzer.Data.Entity;
 
-import jakarta.persistence.*;
 import lombok.Data;
+
+import javax.persistence.*;
 import java.util.Set;
 
 @Data
@@ -26,8 +27,8 @@ public class Team {
     @OneToMany(mappedBy = "team")
     private Set<FixtureStatsTeam> team;
 
-    @OneToOne(mappedBy = "team")
-    private User user;
+    @OneToMany(mappedBy = "team")
+    private Set<UserEntity> user;
 
     @ManyToOne
     @JoinColumn(name = "league_id")

@@ -4,7 +4,7 @@
     <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
       <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
       <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">
-        API rate limit has been reached. It will be reset in one minute.
+        Błąd połączenia.
       </div>
     </div>
 
@@ -12,7 +12,7 @@
       <table mat-table [dataSource]="data" class="example-table">
         <ng-container matColumnDef="matchDate">
           <th mat-header-cell *matHeaderCellDef>Data meczu</th>
-          <td mat-cell *matCellDef="let row">{{ row.date | date: 'EEEE, MMMM d, y, H:mm': 'UTC+4': 'pl' }}</td>
+          <td mat-cell *matCellDef="let row">{{ row.date | date: 'EEEE, d MMMM, y, H:mm': 'UTC+2': 'pl' }}</td>
         </ng-container>
 
         <ng-container matColumnDef="homeTeam">
@@ -29,6 +29,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </div>
-    <mat-paginator class="mt-1" [length]="resultsLength" [pageSize]="10" aria-label="Select page of future matches"></mat-paginator>
+    <mat-paginator class="mt-1" lang="pl" [length]="resultsLength" [pageSize]="10"
+                   aria-label="Select page of future matches"></mat-paginator>
   </div>
 </div>
