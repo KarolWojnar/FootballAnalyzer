@@ -1,6 +1,7 @@
 package org.example.footballanalyzer.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Entity.Role;
 import org.example.footballanalyzer.Data.Entity.Team;
@@ -19,9 +20,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
@@ -31,9 +34,14 @@ public class UserService {
     private final TeamRepository teamRepository;
     private final RoleRepository roleRepository;
 
-    public UserDTO createUser(UserDTO user) {
+    public ResponseEntity<?> createUser(UserDTO user) {
+        Optional<UserEntity> userEntity = userRepository.findByEmailOrLogin(user.getEmail(), user.getLogin());
+        if (userEntity.isPresent()) {
+            return ResponseEntity.badRequest().body("User already exist");
+        }
+        log.info("Creating user: {}", user.getLogin());
         Team team = teamRepository.findByTeamId(user.getTeamId()).orElseThrow();
-        Role role = roleRepository.findById(1L).orElseThrow();
+        Role role = roleRepository.findById(3L).orElseThrow();
         UserEntity newUser = UserEntity.builder()
                 .login(user.getLogin())
                 .team(team)
@@ -43,13 +51,14 @@ public class UserService {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .build();
-        return UserDTO.builder()
+        UserDTO newUserDto = UserDTO.builder()
                 .id(userRepository.save(newUser).getId())
                 .login(newUser.getLogin())
                 .firstName(newUser.getFirstName())
                 .lastName(newUser.getLastName())
                 .email(newUser.getEmail())
                 .build();
+        return ResponseEntity.ok().body(newUserDto);
     }
 
     public List<UserDTO> getAllUsers() {

@@ -5,14 +5,12 @@ import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Service.Auth.AuthRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/users")
+@RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:4200")
 @Description("API for managing users")
 public interface UserApi {
     @GetMapping

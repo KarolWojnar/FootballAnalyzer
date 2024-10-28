@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.footballanalyzer.API.CoachApi;
 import org.example.footballanalyzer.Service.FootballService;
 import org.springframework.http.ResponseEntity;
-import java.time.LocalDate;
-
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.LocalDate;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +27,10 @@ public class CoachController implements CoachApi {
     @Override
     public ResponseEntity<?> futureMatches(LocalDate date, int page) {
         return footballService.closestMatches(date, page);
+    }
+
+    @Override
+    public ResponseEntity<?> getAllTeams() {
+        return footballService.getAllTeams();
     }
 }

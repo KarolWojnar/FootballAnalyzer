@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ApiService } from '../../../services/api.service';
+import { Team } from '../../../models/team/team';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -8,8 +11,16 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 })
 export class RegisterComponent implements OnInit {
   hide = true;
+  teams: Team[] = [];
+  showAlert = false;
+  alertMessage = '';
 
-  regiseterForm = new FormGroup(
+  constructor(
+    private apiService: ApiService,
+    private router: Router,
+  ) {}
+
+  registerForm = new FormGroup(
     {
       firstName: new FormControl('', {
         validators: [Validators.required],
@@ -31,19 +42,7 @@ export class RegisterComponent implements OnInit {
         validators: [Validators.required],
         nonNullable: true,
       }),
-      role: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      country: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      league: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      team: new FormControl('', {
+      teamId: new FormControl('', {
         validators: [Validators.required],
         nonNullable: true,
       }),
@@ -52,11 +51,12 @@ export class RegisterComponent implements OnInit {
   );
 
   get controls() {
-    return this.regiseterForm.controls;
+    return this.registerForm.controls;
   }
 
   ngOnInit(): void {
     this.controls;
+    this.getTeams();
   }
 
   getErrorMessage(control: FormControl) {
@@ -71,6 +71,26 @@ export class RegisterComponent implements OnInit {
   }
 
   onRegister() {
-    console.log(this.regiseterForm.getRawValue());
+    this.showAlert = this.registerForm.invalid;
+    this.alertMessage = 'Formularz zawiera błędy';
+    console.log(this.registerForm.value);
+    if (this.registerForm.valid) {
+      this.apiService.register(this.registerForm.value).subscribe({
+        next: (user) => {
+          console.log('User registered successfully', user.login);
+          this.router.navigate(['/login']).then();
+        },
+        error: ({ error }: { error: any }) => {
+          this.alertMessage = error;
+          this.showAlert = true;
+        },
+      });
+    }
+  }
+
+  getTeams() {
+    this.apiService.getTeams().subscribe((teams) => {
+      this.teams = teams;
+    });
   }
 }
