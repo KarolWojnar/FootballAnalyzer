@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.Dto.FixturesDto;
 import org.example.footballanalyzer.Data.Dto.PlayerStatsDto;
+import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
 import org.json.JSONException;
@@ -29,6 +30,8 @@ public class DataUtil {
     private final PlayerRepository playerRepository;
     private final FixturesStatsRepository fixturesStatsRepository;
     private final FixtureStatsTeamRepository fixtureStatsTeamRepository;
+    private final UserRepository userRepository;
+    private final UserRequestRepository userRequestRepository;
 
     public League saveLeague(JSONObject league) throws JSONException {
         League newLeague = new League();
@@ -181,5 +184,21 @@ public class DataUtil {
             Fixture fixture = optionalFixture.get();
             fixtureRepository.setFixtureAsCounted(fixture.getId());
         }
+    }
+
+    public ResponseEntity<?> saveNewRequest(UserRequesetDto userRequest, String requestData) {
+        UserRequest newUserRequest = new UserRequest();
+        Optional<UserEntity> optionalUser = userRepository.findByLogin(userRequest.getLogin());
+        if (optionalUser.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        UserEntity user = optionalUser.get();
+        newUserRequest.setRequestData(requestData);
+        newUserRequest.setRequestStatus(userRequest.getRequestStatus());
+        newUserRequest.setRequestType(userRequest.getRequestType());
+        newUserRequest.setUser(user);
+        userRequestRepository.save(newUserRequest);
+        log.info("Saved new request: {}", newUserRequest);
+        return ResponseEntity.ok().build();
     }
 }

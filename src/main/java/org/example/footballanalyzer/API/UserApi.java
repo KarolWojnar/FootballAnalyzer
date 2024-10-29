@@ -2,6 +2,7 @@ package org.example.footballanalyzer.API;
 
 import jdk.jfr.Description;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Service.Auth.AuthRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,4 +23,7 @@ public interface UserApi {
 
     @PostMapping("/authenticate")
     ResponseEntity<?> authenticate(@RequestBody AuthRequest authRequest);
+
+    @PostMapping("/requests")
+    ResponseEntity<?> request(@RequestBody UserRequesetDto userRequest);
 }

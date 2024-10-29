@@ -2,6 +2,7 @@ package org.example.footballanalyzer.Controller;
 
 import org.example.footballanalyzer.API.UserApi;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Service.Auth.AuthRequest;
 import org.example.footballanalyzer.Service.UserService;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,11 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<?> authenticate(AuthRequest authRequest) {
         return userService.getAuthority(authRequest);
+    }
+
+    @Override
+    public ResponseEntity<?> request(UserRequesetDto userRequest) {
+        return userService.request(userRequest);
     }
 
 }

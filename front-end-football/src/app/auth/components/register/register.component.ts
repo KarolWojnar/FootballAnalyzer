@@ -14,6 +14,7 @@ import { Request } from '../../../models/request/request';
 })
 export class RegisterComponent implements OnInit {
   hide = true;
+  request: Request | undefined;
   teams: Team[] = [];
   roles: Role[] = [];
   showAlert = false;
@@ -26,23 +27,23 @@ export class RegisterComponent implements OnInit {
   ) {}
   registerForm = new FormGroup(
     {
-      firstName: new FormControl('', {
+      firstName: new FormControl('sdadasd', {
         validators: [Validators.required],
         nonNullable: true,
       }),
-      lastName: new FormControl('', {
+      lastName: new FormControl('sdadasd', {
         validators: [Validators.required],
         nonNullable: true,
       }),
-      email: new FormControl('', {
+      email: new FormControl('sdadasd@wp.pl', {
         validators: [Validators.required, Validators.email],
         nonNullable: true,
       }),
-      password: new FormControl('', {
+      password: new FormControl('sdadasd', {
         validators: [Validators.required, Validators.minLength(8)],
         nonNullable: true,
       }),
-      login: new FormControl('', {
+      login: new FormControl('sdadasd', {
         validators: [Validators.required],
         nonNullable: true,
       }),
@@ -78,12 +79,20 @@ export class RegisterComponent implements OnInit {
     return control?.hasError('') ? 'Not a valid email' : '';
   }
 
+  handleNewRequest(request: Request) {
+    this.apiService.addRequest(request).subscribe();
+  }
+
   onRegister() {
     this.showAlert = this.registerForm.invalid;
     this.alertMessage = 'Formularz zawiera błędy';
     if (this.registerForm.valid) {
       this.apiService.register(this.registerForm.value).subscribe({
-        next: () => {
+        next: (next) => {
+          if (this.request) {
+            this.request.login = next.login;
+            this.handleNewRequest(this.request);
+          }
           this.router.navigate(['/login']).then();
         },
         error: ({ error }: { error: any }) => {
@@ -110,13 +119,12 @@ export class RegisterComponent implements OnInit {
     const dialogRef = this.dialog.open(TeamDialogComponent);
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        const request: Request = {
+        this.request = {
           requestData: result,
           requestType: 'ADD_TEAM',
           requestStatus: 'PENDING',
-          userId: 0,
+          login: '',
         };
-        console.log(request);
       }
     });
   }

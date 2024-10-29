@@ -3,6 +3,7 @@ package org.example.footballanalyzer.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Data.Entity.Role;
 import org.example.footballanalyzer.Data.Entity.Team;
 import org.example.footballanalyzer.Data.Entity.UserEntity;
@@ -12,6 +13,7 @@ import org.example.footballanalyzer.Repository.TeamRepository;
 import org.example.footballanalyzer.Repository.UserRepository;
 import org.example.footballanalyzer.Service.Auth.AuthRequest;
 import org.example.footballanalyzer.Service.Auth.JwtService;
+import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,6 +36,7 @@ public class UserService {
     private final JwtService jwtService;
     private final TeamRepository teamRepository;
     private final RoleRepository roleRepository;
+    private final DataUtil dataUtil;
 
     public ResponseEntity<?> createUser(UserDTO user) {
         Optional<UserEntity> userEntity = userRepository.findByEmailOrLogin(user.getEmail(), user.getLogin());
@@ -93,5 +96,11 @@ public class UserService {
     public ResponseEntity<?> getRoles() {
         RoleName role = RoleName.ADMIN;
         return ResponseEntity.ok().body(roleRepository.findAllByRoleNameNot(role));
+    }
+
+    public ResponseEntity<?> request(UserRequesetDto userRequest) {
+        log.info("Saving new request: {}", userRequest);
+        String requestData = userRequest.getRequestData().toString();
+        return dataUtil.saveNewRequest(userRequest, requestData);
     }
 }

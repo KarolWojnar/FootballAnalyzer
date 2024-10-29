@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment.development';
 import { Team } from '../models/team/team';
 import { UserResponse } from '../models/user.model';
 import { Role } from '../auth/components/register/register.component';
+import { Request } from '../models/request/request';
 
 @Injectable({
   providedIn: 'root',
@@ -50,6 +51,11 @@ export class ApiService {
   register(data: any): Observable<UserResponse> {
     const requestUrl = `${this.apiUrl}/users`;
     return this.httpClient.post<UserResponse>(requestUrl, data);
+  }
+
+  addRequest(request: Request) {
+    const requestUrl = `${this.apiUrl}/users/requests`;
+    return this.httpClient.post(requestUrl, request);
   }
 }
 
