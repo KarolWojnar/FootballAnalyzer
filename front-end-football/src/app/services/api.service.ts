@@ -7,6 +7,7 @@ import { PlayerStats } from '../models/players/player-stats';
 import { environment } from '../../environments/environment.development';
 import { Team } from '../models/team/team';
 import { UserResponse } from '../models/user.model';
+import { Role } from '../auth/components/register/register.component';
 
 @Injectable({
   providedIn: 'root',
@@ -39,6 +40,11 @@ export class ApiService {
   getTeams(): Observable<Team[]> {
     const requestUrl = `${this.apiUrl}/coach/all-teams`;
     return this.httpClient.get<Team[]>(requestUrl);
+  }
+
+  getRoles(): Observable<Role[]> {
+    const requestUrl = `${this.apiUrl}/coach/roles`;
+    return this.httpClient.get<Role[]>(requestUrl);
   }
 
   register(data: any): Observable<UserResponse> {

@@ -29,13 +29,25 @@
         <mat-error *ngIf="controls.email.invalid">{{ getErrorMessage(controls.email) }}</mat-error>
       </mat-form-field>
     </div>
-    <div class="justify-content-center d-flex">
+    <div class="justify-content-center d-flex p-0 m-0">
       <mat-form-field color="accent" class="w-75" appearance="fill">
         <mat-label>Drużyna</mat-label>
-        <select matNativeControl required formControlName="teamId">
+        <select matNativeControl formControlName="teamId">
           <option *ngFor="let team of teams" [ngValue]="team.id">{{ team.name }}</option>
         </select>
         <mat-error *ngIf="controls.teamId.invalid">{{ getErrorMessage(controls.teamId) }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="justify-content-center d-flex p-2">
+      <button mat-flat-button type="button" (click)="openTeamDialog()">Zapytaj o nową drużynę</button>
+    </div>
+    <div class="justify-content-center d-flex">
+      <mat-form-field color="accent" class="w-75" appearance="fill">
+        <mat-label>Rola</mat-label>
+        <select matNativeControl required formControlName="roleId">
+          <option *ngFor="let role of roles" [ngValue]="role.id">{{ role.roleName }}</option>
+        </select>
+        <mat-error *ngIf="controls.roleId.invalid">{{ getErrorMessage(controls.roleId) }}</mat-error>
       </mat-form-field>
     </div>
     <div class="justify-content-center d-flex">

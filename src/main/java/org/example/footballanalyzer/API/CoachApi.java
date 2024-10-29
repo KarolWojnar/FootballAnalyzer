@@ -26,4 +26,7 @@ public interface CoachApi {
 
     @GetMapping("all-teams")
     ResponseEntity<?> getAllTeams();
+
+    @GetMapping("/roles")
+    ResponseEntity<?> getRoles();
 }

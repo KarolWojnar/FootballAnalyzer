@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Data
 @Entity
@@ -31,4 +32,6 @@ public class UserEntity {
     private Role role;
     @ManyToOne
     private Team team;
+    @OneToMany
+    private Set<UserRequest> userRequest;
 }

@@ -10,4 +10,5 @@ export interface UserResponse {
   firstname: string;
   lastname: string;
   teamId: number;
+  roleId: number;
 }

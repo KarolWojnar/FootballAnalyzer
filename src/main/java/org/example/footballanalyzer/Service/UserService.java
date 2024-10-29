@@ -6,6 +6,7 @@ import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Entity.Role;
 import org.example.footballanalyzer.Data.Entity.Team;
 import org.example.footballanalyzer.Data.Entity.UserEntity;
+import org.example.footballanalyzer.Data.RoleName;
 import org.example.footballanalyzer.Repository.RoleRepository;
 import org.example.footballanalyzer.Repository.TeamRepository;
 import org.example.footballanalyzer.Repository.UserRepository;
@@ -40,11 +41,12 @@ public class UserService {
             return ResponseEntity.badRequest().body("User already exist");
         }
         log.info("Creating user: {}", user.getLogin());
-        Team team = teamRepository.findByTeamId(user.getTeamId()).orElseThrow();
-        Role role = roleRepository.findById(3L).orElseThrow();
+        Optional<Team> optionalTeam = teamRepository.findByTeamId(user.getTeamId());
+
+        Role role = roleRepository.findById(user.getRoleId()).orElseThrow();
         UserEntity newUser = UserEntity.builder()
                 .login(user.getLogin())
-                .team(team)
+                .team(optionalTeam.orElse(null))
                 .role(role)
                 .password(passwordEncoder.encode(user.getPassword()))
                 .firstName(user.getFirstName())
@@ -54,6 +56,7 @@ public class UserService {
         UserDTO newUserDto = UserDTO.builder()
                 .id(userRepository.save(newUser).getId())
                 .login(newUser.getLogin())
+                .roleId(newUser.getRole().getId())
                 .firstName(newUser.getFirstName())
                 .lastName(newUser.getLastName())
                 .email(newUser.getEmail())
@@ -65,8 +68,8 @@ public class UserService {
         return userRepository.findAll().stream().map(user -> UserDTO.builder()
                 .id(user.getId())
                 .login(user.getLogin())
-                .teamId(user.getTeam().getTeamId())
                 .email(user.getEmail())
+                .roleId(user.getRole().getId())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .build()).toList();
@@ -85,5 +88,10 @@ public class UserService {
         } catch (AuthenticationException e) {
             return ResponseEntity.badRequest().body("Authentication failed: " + e.getMessage());
         }
+    }
+
+    public ResponseEntity<?> getRoles() {
+        RoleName role = RoleName.ADMIN;
+        return ResponseEntity.ok().body(roleRepository.findAllByRoleNameNot(role));
     }
 }

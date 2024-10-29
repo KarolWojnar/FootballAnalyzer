@@ -3,6 +3,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { Team } from '../../../models/team/team';
 import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog.component';
+import { Request } from '../../../models/request/request';
 
 @Component({
   selector: 'app-register',
@@ -12,14 +15,15 @@ import { Router } from '@angular/router';
 export class RegisterComponent implements OnInit {
   hide = true;
   teams: Team[] = [];
+  roles: Role[] = [];
   showAlert = false;
   alertMessage = '';
 
   constructor(
     private apiService: ApiService,
     private router: Router,
+    private dialog: MatDialog,
   ) {}
-
   registerForm = new FormGroup(
     {
       firstName: new FormControl('', {
@@ -43,6 +47,9 @@ export class RegisterComponent implements OnInit {
         nonNullable: true,
       }),
       teamId: new FormControl('', {
+        validators: [],
+      }),
+      roleId: new FormControl('', {
         validators: [Validators.required],
         nonNullable: true,
       }),
@@ -57,6 +64,7 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.controls;
     this.getTeams();
+    this.getRoles();
   }
 
   getErrorMessage(control: FormControl) {
@@ -73,11 +81,9 @@ export class RegisterComponent implements OnInit {
   onRegister() {
     this.showAlert = this.registerForm.invalid;
     this.alertMessage = 'Formularz zawiera błędy';
-    console.log(this.registerForm.value);
     if (this.registerForm.valid) {
       this.apiService.register(this.registerForm.value).subscribe({
-        next: (user) => {
-          console.log('User registered successfully', user.login);
+        next: () => {
           this.router.navigate(['/login']).then();
         },
         error: ({ error }: { error: any }) => {
@@ -88,9 +94,35 @@ export class RegisterComponent implements OnInit {
     }
   }
 
+  getRoles() {
+    this.apiService.getRoles().subscribe((roles) => {
+      this.roles = roles;
+    });
+  }
+
   getTeams() {
     this.apiService.getTeams().subscribe((teams) => {
       this.teams = teams;
     });
   }
+
+  openTeamDialog() {
+    const dialogRef = this.dialog.open(TeamDialogComponent);
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        const request: Request = {
+          requestData: result,
+          requestType: 'ADD_TEAM',
+          requestStatus: 'PENDING',
+          userId: 0,
+        };
+        console.log(request);
+      }
+    });
+  }
+}
+
+export interface Role {
+  roleName: string;
+  id: number;
 }
