@@ -37,7 +37,6 @@ public class ConfigSecurity {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http.csrf().disable()
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/users/authenticate", "/authenticate").permitAll()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -4,19 +4,11 @@ export interface UserLoginData {
 }
 
 export interface UserResponse {
-  id: number;
   email: string;
-  username: string;
+  login: string;
   password: string;
-  name: {
-    firstname: string;
-    lastname: string;
-  };
-  token: string;
-  role: string;
-  team: {
-    id: number;
-    name: string;
-    logo: string;
-  };
+  firstname: string;
+  lastname: string;
+  teamId: number;
+  roleId: number;
 }
