@@ -19,7 +19,7 @@ public class UserEntityUserDetails implements UserDetails {
         login = userEntity.getLogin();
         password = userEntity.getPassword();
         authorities = Collections.singletonList(new SimpleGrantedAuthority(userEntity.getRole().getRoleName().name()));
-        isEnable = !userEntity.isLoginDisabled();
+        isEnable = userEntity.isEnabled();
     }
 
     @Override

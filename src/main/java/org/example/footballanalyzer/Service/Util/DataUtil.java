@@ -2,8 +2,10 @@ package org.example.footballanalyzer.Service.Util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.FixturesDto;
 import org.example.footballanalyzer.Data.Dto.PlayerStatsDto;
+import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
@@ -32,6 +35,8 @@ public class DataUtil {
     private final FixtureStatsTeamRepository fixtureStatsTeamRepository;
     private final UserRepository userRepository;
     private final UserRequestRepository userRequestRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public League saveLeague(JSONObject league) throws JSONException {
         League newLeague = new League();
@@ -200,5 +205,21 @@ public class DataUtil {
         userRequestRepository.save(newUserRequest);
         log.info("Saved new request: {}", newUserRequest.getRequestType());
         return ResponseEntity.ok().build();
+    }
+
+    public ResponseEntity<AuthResponse> saveUserToDb(UserDTO user, Optional<Team> optionalTeam) {
+        Role role = roleRepository.findById(user.getRoleId()).orElseThrow();
+        UserEntity newUser = UserEntity.builder()
+                .login(user.getLogin())
+                .uuid(UUID.randomUUID().toString())
+                .team(optionalTeam.orElse(null))
+                .role(role)
+                .password(passwordEncoder.encode(user.getPassword()))
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .build();
+        userRepository.saveAndFlush(newUser);
+        return ResponseEntity.ok().body(new AuthResponse(Code.SUCCESS));
     }
 }

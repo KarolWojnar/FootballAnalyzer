@@ -1,6 +1,7 @@
 package org.example.footballanalyzer.Service.Auth;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -19,8 +20,6 @@ public class JwtService {
 
     @Setter
     private static String SECRET;
-
-    public static final long EXPIRATION_TIME = 1800000;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -57,18 +56,37 @@ public class JwtService {
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    public String generateToken(String username) {
-        Map<String, Object> claim = new HashMap<>();
-        return createToken(claim, username);
+    public void validateTokenExp(final String token) throws ExpiredJwtException, IllegalArgumentException {
+        Jwts.parser().setSigningKey(getSignKey()).build().parseClaimsJws(token);
     }
 
-    private String createToken(Map<String, Object> claim, String username) {
+    public String generateToken(String username, int exp) {
+        Map<String, Object> claim = new HashMap<>();
+        return createToken(claim, username, exp);
+    }
+
+
+    private String createToken(Map<String, Object> claim, String username, int exp) {
         return Jwts.builder()
                 .setClaims(claim)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + exp))
                 .signWith(getSignKey())
                 .compact();
+    }
+
+    private String getSubject(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
+    public String refreshToken(final String token, int refreshExp) {
+        String username = getSubject(token);
+        return generateToken(username, refreshExp);
     }
 }
