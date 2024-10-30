@@ -41,9 +41,9 @@ public class UserService {
     public ResponseEntity<?> createUser(UserDTO user) {
         Optional<UserEntity> userEntity = userRepository.findByEmailOrLogin(user.getEmail(), user.getLogin());
         if (userEntity.isPresent()) {
-            return ResponseEntity.badRequest().body("User already exist");
+            return ResponseEntity.badRequest().body("Login/email już zajęty.");
         }
-        log.info("Creating user: {}", user.getLogin());
+        log.info("Creating user: {}", user.getId());
         Optional<Team> optionalTeam = teamRepository.findByTeamId(user.getTeamId());
 
         Role role = roleRepository.findById(user.getRoleId()).orElseThrow();
@@ -99,7 +99,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> request(UserRequesetDto userRequest) {
-        log.info("Saving new request: {}", userRequest);
+        log.info("Saving new request: {}", userRequest.getRequestType());
         String requestData = userRequest.getRequestData().toString();
         return dataUtil.saveNewRequest(userRequest, requestData);
     }

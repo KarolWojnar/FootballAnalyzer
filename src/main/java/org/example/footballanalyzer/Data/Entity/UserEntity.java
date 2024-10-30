@@ -32,6 +32,6 @@ public class UserEntity {
     private Role role;
     @ManyToOne
     private Team team;
-    @OneToMany
+    @OneToMany(mappedBy = "user")
     private Set<UserRequest> userRequest;
 }

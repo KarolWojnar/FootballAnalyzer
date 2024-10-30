@@ -198,7 +198,7 @@ public class DataUtil {
         newUserRequest.setRequestType(userRequest.getRequestType());
         newUserRequest.setUser(user);
         userRequestRepository.save(newUserRequest);
-        log.info("Saved new request: {}", newUserRequest);
+        log.info("Saved new request: {}", newUserRequest.getRequestType());
         return ResponseEntity.ok().build();
     }
 }
