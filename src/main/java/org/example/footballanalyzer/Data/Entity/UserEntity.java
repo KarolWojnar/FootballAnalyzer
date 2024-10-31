@@ -28,7 +28,7 @@ public class UserEntity {
     private String email;
     @Builder.Default
     @Column(name = "islock")
-    private boolean isLocked = false;
+    private boolean isLocked = true;
     @Builder.Default
     @Column(name = "isenabled")
     private boolean isEnabled = true;

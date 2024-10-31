@@ -24,7 +24,7 @@ public interface CoachApi {
     @GetMapping("/futureMatches")
     ResponseEntity<?> futureMatches(@RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam(value = "page") int page);
 
-    @GetMapping("all-teams")
+    @GetMapping("/all-teams")
     ResponseEntity<?> getAllTeams();
 
     @GetMapping("/roles")

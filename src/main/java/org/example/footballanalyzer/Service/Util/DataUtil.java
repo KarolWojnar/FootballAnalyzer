@@ -9,6 +9,7 @@ import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
+import org.example.footballanalyzer.Service.EmailService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.data.domain.Page;
@@ -37,6 +38,7 @@ public class DataUtil {
     private final UserRequestRepository userRequestRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public League saveLeague(JSONObject league) throws JSONException {
         League newLeague = new League();
@@ -208,18 +210,22 @@ public class DataUtil {
     }
 
     public ResponseEntity<AuthResponse> saveUserToDb(UserDTO user, Optional<Team> optionalTeam) {
-        Role role = roleRepository.findById(user.getRoleId()).orElseThrow();
+        Optional<Role> role = roleRepository.findById(user.getRoleId());
+        if (role.isEmpty()) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.R1));
+        }
         UserEntity newUser = UserEntity.builder()
                 .login(user.getLogin())
                 .uuid(UUID.randomUUID().toString())
                 .team(optionalTeam.orElse(null))
-                .role(role)
+                .role(role.get())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .build();
         userRepository.saveAndFlush(newUser);
+        emailService.sedActivation(newUser);
         return ResponseEntity.ok().body(new AuthResponse(Code.SUCCESS));
     }
 }

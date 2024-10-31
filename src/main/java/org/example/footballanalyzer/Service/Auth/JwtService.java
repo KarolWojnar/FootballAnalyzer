@@ -76,7 +76,7 @@ public class JwtService {
                 .compact();
     }
 
-    private String getSubject(String token) {
+    public String getSubject(String token) {
         return Jwts.parser()
                 .setSigningKey(SECRET)
                 .build()
