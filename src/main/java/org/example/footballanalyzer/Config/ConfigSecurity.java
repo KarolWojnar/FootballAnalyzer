@@ -1,6 +1,7 @@
 package org.example.footballanalyzer.Config;
 
 import lombok.RequiredArgsConstructor;
+import org.example.footballanalyzer.Filter.RouteValidator;
 import org.example.footballanalyzer.Repository.UserRepository;
 import org.example.footballanalyzer.Service.Auth.JwtAuthFilter;
 import org.example.footballanalyzer.Service.Auth.UserEntityUserDetailsService;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @EnableWebSecurity
@@ -37,7 +39,7 @@ public class ConfigSecurity {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http.csrf().disable()
                 .authorizeRequests(auth -> auth
-                        .antMatchers("/api/users/login").permitAll()
+                        .antMatchers(RouteValidator.openApiEndpoints.toArray(new String[0])).permitAll()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -63,5 +65,10 @@ public class ConfigSecurity {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public RestTemplate teamplate() {
+        return new RestTemplate();
     }
 }

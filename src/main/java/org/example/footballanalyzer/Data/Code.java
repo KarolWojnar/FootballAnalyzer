@@ -3,9 +3,13 @@ package org.example.footballanalyzer.Data;
 public enum Code {
     SUCCESS("Operacja zakończona sukcesem."),
     A1("Nie udało się zalogować."),
-    A2("Nie ma takiego uzytkownika."),
+    A2("Nie ma takiego uzytkownika lub konto jest niekatywne."),
     A3("Podany token jest nieważny."),
-    PERMIT("Przyznano dostep.");
+    A4("Podany użytkownik już istnieje."),
+    A5("Podane hasło jest nieprawidłowe."),
+    A6("Niepoprawny email."),
+    PERMIT("Przyznano dostep."),
+    R1("Brak danej roli.");
     public final String label;
 
     Code(String label) {

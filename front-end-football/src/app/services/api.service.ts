@@ -49,7 +49,7 @@ export class ApiService {
   }
 
   register(data: any): Observable<UserResponse> {
-    const requestUrl = `${this.apiUrl}/users`;
+    const requestUrl = `${this.apiUrl}/users/register`;
     return this.httpClient.post<UserResponse>(requestUrl, data);
   }
 
