@@ -9,7 +9,8 @@ public enum Code {
     A5("Podane hasło jest nieprawidłowe."),
     A6("Niepoprawny email."),
     PERMIT("Przyznano dostep."),
-    R1("Brak danej roli.");
+    R1("Brak danej roli."),
+    R2("Podana drużyna posiada już trenera.");
     public final String label;
 
     Code(String label) {

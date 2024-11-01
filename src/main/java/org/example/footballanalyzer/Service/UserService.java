@@ -58,8 +58,16 @@ public class UserService {
         if (userEntity.isPresent()) {
             return ResponseEntity.badRequest().body(new AuthResponse(Code.A4));
         }
-        log.info("Creating user");
         Optional<Team> optionalTeam = teamRepository.findByTeamId(user.getTeamId());
+
+        if (optionalTeam.isPresent()) {
+            Optional<UserEntity> headCoach = userRepository.findByTeamAndRole_RoleName(optionalTeam.get(), RoleName.COACH);
+            if (headCoach.isPresent() && user.getRoleId() == 3){
+                return ResponseEntity.badRequest().body(new AuthResponse(Code.R2));
+            }
+        }
+
+        log.info("Creating user");
 
         return dataUtil.saveUserToDb(user, optionalTeam);
     }

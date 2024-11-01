@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog.component';
 import { Request } from '../../../models/request/request';
+import {v4} from "uuid";
 
 @Component({
   selector: 'app-register',
@@ -17,8 +18,11 @@ export class RegisterComponent implements OnInit {
   request: Request | undefined;
   teams: Team[] = [];
   roles: Role[] = [];
+  login: string = v4()
+  coachTaken = false;
   showAlert = false;
   alertMessage = '';
+  isSubmitting = false;
 
   constructor(
     private apiService: ApiService,
@@ -35,15 +39,15 @@ export class RegisterComponent implements OnInit {
         validators: [Validators.required],
         nonNullable: true,
       }),
-      email: new FormControl('sdadasd@wp.pl', {
+      email: new FormControl(this.login+'@wp.pl', {
         validators: [Validators.required, Validators.email],
         nonNullable: true,
       }),
-      password: new FormControl('sdadasd', {
+      password: new FormControl('haslo123', {
         validators: [Validators.required, Validators.minLength(8)],
         nonNullable: true,
       }),
-      login: new FormControl('sdadasd', {
+      login: new FormControl(this.login, {
         validators: [Validators.required],
         nonNullable: true,
       }),
@@ -54,6 +58,7 @@ export class RegisterComponent implements OnInit {
         validators: [Validators.required],
         nonNullable: true,
       }),
+      checkBox : new FormControl(),
     },
     { updateOn: 'submit' },
   );
@@ -66,6 +71,7 @@ export class RegisterComponent implements OnInit {
     this.controls;
     this.getTeams();
     this.getRoles();
+    this.coachTaken = false;
   }
 
   getErrorMessage(control: FormControl) {
@@ -86,17 +92,31 @@ export class RegisterComponent implements OnInit {
   onRegister() {
     this.showAlert = this.registerForm.invalid;
     this.alertMessage = 'Formularz zawiera błędy';
+
     if (this.registerForm.valid) {
+      this.isSubmitting = true;
+      console.log(this.registerForm.value);
       this.apiService.register(this.registerForm.value).subscribe({
         next: (next) => {
+          this.isSubmitting = false;
+          this.alertMessage = 'Konto zostało pomyślnie założone! Przekierowanie do logowania...';
+
           if (this.request) {
             this.request.login = next.login;
             this.handleNewRequest(this.request);
           }
-          this.router.navigate(['/login']).then();
+
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
         },
         error: ({ error }: { error: any }) => {
-          this.alertMessage = error;
+          this.isSubmitting = false;
+          this.alertMessage = error.message;
+
+          if (error.code === 'R2') {
+            this.coachTaken = true;
+          }
           this.showAlert = true;
         },
       });
