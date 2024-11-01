@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Config.ApiKeyManager;
 import org.example.footballanalyzer.Data.Dto.GroupRecord;
+import org.example.footballanalyzer.Data.Dto.LeagueDto;
 import org.example.footballanalyzer.Data.Dto.TeamSelectDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
@@ -99,7 +100,7 @@ public class FootballService {
     }
 
     private Team getTeam(JSONObject team, League league) throws JSONException {
-        Optional<Team> optionalTeam = teamRepository.findByName(team.getString("name"));
+        Optional<Team> optionalTeam = teamRepository.findByTeamId(team.getLong("id"));
         return optionalTeam.orElseGet(() -> dataUtil.saveTeam(team, league));
     }
 
@@ -314,9 +315,9 @@ public class FootballService {
         return ResponseEntity.ok(dataUtil.findAllPlayersStatsByTeam(team));
     }
 
-    public ResponseEntity<?> closestMatches(LocalDate startDate, int page) {
+    public ResponseEntity<?> closestMatches(LocalDate startDate, int page, Long leagueId) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        return dataUtil.closestMatches(dateStart, page);
+        return dataUtil.closestMatches(dateStart, page, leagueId);
     }
 
     public ResponseEntity<?> getAllTeams() {
@@ -325,5 +326,15 @@ public class FootballService {
         List<TeamSelectDto> teamSelectDtos = teams.stream()
                 .map(team -> new TeamSelectDto(team.getTeamId(), team.getName())).toList();
         return ResponseEntity.ok(teamSelectDtos);
+    }
+
+    public ResponseEntity<?> getAllLeagues() {
+        List<LeagueDto> leagues = leagueRepository.findAll().stream().map(
+                league -> LeagueDto.builder()
+                        .leagueId(league.getId())
+                        .logo(league.getLogo())
+                        .name(league.getName())
+                        .build()).toList();
+        return ResponseEntity.ok(leagues);
     }
 }

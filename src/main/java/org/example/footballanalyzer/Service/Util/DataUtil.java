@@ -161,9 +161,14 @@ public class DataUtil {
         return fixturesStatsRepository.findAllPlayerStatsByPlayers(playersFromTeam);
     }
 
-    public ResponseEntity<?> closestMatches(Date startDate, int page) {
+    public ResponseEntity<?> closestMatches(Date startDate, int page, Long leagueId) {
         Pageable pageable = PageRequest.of(page, 10);
-        Page<Fixture> fixtures = fixtureRepository.findAllByDateAfterOrderByDateAsc(startDate, pageable);
+        Page<Fixture> fixtures;
+        if (leagueId != null) {
+            fixtures = fixtureRepository.findAllByAwayTeam_League_IdAndDateAfterOrderByDateAsc(leagueId, startDate, pageable);
+        } else {
+            fixtures = fixtureRepository.findAllByDateAfterOrderByDateAsc(startDate, pageable);
+        }
         if (fixtures.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -175,7 +180,10 @@ public class DataUtil {
             FixturesDto fixturesDto = new FixturesDto();
             fixturesDto.setDate(fixture.getDate());
             fixturesDto.setHomeTeam(fixture.getHomeTeam().getName());
+            fixturesDto.setLogoHome(fixture.getHomeTeam().getLogo());
             fixturesDto.setAwayTeam(fixture.getAwayTeam().getName());
+            fixturesDto.setLeagueId(fixture.getHomeTeam().getLeague().getId());
+            fixturesDto.setLogoAway(fixture.getAwayTeam().getLogo());
             fixturesDtos.add(fixturesDto);
         }
         response.put("fixtures", fixturesDtos);

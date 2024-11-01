@@ -1,5 +1,4 @@
 package org.example.footballanalyzer.API;
-
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -22,10 +21,13 @@ public interface CoachApi {
     ResponseEntity<?> getStatsPlayers(@RequestParam String teamName);
 
     @GetMapping("/futureMatches")
-    ResponseEntity<?> futureMatches(@RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam(value = "page") int page);
+    ResponseEntity<?> futureMatches(@RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam(value = "page") int page, @RequestParam(required = false) Long leagueId);
 
     @GetMapping("/all-teams")
     ResponseEntity<?> getAllTeams();
+
+    @GetMapping("/all-leagues")
+    ResponseEntity<?> getAllLeagues();
 
     @GetMapping("/roles")
     ResponseEntity<?> getRoles();
