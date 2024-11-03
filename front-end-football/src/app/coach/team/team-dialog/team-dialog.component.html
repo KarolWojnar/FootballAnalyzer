@@ -1,0 +1,22 @@
+<div class="p-5 mw-100">
+  <h3>Dodaj nową drużynę</h3>
+  <form [formGroup]="teamForm" (click)="onSubmit()">
+    <mat-form-field class="w-100 justify-content-center d-flex">
+      <mat-label>Kraj</mat-label>
+      <input matInput formControlName="country">
+    </mat-form-field>
+    <mat-form-field class="w-100 justify-content-center d-flex">
+      <mat-label>Nazwa Ligi</mat-label>
+      <input matInput formControlName="leagueName">
+    </mat-form-field>
+    <mat-form-field class="w-100 justify-content-center d-flex">
+      <mat-label>Nazwa Drużyny</mat-label>
+      <input matInput formControlName="teamName">
+    </mat-form-field>
+    <div class="justify-content-end d-flex">
+      <button mat-button type="button" (click)="onCancel()" class="m-1 shadow ">Anuluj</button>
+      <button mat-raised-button color="primary" type="submit" class="m-1" (submit)="onSubmit()">Dodaj</button>
+    </div>
+  </form>
+</div>
+

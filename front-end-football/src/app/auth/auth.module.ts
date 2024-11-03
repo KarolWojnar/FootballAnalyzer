@@ -9,19 +9,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedModule } from '../shared/shared.module';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [LoginComponent, RegisterComponent],
-  imports: [
-    CommonModule,
-    AuthRoutingModule,
-    FormsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    SharedModule,
-    ReactiveFormsModule,
-  ],
+    imports: [
+        CommonModule,
+        AuthRoutingModule,
+        FormsModule,
+        MatInputModule,
+        MatButtonModule,
+        MatIconModule,
+        SharedModule,
+        ReactiveFormsModule,
+        MatProgressSpinnerModule,
+    ],
   exports: [LoginComponent, RegisterComponent],
 })
 export class AuthModule {}

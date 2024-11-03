@@ -21,6 +21,12 @@ public class FootballAnalyzerApplication {
         String jwtSecret = dotenv.get("JWT_SECRET");
         assert jwtSecret != null;
         JwtService.setSECRET(jwtSecret);
+        String mail = dotenv.get("MAIL");
+        assert mail != null;
+        String password = dotenv.get("MAIL_PASSWORD");
+        assert password != null;
+        System.setProperty("notify.mail", mail);
+        System.setProperty("notify.mail.password", password);
 
         SpringApplication.run(FootballAnalyzerApplication.class, args);
     }

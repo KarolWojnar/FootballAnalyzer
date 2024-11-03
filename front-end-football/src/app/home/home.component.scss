@@ -1,70 +1,146 @@
+
 .dark-theme {
   background-color: #121212;
   color: #ffffff;
-
-  h1 {
-    color: #ffffff;
-  }
-}
-
-.example-container {
-  position: relative;
-  width: 100%;
-  padding: 20px
 }
 
 .example-table-container {
   background-color: #1e1e1e;
   border-radius: 10px;
-  position: relative;
   overflow: auto;
-  padding: 16px;
+  padding: 16px 5px 5px;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   background-color: #1e1e1e;
-
-  th.mat-header-cell {
-    background-color: #272727;
-    color: #ffffff;
-    font-weight: bold;
-    padding: 12px;
-  }
-
-  td.mat-cell {
-    background-color: #1e1e1e;
-    color: #ffffff;
-    padding: 12px;
-    border-bottom: 1px solid #333333;
-  }
-
-  tr.mat-row:hover {
-    background-color: #333333;
-  }
 }
 
-.example-loading-shade {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 56px;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 1;
+th.mat-header-cell {
+  background-color: #272727;
+  color: #ffffff;
+  font-weight: bold;
+  padding: 12px;
+}
+
+td.mat-cell {
+  background-color: #1e1e1e;
+  color: #ffffff;
+  padding: 12px;
+  border-bottom: 1px solid #333333;
+}
+
+tr:nth-child(even) {
+  background-color: #242424;
+}
+
+tr:nth-child(even):hover {
+  background-color: rgba(86, 85, 85, 0.3);
+}
+
+tr:nth-child(odd):hover {
+  background-color: rgba(86, 85, 85, 0.3);
+}
+
+th {
+  background-color: #272727;
+}
+
+.team-cell {
   display: flex;
   align-items: center;
-  justify-content: center;
 }
 
-.example-rate-limit-reached {
-  max-width: 360px;
-  text-align: center;
-  color: #ffffff;
+.team-logo {
+  height: 3rem;
+  margin-right: 10px;
 }
 
-mat-paginator {
-  background-color: #1e1e1e;
-  border-radius: 10px;
+.team-home {
+  flex-grow: 1;
 }
+
+.team-away {
+  flex-grow: 1;
+  text-align: start;
+}
+
+.league-flag {
+  height: 2rem;
+  margin-right: 10px;
+  align-items: center;
+}
+
+.mat-list-item {
+  background-color: #007bff;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 0;
+}
+
+.mat-list-item:hover {
+  background-color: #444;
+}
+
+.league-item {
+  padding-inline: 5px;
+  height: 100%;
+}
+
+.league-item:hover {
+  background-color: rgba(0, 123, 255, 0.44);
+}
+
+@media (max-width: 998px) {
+  .top-aligned {
+    order: -1;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: 10px;
+  }
+
+  .league-item {
+    margin-bottom: 5rem;
+    padding: 1.5em;
+    height: 100%;
+  }
+
+  .league-name {
+    display: none;
+  }
+  h6 {
+    display: none;
+  }
+
+  .league-flag {
+    height: 3rem;
+    margin-right: 0;
+  }
+
+  .mat-nav-list h5 {
+    display: none;
+  }
+
+  .team-logo {
+    height: 2.5rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .team-home,
+  .team-away {
+    display: none;
+  }
+
+  th.mat-header-cell {
+    font-size: 0.8rem;
+  }
+
+  td.mat-cell:first-of-type {
+    text-align: center;
+  }
+}
+

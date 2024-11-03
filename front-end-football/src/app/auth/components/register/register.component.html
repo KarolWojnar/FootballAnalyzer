@@ -1,6 +1,16 @@
-<div class="register-wrapper w-50 mt-3 container bg-light rounded-4 bg-opacity-10">
+<div class="register-wrapper w-75 mt-3 container bg-light rounded-4 bg-opacity-10">
   <h2 class="text-white justify-content-center d-flex">Rejestracja</h2>
-  <form [formGroup]="regiseterForm" (ngSubmit)="onRegister()">
+
+  <div *ngIf="isSubmitting" class="d-flex rounded bg-transparent bg-opacity-10 bg-gradient flex-column align-items-center my-3 py-5">
+    <mat-spinner diameter="50" color="accent"></mat-spinner>
+    <p class="text-white mt-2">Trwa rejestracja...</p>
+  </div>
+
+  <div *ngIf="!isSubmitting && alertMessage && !showAlert" class="alert alert-success text-center mt-3">
+    {{ alertMessage }}
+  </div>
+
+  <form [formGroup]="registerForm" *ngIf="!isSubmitting" (ngSubmit)="onRegister()">
     <div class="justify-content-center d-flex">
       <mat-form-field color="accent" class="w-75" appearance="fill">
         <mat-label>Imię</mat-label>
@@ -29,12 +39,25 @@
         <mat-error *ngIf="controls.email.invalid">{{ getErrorMessage(controls.email) }}</mat-error>
       </mat-form-field>
     </div>
-    //DOKOŃCZ FORMULARZ
+    <div class="justify-content-center d-flex p-0 m-0">
+      <mat-form-field color="accent" class="w-75" appearance="fill">
+        <mat-label>Drużyna</mat-label>
+        <select matNativeControl formControlName="teamId">
+          <option *ngFor="let team of teams" [ngValue]="team.id">{{ team.name }}</option>
+        </select>
+        <mat-error *ngIf="controls.teamId.invalid">{{ getErrorMessage(controls.teamId) }}</mat-error>
+      </mat-form-field>
+    </div>
+    <div class="justify-content-center d-flex p-2">
+      <button mat-flat-button type="button" (click)="openTeamDialog()">Zapytaj o nową drużynę</button>
+    </div>
     <div class="justify-content-center d-flex">
       <mat-form-field color="accent" class="w-75" appearance="fill">
-        <mat-label>Państwo twojej drużyny</mat-label>
-        <input matInput type="select" formControlName="country">
-        <mat-error *ngIf="controls.country.invalid">{{ getErrorMessage(controls.country) }}</mat-error>
+        <mat-label>Rola</mat-label>
+        <select matNativeControl required formControlName="roleId">
+          <option *ngFor="let role of roles" [ngValue]="role.id">{{ role.roleName }}</option>
+        </select>
+        <mat-error *ngIf="controls.roleId.invalid">{{ getErrorMessage(controls.roleId) }}</mat-error>
       </mat-form-field>
     </div>
     <div class="justify-content-center d-flex">
@@ -42,16 +65,27 @@
         <mat-label>Hasło</mat-label>
         <input [type]="hide ? 'password' : 'text'" matInput formControlName="password">
         <mat-error *ngIf="controls.password.invalid">{{ getErrorMessage(controls.password) }}</mat-error>
-        <button (click)="hide = !hide" [attr.aria-label]="'Ukryj hasło'" [attr.aria-pressed]="hide" mat-icon-button
+        <button type="button" (click)="hide = !hide" [attr.aria-label]="'Ukryj hasło'" [attr.aria-pressed]="hide" mat-icon-button
                 matSuffix>
           <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
         </button>
       </mat-form-field>
     </div>
-    <div class="d-flex justify-content-center">
+
+    <div class="d-flex justify-content-center" *ngIf="showAlert">
+      <ng-container>
+        <app-alert [text]="alertMessage"></app-alert>
+      </ng-container>
+    </div>
+    <div *ngIf="coachTaken" class="d-flex justify-content-center">
+      <p class="text-white">
+        <input type="checkbox" formControlName="checkBox">Jeżeli to Ty jestes głównym trenerem, zaznacz.
+      </p>
     </div>
     <div class="d-flex justify-content-end">
-      <button class="bg-primary m-2" type="submit" mat-raised-button>Załóż konto</button>
+      <button class="bg-primary m-2" type="submit" mat-raised-button [disabled]="isSubmitting">
+        Załóż konto
+      </button>
     </div>
   </form>
 </div>

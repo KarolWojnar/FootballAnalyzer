@@ -10,6 +10,10 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HomeModule } from '../home/home.module';
 import { MatSortModule } from '@angular/material/sort';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { TeamDialogComponent } from './team/team-dialog/team-dialog.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -20,16 +24,20 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     ProfileComponent,
     TeamChartComponent,
     TeamRadarChartComponent,
+    TeamDialogComponent,
   ],
   imports: [
     CommonModule,
     CoachRoutingModule,
     ReactiveFormsModule,
+    MatDialogModule,
     HomeModule,
     NgApexchartsModule,
     MatSortModule,
     ReactiveFormsModule,
     NgApexchartsModule,
+    MatInputModule,
+    MatButtonModule,
   ],
   exports: [PlayersComponent, TeamComponent, ProfileComponent],
 })
