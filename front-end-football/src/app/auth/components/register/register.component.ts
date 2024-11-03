@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { Team } from '../../../models/team/team';
 import { Router } from '@angular/router';
@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog.component';
 import { Request } from '../../../models/request/request';
 import {v4} from "uuid";
+import {FormService} from "../../../services/form/form.service";
+import {RegisterForm} from "../../../models/forms/forms.model";
 
 @Component({
   selector: 'app-register',
@@ -28,40 +30,9 @@ export class RegisterComponent implements OnInit {
     private apiService: ApiService,
     private router: Router,
     private dialog: MatDialog,
+    private formService: FormService,
   ) {}
-  registerForm = new FormGroup(
-    {
-      firstName: new FormControl('sdadasd', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      lastName: new FormControl('sdadasd', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      email: new FormControl(this.login+'@wp.pl', {
-        validators: [Validators.required, Validators.email],
-        nonNullable: true,
-      }),
-      password: new FormControl('haslo123', {
-        validators: [Validators.required, Validators.minLength(8)],
-        nonNullable: true,
-      }),
-      login: new FormControl(this.login, {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      teamId: new FormControl('', {
-        validators: [],
-      }),
-      roleId: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      checkBox : new FormControl(),
-    },
-    { updateOn: 'submit' },
-  );
+  registerForm:FormGroup<RegisterForm> = this.formService.initRegisterForm();
 
   get controls() {
     return this.registerForm.controls;
@@ -75,14 +46,7 @@ export class RegisterComponent implements OnInit {
   }
 
   getErrorMessage(control: FormControl) {
-    if (control?.hasError('required')) {
-      return 'Pole nie może byc puste';
-    } else if (control?.hasError('minlength')) {
-      return 'Hasło musi mieć co najmniej 8 znaków';
-    } else if (control?.hasError('email')) {
-      return 'Nieprawidłowy adres email';
-    }
-    return control?.hasError('') ? 'Not a valid email' : '';
+    return  this.formService.getErrorMessage(control);
   }
 
   handleNewRequest(request: Request) {
@@ -92,6 +56,8 @@ export class RegisterComponent implements OnInit {
   onRegister() {
     this.showAlert = this.registerForm.invalid;
     this.alertMessage = 'Formularz zawiera błędy';
+    console.log(this.registerForm.value)
+    console.log(this.controls)
 
     if (this.registerForm.valid) {
       this.isSubmitting = true;
