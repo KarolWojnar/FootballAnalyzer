@@ -1,12 +1,17 @@
 import { Injectable } from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {LoginForm, PasswordRecoveryForm, RecoveryPasswdForm, RegisterForm} from "../../models/forms/forms.model";
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  LoginForm,
+  PasswordRecoveryForm,
+  RecoveryPasswdForm,
+  RegisterForm,
+} from '../../models/forms/forms.model';
+import { equivalentValidator } from '../../models/validatoros/equivalent.validator';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class FormService {
-
   initLoginForm(): FormGroup<LoginForm> {
     return new FormGroup({
       login: new FormControl('', {
@@ -39,11 +44,7 @@ export class FormService {
         nonNullable: true,
       }),
       password: new FormControl('', {
-        validators: [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$')
-        ],
+        validators: [Validators.required, Validators.minLength(8)],
         nonNullable: true,
       }),
       confirmPassword: new FormControl('', {
@@ -58,10 +59,7 @@ export class FormService {
         validators: [Validators.required],
         nonNullable: true,
       }),
-      checkBox: new FormControl(false, {
-        validators: [Validators.requiredTrue],
-        nonNullable: true,
-      }),
+      checkBox: new FormControl(),
     });
   }
 
@@ -77,36 +75,31 @@ export class FormService {
   getErrorMessage(control: FormControl): string {
     if (control.hasError('required')) {
       return 'Pole nie może być puste.';
-    }
-    else if (control.hasError('email')) {
+    } else if (control.hasError('email')) {
       return 'Nieprawidłowy format adresu e-mail.';
-    }
-    else if (control.hasError('minlength')) {
+    } else if (control.hasError('minlength')) {
       return `Hasło musi zawierać co najmniej ${control.errors?.['minlength'].requiredLength} znaków.`;
-    }
-    else if (control.hasError('pattern')) {
+    } else if (control.hasError('pattern')) {
       return 'Hasło musi zawierać co najmniej jedną dużą literę, jedną małą literę, jedną cyfrę i jeden znak specjalny.';
-    }
-    else if (control.hasError('passwordMismatch')) {
+    } else if (control.hasError('passwordsNotEqual')) {
       return 'Hasła nie są zgodne.';
     }
     return '';
   }
 
-  initPwdRecoveryForm(): FormGroup<PasswordRecoveryForm>{
-    return new FormGroup({
-      password: new FormControl('', {
-        validators: [
-          Validators.required,
-          Validators.minLength(8),
-          Validators.pattern('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$')
-        ],
-        nonNullable: true,
-      }),
-      confirmPassword: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-    });
+  initPwdRecoveryForm(): FormGroup<PasswordRecoveryForm> {
+    return new FormGroup(
+      {
+        password: new FormControl('', {
+          validators: [Validators.required, Validators.minLength(8)],
+          nonNullable: true,
+        }),
+        confirmPassword: new FormControl('', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+      },
+      { validators: [equivalentValidator('password', 'confirmPassword')] },
+    );
   }
 }
