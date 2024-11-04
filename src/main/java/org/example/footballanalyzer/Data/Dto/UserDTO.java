@@ -25,5 +25,4 @@ public class UserDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long roleId;
     private String roleName;
-
 }

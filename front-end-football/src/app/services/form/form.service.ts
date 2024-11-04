@@ -26,41 +26,44 @@ export class FormService {
   }
 
   initRegisterForm(): FormGroup<RegisterForm> {
-    return new FormGroup({
-      firstName: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      lastName: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      login: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      email: new FormControl('', {
-        validators: [Validators.required, Validators.email],
-        nonNullable: true,
-      }),
-      password: new FormControl('', {
-        validators: [Validators.required, Validators.minLength(8)],
-        nonNullable: true,
-      }),
-      confirmPassword: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      roleId: new FormControl(0, {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      teamId: new FormControl(0, {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      checkBox: new FormControl(),
-    });
+    return new FormGroup(
+      {
+        firstName: new FormControl('', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+        lastName: new FormControl('', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+        login: new FormControl('', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+        email: new FormControl('', {
+          validators: [Validators.required, Validators.email],
+          nonNullable: true,
+        }),
+        password: new FormControl('', {
+          validators: [Validators.required, Validators.minLength(8)],
+          nonNullable: true,
+        }),
+        confirmPassword: new FormControl('', {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+        roleId: new FormControl(0, {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+        teamId: new FormControl(0, {
+          validators: [Validators.required],
+          nonNullable: true,
+        }),
+        checkBox: new FormControl(),
+      },
+      { validators: [equivalentValidator('password', 'confirmPassword')] },
+    );
   }
 
   initPasswdRecoveryForm(): FormGroup<RecoveryPasswdForm> {

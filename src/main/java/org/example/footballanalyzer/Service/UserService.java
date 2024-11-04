@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserLoginData;
 import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Data.RoleName;
@@ -54,7 +55,7 @@ public class UserService {
     private int refreshExp;
 
     public ResponseEntity<?> createUser(UserDTO user) {
-        Optional<UserEntity> userEntity = userRepository.findByEmailOrLogin(user.getEmail(), user.getLogin());
+        Optional<UserEntity> userEntity = userRepository.findFirstByEmailOrLogin(user.getEmail(), user.getLogin());
         if (userEntity.isPresent()) {
             return ResponseEntity.badRequest().body(new AuthResponse(Code.A4));
         }
@@ -94,7 +95,7 @@ public class UserService {
         return dataUtil.saveNewRequest(userRequest, requestData);
     }
 
-    public ResponseEntity<?> login(UserDTO user, HttpServletResponse response) {
+    public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) {
         UserEntity userEntity = userRepository.findByLoginAndLockAndEnabled(user.getLogin()).orElse(null);
         if (userEntity == null) {
             return ResponseEntity.badRequest().body(new AuthResponse(Code.A2));

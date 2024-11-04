@@ -6,11 +6,14 @@ import org.example.footballanalyzer.API.UserApi;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserLoginData;
 import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Data.ResetPasswordMail;
 import org.example.footballanalyzer.Data.ValidationMessage;
 import org.example.footballanalyzer.Service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,6 +27,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class UserController implements UserApi {
+    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
     @Override
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -36,7 +40,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<?> login(UserDTO user, HttpServletResponse response) {
+    public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) {
         return userService.login(user, response);
     }
 
