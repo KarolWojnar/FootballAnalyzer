@@ -182,6 +182,9 @@ public class FootballService {
 
     public void saveCollectedFixture(Fixture fixture) {
         List<FixturesStats> playersStatsFixture = fixturesStatsRepository.getFixturesStatsByFixture(fixture);
+        if (playersStatsFixture.isEmpty()) {
+            return;
+        }
         List<FixturesStats> playersHome = playersStatsFixture.stream()
                 .filter(stat -> stat.getPlayer().getTeam().getName().equals(fixture.getHomeTeam().getName()))
                 .toList();

@@ -1,9 +1,14 @@
-import {AfterViewInit, Component, HostListener, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  HostListener,
+  ViewChild,
+} from '@angular/core';
 import { HomePageFixture } from '../models/home-page-fixture';
 import { MatPaginator } from '@angular/material/paginator';
 import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../services/api.service';
-import {League} from "../models/league";
+import { League } from '../models/league';
 
 @Component({
   selector: 'app-home',
@@ -30,22 +35,20 @@ export class HomeComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.getLeagues();
-    this.getMatches()
+    this.getMatches();
   }
 
   getLeagues() {
     this.apiService.getLeagues().subscribe((leagues) => {
       this.leagues = leagues;
     });
-    this.leagues.forEach(
-      (l) => {
-        l.selected = false;
-      });
+    this.leagues.forEach((l) => {
+      l.selected = false;
+    });
   }
 
-  selectLeague(league: League){
-    this.leagues.forEach(
-      (l) => {
+  selectLeague(league: League) {
+    this.leagues.forEach((l) => {
       l.selected = false;
     });
     league.selected = true;
@@ -92,5 +95,13 @@ export class HomeComponent implements AfterViewInit {
   updateScreenSize() {
     this.isSmallScreen = window.innerWidth <= 768;
     this.isExtraSmallScreen = window.innerWidth <= 576;
+  }
+
+  getDate(date: any) {
+    const dayOfWeek = new Date(date).toLocaleDateString('pl-PL', {
+      weekday: 'long',
+    });
+    console.log(dayOfWeek);
+    return dayOfWeek;
   }
 }

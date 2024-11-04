@@ -28,19 +28,19 @@
   </div>
 
   <div class="col-12 col-md-10 main-content">
-    <div class="example-loading-shade" *ngIf="isLoadingResults || isRateLimitReached">
-      <mat-spinner *ngIf="isLoadingResults"></mat-spinner>
+    <div class="d-flex justify-content-center " *ngIf="isLoadingResults || isRateLimitReached">
+      <mat-progress-spinner color="accent" mode="indeterminate" *ngIf="isLoadingResults"></mat-progress-spinner>
       <div class="example-rate-limit-reached" *ngIf="isRateLimitReached">Błąd połączenia.</div>
     </div>
 
-    <div class="example-table-container">
+    <div class="example-table-container" *ngIf="!isLoadingResults">
       <h3>Przyszłe mecze</h3>
       <table mat-table [dataSource]="data" class="example-table">
 
         <ng-container matColumnDef="matchDate">
           <th mat-header-cell *matHeaderCellDef>Data meczu</th>
           <td mat-cell *matCellDef="let row">
-            {{ row.date | date: isExtraSmallScreen ? 'dd-MM-yyyy, HH:mm' : 'EEEE, d MMMM, y, H:mm': 'UTC+2': 'pl' }}
+            {{ row.date | date: isExtraSmallScreen ? 'dd-MM-yyyy, HH:mm' : 'd MMMM, y, H:mm': 'UTC+2': 'pl' }}
           </td>
         </ng-container>
 
@@ -70,7 +70,7 @@
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="getDate(row.date)"></tr>
       </table>
     </div>
 

@@ -1,15 +1,15 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {HomePageFixture} from '../models/home-page-fixture';
-import {Stats} from '../models/stats';
-import {PlayerStats} from '../models/players/player-stats';
-import {environment} from '../../environments/environment.development';
-import {Team} from '../models/team/team';
-import {UserResponse} from '../models/user.model';
-import {Role} from '../auth/components/register/register.component';
-import {Request} from '../models/request/request';
-import {League} from "../models/league";
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { HomePageFixture } from '../models/home-page-fixture';
+import { Stats } from '../models/stats';
+import { PlayerStats } from '../models/players/player-stats';
+import { environment } from '../../environments/environment.development';
+import { Team } from '../models/team/team';
+import { UserResponse } from '../models/user.model';
+import { Role } from '../auth/components/register/register.component';
+import { Request } from '../models/request/request';
+import { League } from '../models/league';
 
 @Injectable({
   providedIn: 'root',
@@ -29,12 +29,15 @@ export class ApiService {
     return this.httpClient.get<Stats>(apiUrl);
   }
 
-  getMatches(today: Date, page: number, leagueId: number): Observable<ApiMatches> {
+  getMatches(
+    today: Date,
+    page: number,
+    leagueId: number,
+  ): Observable<ApiMatches> {
     let requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}`;
     if (leagueId != null) {
       requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}&leagueId=${leagueId}`;
     }
-    console.log(requestUrl);
     return this.httpClient.get<ApiMatches>(requestUrl);
   }
 
