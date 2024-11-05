@@ -65,7 +65,7 @@ public class FootballService {
         return new ResponseEntity<Error>(HttpStatus.CONFLICT);
     }
 
-    private ResponseEntity<?> saveFixtures(JSONArray fixtures) throws JSONException, ParseException, IOException, InterruptedException {
+    public ResponseEntity<?> saveFixtures(JSONArray fixtures) throws JSONException, ParseException, IOException, InterruptedException {
         League league = getLeague(fixtures.getJSONObject(0).getJSONObject("league"));
         if (fixtures.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -99,12 +99,19 @@ public class FootballService {
         return dataUtil.saveFixture(fixture, homeTeam, awayTeam);
     }
 
-    private Team getTeam(JSONObject team, League league) throws JSONException {
+    public Team getTeam(JSONObject team, League league) throws JSONException {
+        Team retrievedTeam;
         Optional<Team> optionalTeam = teamRepository.findByTeamId(team.getLong("id"));
-        return optionalTeam.orElseGet(() -> dataUtil.saveTeam(team, league));
+        if (optionalTeam.isEmpty()) {
+            retrievedTeam = dataUtil.saveTeam(team, league);
+        } else {
+            retrievedTeam = dataUtil.addTeamToLeague(optionalTeam.get(), league);
+        }
+
+        return retrievedTeam;
     }
 
-    private League getLeague(JSONObject league) throws JSONException {
+    public League getLeague(JSONObject league) throws JSONException {
         Optional<League> optionalLeague = leagueRepository.findByName(league.getString("name"));
         return optionalLeague.orElseGet(() -> dataUtil.saveLeague(league));
     }

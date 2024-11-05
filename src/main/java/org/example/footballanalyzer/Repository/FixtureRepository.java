@@ -23,7 +23,7 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
     List<Fixture> findAllByDateBetweenAndIsCollectedAndIsCounted(Date startDate, Date endDate, boolean collected, boolean counted);
     Page<Fixture> findAllByDateAfterOrderByDateAsc(Date startDate, Pageable pageable);
 
-    Page<Fixture> findAllByAwayTeam_League_IdAndHomeTeam_League_IdAndDateAfterOrderByDateAsc(Long league1, Long league2, Date startDate, Pageable pageable);
+    Page<Fixture> findAllByLeague_IdAndDateAfterOrderByDateAsc(Long league1, Date startDate, Pageable pageable);
 
     @Modifying
     @Transactional

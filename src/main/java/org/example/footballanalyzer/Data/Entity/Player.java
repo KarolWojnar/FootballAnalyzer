@@ -1,6 +1,7 @@
 package org.example.footballanalyzer.Data.Entity;
 
 import lombok.Data;
+import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -20,5 +21,6 @@ public class Player {
     private Team team;
 
     @OneToMany(mappedBy = "player")
+    @HashCodeExclude
     private Set<FixturesStats> fixtureStats;
 }
