@@ -1,15 +1,20 @@
-import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {HomePageFixture} from '../models/home-page-fixture';
-import {Stats} from '../models/stats';
-import {PlayerStats} from '../models/players/player-stats';
-import {environment} from '../../environments/environment.development';
-import {Team} from '../models/team/team';
-import {UserResponse} from '../models/user.model';
-import {Role} from '../auth/components/register/register.component';
-import {Request} from '../models/request/request';
-import {League} from "../models/league";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+import { Stats } from '../models/stats';
+import { PlayerStats } from '../models/players/player-stats';
+import { environment } from '../../environments/environment.development';
+import { ApiMatches, Team } from '../models/team/team';
+import {
+  AuthResponse,
+  ChangePassword,
+  IUser,
+  ResetPassword,
+  UserLoginData,
+} from '../models/user.model';
+import { Role } from '../auth/components/register/register.component';
+import { League } from '../models/league';
+import { RequestProblem } from '../models/request/request';
 
 @Injectable({
   providedIn: 'root',
@@ -29,12 +34,15 @@ export class ApiService {
     return this.httpClient.get<Stats>(apiUrl);
   }
 
-  getMatches(today: Date, page: number, leagueId: number): Observable<ApiMatches> {
+  getMatches(
+    today: Date,
+    page: number,
+    leagueId: number,
+  ): Observable<ApiMatches> {
     let requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}`;
     if (leagueId != null) {
       requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}&leagueId=${leagueId}`;
     }
-    console.log(requestUrl);
     return this.httpClient.get<ApiMatches>(requestUrl);
   }
 
@@ -53,12 +61,12 @@ export class ApiService {
     return this.httpClient.get<Role[]>(requestUrl);
   }
 
-  register(data: any): Observable<UserResponse> {
+  register(data: any): Observable<AuthResponse> {
     const requestUrl = `${this.apiUrl}/users/register`;
-    return this.httpClient.post<UserResponse>(requestUrl, data);
+    return this.httpClient.post<AuthResponse>(requestUrl, data);
   }
 
-  addRequest(request: Request) {
+  addRequest(request: RequestProblem) {
     const requestUrl = `${this.apiUrl}/users/requests`;
     return this.httpClient.post(requestUrl, request);
   }
@@ -67,9 +75,36 @@ export class ApiService {
     const requestUrl = `${this.apiUrl}/coach/all-leagues`;
     return this.httpClient.get<League[]>(requestUrl);
   }
-}
 
-export interface ApiMatches {
-  fixtures: HomePageFixture[];
-  emelents: number;
+  login(body: UserLoginData): Observable<IUser> {
+    const requestUrl = `${this.apiUrl}/users/login`;
+    return this.httpClient.post<IUser>(requestUrl, body, {
+      withCredentials: true,
+    });
+  }
+
+  logout(): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/users/logout`;
+    return this.httpClient.get<AuthResponse>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
+  activateAccount(uuid: string): Observable<AuthResponse> {
+    const params = new HttpParams().append('uuid', uuid);
+    const requestUrl = `${this.apiUrl}/users/activate`;
+    return this.httpClient.get<AuthResponse>(requestUrl, {
+      params: params,
+    });
+  }
+
+  resetPassword(email: ResetPassword): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/users/reset-password`;
+    return this.httpClient.post<AuthResponse>(requestUrl, email);
+  }
+
+  changePassword(changePassword: ChangePassword): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/users//reset-password`;
+    return this.httpClient.patch<AuthResponse>(requestUrl, changePassword);
+  }
 }

@@ -1,23 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { AppState } from '../../store/app.reducer';
+import { Store } from '@ngrx/store';
+import * as AuthActions from '../../auth/store/auth.actions';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent {
   url: string = '';
 
-  constructor(private route: Router) {}
+  constructor(private store: Store<AppState>) {}
 
-  ngOnInit(): void {
-    this.setUrl();
-  }
-
-  setUrl() {
-    setTimeout(() => {
-      this.url = this.route.url.split('/')[1];
-    }, 10);
+  onLogout() {
+    this.store.dispatch(AuthActions.logout());
   }
 }

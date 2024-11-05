@@ -5,10 +5,9 @@ import { Team } from '../../../models/team/team';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog.component';
-import { Request } from '../../../models/request/request';
-import {v4} from "uuid";
-import {FormService} from "../../../services/form/form.service";
-import {RegisterForm} from "../../../models/forms/forms.model";
+import { FormService } from '../../../services/form/form.service';
+import { RegisterForm } from '../../../models/forms/forms.model';
+import { RequestProblem } from '../../../models/request/request';
 
 @Component({
   selector: 'app-register',
@@ -17,10 +16,9 @@ import {RegisterForm} from "../../../models/forms/forms.model";
 })
 export class RegisterComponent implements OnInit {
   hide = true;
-  request: Request | undefined;
+  request: RequestProblem | undefined;
   teams: Team[] = [];
   roles: Role[] = [];
-  login: string = v4()
   coachTaken = false;
   showAlert = false;
   alertMessage = '';
@@ -32,7 +30,8 @@ export class RegisterComponent implements OnInit {
     private dialog: MatDialog,
     private formService: FormService,
   ) {}
-  registerForm:FormGroup<RegisterForm> = this.formService.initRegisterForm();
+
+  registerForm: FormGroup<RegisterForm> = this.formService.initRegisterForm();
 
   get controls() {
     return this.registerForm.controls;
@@ -46,29 +45,27 @@ export class RegisterComponent implements OnInit {
   }
 
   getErrorMessage(control: FormControl) {
-    return  this.formService.getErrorMessage(control);
+    return this.formService.getErrorMessage(control);
   }
 
-  handleNewRequest(request: Request) {
+  handleNewRequest(request: RequestProblem) {
     this.apiService.addRequest(request).subscribe();
   }
 
   onRegister() {
     this.showAlert = this.registerForm.invalid;
     this.alertMessage = 'Formularz zawiera błędy';
-    console.log(this.registerForm.value)
-    console.log(this.controls)
 
     if (this.registerForm.valid) {
       this.isSubmitting = true;
-      console.log(this.registerForm.value);
       this.apiService.register(this.registerForm.value).subscribe({
         next: (next) => {
           this.isSubmitting = false;
-          this.alertMessage = 'Konto zostało pomyślnie założone! Przekierowanie do logowania...';
+          this.alertMessage =
+            'Konto zostało pomyślnie założone! Przekierowanie do logowania...';
 
           if (this.request) {
-            this.request.login = next.login;
+            this.request.login = this.registerForm.value.login;
             this.handleNewRequest(this.request);
           }
 

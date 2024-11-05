@@ -25,20 +25,16 @@ public class EmailService {
     public void sedActivation(UserEntity user) {
         try {
             String html = Files.readString(activeTemplate.getFile().toPath(), StandardCharsets.UTF_8);
-            html = html.replace("https://google.com", frontUrl + "/activate/" + user.getUuid());
+            html = html.replace("https://google.com", frontUrl + "/active/" + user.getUuid());
             emailConfiguration.sendMail(user.getEmail(), html, "Aktywacja konta", true);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void sedPasswordRecovery(UserEntity user, String uuid) {
-        try {
-            String html = Files.readString(resetPasswordTemplate.getFile().toPath(), StandardCharsets.UTF_8);
-            html = html.replace("https://google.com", frontUrl + "/recovery/" + uuid);
-            emailConfiguration.sendMail(user.getEmail(), html, "Odzyskaj hasło", true);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    public void sedPasswordRecovery(UserEntity user, String uuid) throws IOException {
+        String html = Files.readString(resetPasswordTemplate.getFile().toPath(), StandardCharsets.UTF_8);
+        html = html.replace("https://google.com", frontUrl + "/recovery/" + uuid);
+        emailConfiguration.sendMail(user.getEmail(), html, "Odzyskaj hasło", true);
     }
 }

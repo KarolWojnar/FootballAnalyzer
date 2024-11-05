@@ -3,6 +3,7 @@ package org.example.footballanalyzer.API;
 import jdk.jfr.Description;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserLoginData;
 import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Data.ResetPasswordMail;
@@ -19,7 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 @Description("API for managing users")
 public interface UserApi {
     @GetMapping
@@ -30,7 +31,7 @@ public interface UserApi {
     ResponseEntity<?> createUser(@Valid @RequestBody UserDTO user);
 
     @PostMapping("/login")
-    ResponseEntity<?> login(@RequestBody UserDTO user, HttpServletResponse response);
+    ResponseEntity<?> login(@RequestBody UserLoginData user, HttpServletResponse response);
 
     @GetMapping("/auto-login")
     ResponseEntity<?> autoLogin(HttpServletRequest request, HttpServletResponse response);
@@ -41,7 +42,7 @@ public interface UserApi {
     @GetMapping("/validate")
     ResponseEntity<AuthResponse> validate(HttpServletRequest request, HttpServletResponse response);
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response);
     @PostMapping("/requests")
     ResponseEntity<?> request(@RequestBody UserRequesetDto userRequest);

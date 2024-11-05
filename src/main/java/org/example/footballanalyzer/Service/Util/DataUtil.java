@@ -91,8 +91,8 @@ public class DataUtil {
     public Player savePlayer(JSONObject player, JSONObject team) {
         Player newPlayer = new Player();
         newPlayer.setPlayerId(player.getLong("id"));
-        newPlayer.setName(player.getString("name"));
-        newPlayer.setPhoto(player.getString("photo"));
+        newPlayer.setName(player.optString("name", null));
+        newPlayer.setPhoto(player.optString("photo", null));
 
         Optional<Team> optionalTeam = teamRepository.findByTeamId(team.getLong("id"));
         optionalTeam.ifPresent(newPlayer::setTeam);
@@ -165,7 +165,7 @@ public class DataUtil {
         Pageable pageable = PageRequest.of(page, 10);
         Page<Fixture> fixtures;
         if (leagueId != null) {
-            fixtures = fixtureRepository.findAllByAwayTeam_League_IdAndDateAfterOrderByDateAsc(leagueId, startDate, pageable);
+            fixtures = fixtureRepository.findAllByAwayTeam_League_IdAndHomeTeam_League_IdAndDateAfterOrderByDateAsc(leagueId, leagueId, startDate, pageable);
         } else {
             fixtures = fixtureRepository.findAllByDateAfterOrderByDateAsc(startDate, pageable);
         }

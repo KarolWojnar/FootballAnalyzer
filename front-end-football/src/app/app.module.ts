@@ -15,6 +15,10 @@ import { HomeModule } from './home/home.module';
 import { AuthModule } from './auth/auth.module';
 import { CoachModule } from './coach/coach.module';
 import { SharedModule } from './shared/shared.module';
+import { StoreModule } from '@ngrx/store';
+import { authReducer } from './auth/store/auth.reducer';
+import { EffectsModule } from '@ngrx/effects';
+import { AuthEffects } from './auth/store/auth.effects';
 
 registerLocaleData(localePl);
 
@@ -28,6 +32,8 @@ registerLocaleData(localePl);
     HttpClientModule,
     MatSortModule,
     AuthModule,
+    StoreModule.forRoot({ auth: authReducer }),
+    EffectsModule.forRoot([AuthEffects]),
     HomeModule,
     CoachModule,
     SharedModule,
