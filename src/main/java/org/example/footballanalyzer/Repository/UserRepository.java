@@ -4,9 +4,11 @@ import org.example.footballanalyzer.Data.Entity.Team;
 import org.example.footballanalyzer.Data.Entity.UserEntity;
 import org.example.footballanalyzer.Data.RoleName;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +25,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Query(nativeQuery = true, value = "SELECT * FROM users where login=?1 and islock=false and isenabled=true")
     Optional<UserEntity> findByLoginAndLockAndEnabled(String login);
+
+    @Modifying
+    @Transactional
+    @Query("update UserEntity u set u.isLocked = false where u.uuid = ?1")
+    void unlockUser(String uuid);
 }

@@ -1,1 +1,6 @@
-<p>accout-activation works!</p>
+<div *ngIf="error" class="alert alert-warning text-center mt-3">
+  {{ error.toString() }}
+</div>
+<div *ngIf="success" class="alert alert-success text-center mt-3">
+  {{ success.toString() }}
+</div>

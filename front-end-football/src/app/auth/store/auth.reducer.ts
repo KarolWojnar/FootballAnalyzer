@@ -38,20 +38,18 @@ const _authReducer = createReducer(
     error: action.error,
     loading: false,
   })),
-  on(AuthActions.register, (state) => ({
+  on(AuthActions.logout, (state) => ({
     ...state,
     loading: true,
   })),
-  on(AuthActions.registerSuccess, (state, { messageAlert }) => ({
+  on(AuthActions.logoutSuccess, (state) => ({
     ...state,
+    user: null,
     loading: false,
-    messageAlert,
     error: null,
   })),
-  on(AuthActions.registerFailure, (state, action) => ({
+  on(AuthActions.logoutFailure, (state) => ({
     ...state,
-    error: action.error,
-    loading: false,
   })),
   on(AuthActions.clearError, (state) => ({
     ...state,

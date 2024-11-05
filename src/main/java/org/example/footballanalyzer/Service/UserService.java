@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -95,7 +97,7 @@ public class UserService {
         return dataUtil.saveNewRequest(userRequest, requestData);
     }
 
-    public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) {
+    public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) throws AuthenticationException {
         UserEntity userEntity = userRepository.findByLoginAndLockAndEnabled(user.getLogin()).orElse(null);
         if (userEntity == null) {
             return ResponseEntity.badRequest().body(new AuthResponse(Code.A2));
@@ -183,23 +185,25 @@ public class UserService {
         }
     }
 
-    public void activateUser(String uuid) {
+    public ResponseEntity<AuthResponse> activateUser(String uuid) {
         UserEntity user = userRepository.findByUuid(uuid).orElse(null);
         if (user != null) {
-            user.setLocked(false);
-            userRepository.save(user);
-            return;
+            userRepository.unlockUser(uuid);
+            log.info("User id: {} has been activated", user.getId());
+            return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
         }
-        throw new RuntimeException("Użytkownik nie istnieje");
+        return ResponseEntity.status(400).body(new AuthResponse(Code.A9));
     }
 
-    public void recoveryPassword(String email) throws RuntimeException {
+    public void recoveryPassword(String email) throws IOException {
         UserEntity user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
+            log.info("User id: {} has been sent reset password", user.getId());
             ResetOperations resetOperations = resetOperationsService.initResetOperation(user);
             emailService.sedPasswordRecovery(user, resetOperations.getUuid());
+        } else {
+            throw new IOException("Użytkownik nie istnieje");
         }
-        throw new RuntimeException("Użytkownik nie istnieje");
     }
 
     @Transactional
@@ -218,7 +222,6 @@ public class UserService {
     }
 
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        log.info("Delete all cookies");
         Cookie cookie = cookieService.removeCookie(request.getCookies(), "Authorization");
         if (cookie != null) {
             response.addCookie(cookie);

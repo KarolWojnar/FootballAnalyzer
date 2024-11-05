@@ -32,8 +32,9 @@
              routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Zaloguj</a>
         </li>
         <li class="nav-item">
-          <a routerLink="logout" class="text-white nav-link justify-content-end"
-             routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Wyloguj</a>
+          <button mat-stroked-button routerLink="logout" class="" (click)="onLogout()"
+                  routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Wyloguj
+          </button>
         </li>
       </ul>
     </div>

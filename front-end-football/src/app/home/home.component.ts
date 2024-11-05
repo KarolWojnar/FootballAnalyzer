@@ -98,10 +98,8 @@ export class HomeComponent implements AfterViewInit {
   }
 
   getDate(date: any) {
-    const dayOfWeek = new Date(date).toLocaleDateString('pl-PL', {
+    return new Date(date).toLocaleDateString('pl-PL', {
       weekday: 'long',
     });
-    console.log(dayOfWeek);
-    return dayOfWeek;
   }
 }

@@ -12,14 +12,14 @@ import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Data.ResetPasswordMail;
 import org.example.footballanalyzer.Data.ValidationMessage;
 import org.example.footballanalyzer.Service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -27,7 +27,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class UserController implements UserApi {
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private final UserService userService;
     @Override
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -41,7 +40,11 @@ public class UserController implements UserApi {
 
     @Override
     public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) {
-        return userService.login(user, response);
+        try {
+            return userService.login(user, response);
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(401).body(new AuthResponse(Code.A1));
+        }
     }
 
     @Override
@@ -72,10 +75,9 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<AuthResponse> activeUser(String uuid) {
         try {
-            userService.activateUser(uuid);
-            return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+            return userService.activateUser(uuid);
         } catch (Exception e) {
-            return ResponseEntity.status(400).body(new AuthResponse(Code.A1));
+            return ResponseEntity.status(400).body(new AuthResponse(Code.A7));
         }
     }
 
@@ -84,8 +86,8 @@ public class UserController implements UserApi {
         try {
             userService.recoveryPassword(email.getEmail());
             return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(new AuthResponse(Code.A6));
+        } catch (IOException e) {
+            return ResponseEntity.status(400).body(new AuthResponse(Code.A2));
         }
     }
 

@@ -1,20 +1,25 @@
 import { createAction, props } from '@ngrx/store';
-import { IUser, UserLoginData, UserResponse } from '../../models/user.model';
-import { RequestProblem } from '../../models/request/request';
+import { IUser, UserLoginData } from '../../models/user.model';
 
 const LOGIN_TYPE: string = '[Auth] Login';
+const LOGOUT_TYPE: string = '[Auth] Logout';
 const LOGIN_SUCCESS_TYPE: string = '[Auth] Login Success';
 const LOGIN_FAILURE_TYPE: string = '[Auth] Login Failure';
+const LOGOUT_SUCCESS_TYPE: string = '[Auth] Logout Success';
+const LOGOUT_FAILURE_TYPE: string = '[Auth] Logout Failure';
 
-const REGISTER_TYPE: string = '[Auth] Register';
-const REGISTER_SUCCESS_TYPE: string = '[Auth] Register Success';
-const REGISTER_FAILURE_TYPE: string = '[Auth] Register Failure';
 const CLEAR_ERROR_TYPE: string = '[Auth] Register Failure';
 
 export const login = createAction(
   LOGIN_TYPE,
   props<{ loginData: UserLoginData }>(),
 );
+
+export const logoutSuccess = createAction(LOGOUT_SUCCESS_TYPE);
+
+export const logoutFailure = createAction(LOGOUT_FAILURE_TYPE);
+
+export const logout = createAction(LOGOUT_TYPE);
 
 export const loginSuccess = createAction(
   LOGIN_SUCCESS_TYPE,
@@ -23,29 +28,6 @@ export const loginSuccess = createAction(
 
 export const loginFailure = createAction(
   LOGIN_FAILURE_TYPE,
-  props<{ error: string }>(),
-);
-
-export const register = createAction(
-  REGISTER_TYPE,
-  props<{
-    registerData: UserResponse;
-    problem: RequestProblem;
-    isSubmitting: boolean;
-    alertMessage: string;
-  }>(),
-);
-
-export const registerSuccess = createAction(
-  REGISTER_SUCCESS_TYPE,
-  props<{
-    messageAlert: string;
-    isSubmitting: boolean;
-  }>(),
-);
-
-export const registerFailure = createAction(
-  REGISTER_FAILURE_TYPE,
   props<{ error: string }>(),
 );
 

@@ -8,7 +8,7 @@ export interface IUser {
 }
 
 export interface UserLoginData {
-  username: string;
+  login: string;
   password: string;
 }
 

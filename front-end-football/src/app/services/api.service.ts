@@ -78,12 +78,16 @@ export class ApiService {
 
   login(body: UserLoginData): Observable<IUser> {
     const requestUrl = `${this.apiUrl}/users/login`;
-    return this.httpClient.post<IUser>(requestUrl, body);
+    return this.httpClient.post<IUser>(requestUrl, body, {
+      withCredentials: true,
+    });
   }
 
   logout(): Observable<AuthResponse> {
     const requestUrl = `${this.apiUrl}/users/logout`;
-    return this.httpClient.get<AuthResponse>(requestUrl);
+    return this.httpClient.get<AuthResponse>(requestUrl, {
+      withCredentials: true,
+    });
   }
 
   activateAccount(uuid: string): Observable<AuthResponse> {
