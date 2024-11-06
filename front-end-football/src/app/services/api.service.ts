@@ -91,6 +91,13 @@ export class ApiService {
     });
   }
 
+  autoLogin(): Observable<IUser> {
+    const requestUrl = `${this.apiUrl}/users/auto-login`;
+    return this.httpClient.get<IUser>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
   isLoggedIn(): Observable<LoggedIn> {
     const requestUrl = `${this.apiUrl}/users/logged-in`;
     return this.httpClient.get<LoggedIn>(requestUrl, {

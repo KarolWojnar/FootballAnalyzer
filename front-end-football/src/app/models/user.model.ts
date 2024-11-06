@@ -4,7 +4,7 @@ export interface IUser {
   firstname: string;
   lastname: string;
   teamId: number;
-  role: string;
+  roleName: string;
 }
 
 export interface UserLoginData {
@@ -29,7 +29,7 @@ export class User {
     public firstname: string,
     public lastname: string,
     public teamId: number,
-    public role: string,
+    public roleName: string,
   ) {}
 }
 
