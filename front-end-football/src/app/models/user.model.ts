@@ -47,3 +47,7 @@ export interface ChangePassword {
   password: string;
   uuid: string;
 }
+
+export interface LoggedIn extends Omit<AuthResponse, 'message'> {
+  message: boolean;
+}

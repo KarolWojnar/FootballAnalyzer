@@ -25,7 +25,7 @@ export class AuthEffects {
           }),
           catchError((error: HttpErrorResponse) => {
             console.log(error);
-            let errorMessage = '';
+            let errorMessage;
             if (
               error.status >= 400 &&
               error.status < 500 &&
@@ -51,18 +51,16 @@ export class AuthEffects {
             this.router.navigate(['/login']);
             return AuthActions.logoutSuccess();
           }),
-          catchError((error) => {
-            let errorMessage = '';
+          catchError((error: unknown) => {
             if (
+              error instanceof HttpErrorResponse &&
               error.status >= 400 &&
               error.status < 500 &&
               error.error.message
             ) {
-              errorMessage = error.error.message;
             } else {
-              errorMessage = 'Wystąpił błąd. Spróbuj ponownie.';
             }
-            return of(AuthActions.loginFailure({ error: errorMessage }));
+            return of(AuthActions.logoutFailure());
           }),
         );
       }),

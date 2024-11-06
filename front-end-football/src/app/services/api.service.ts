@@ -9,6 +9,7 @@ import {
   AuthResponse,
   ChangePassword,
   IUser,
+  LoggedIn,
   ResetPassword,
   UserLoginData,
 } from '../models/user.model';
@@ -90,6 +91,13 @@ export class ApiService {
     });
   }
 
+  isLoggedIn(): Observable<LoggedIn> {
+    const requestUrl = `${this.apiUrl}/users/logged-in`;
+    return this.httpClient.get<LoggedIn>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
   activateAccount(uuid: string): Observable<AuthResponse> {
     const params = new HttpParams().append('uuid', uuid);
     const requestUrl = `${this.apiUrl}/users/activate`;
@@ -104,7 +112,7 @@ export class ApiService {
   }
 
   changePassword(changePassword: ChangePassword): Observable<AuthResponse> {
-    const requestUrl = `${this.apiUrl}/users//reset-password`;
+    const requestUrl = `${this.apiUrl}/users/reset-password`;
     return this.httpClient.patch<AuthResponse>(requestUrl, changePassword);
   }
 }

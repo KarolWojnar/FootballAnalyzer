@@ -10,6 +10,7 @@ public class CookieService {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(exp);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         return cookie;
     }
 
@@ -24,4 +25,5 @@ public class CookieService {
         }
         return null;
     }
+
 }

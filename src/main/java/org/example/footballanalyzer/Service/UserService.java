@@ -106,8 +106,9 @@ public class UserService {
                     new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword())
             );
             if (authentication.isAuthenticated()) {
-                Cookie cookie = cookieService.generateCookie("token", jwtService.generateToken(user.getLogin(), exp), exp);
                 Cookie refresh = cookieService.generateCookie("refresh", jwtService.generateToken(user.getLogin(), refreshExp), refreshExp);
+                Cookie cookie = cookieService.generateCookie("Authorization", jwtService.generateToken(user.getLogin(), exp), exp);
+
                 response.addCookie(cookie);
                 response.addCookie(refresh);
                 return ResponseEntity.ok(
@@ -124,30 +125,51 @@ public class UserService {
         }
     }
 
-    public void validateToken(HttpServletRequest request, HttpServletResponse response) {
+    public void validateToken(HttpServletRequest request, HttpServletResponse response) throws ExpiredJwtException, IllegalArgumentException {
         String token = null;
         String refresh = null;
+
         if (request.getCookies() != null) {
-            for (Cookie cookie : Arrays.stream(request.getCookies()).toList()) {
-                if (cookie.getName().equals("Authorization")) {
-                    token = cookie.getValue();
-                } else if (cookie.getName().equals("refresh")) {
-                    refresh = cookie.getValue();
+            for (Cookie value : Arrays.stream(request.getCookies()).toList()) {
+                if (value.getName().equals("Authorization")) {
+                    token = value.getValue();
+                } else if (value.getName().equals("refresh")) {
+                    refresh = value.getValue();
                 }
             }
+        }
+
+        if (token == null || refresh == null) {
+            log.info("Can't login because token or refresh token is empty");
+            throw new IllegalArgumentException("Token or refresh token can't be null");
+        }
+
+        try {
+            jwtService.validateTokenExp(token);
+        } catch (ExpiredJwtException | IllegalArgumentException e) {
             try {
-                jwtService.validateTokenExp(token);
-            } catch (IllegalArgumentException | ExpiredJwtException e) {
                 jwtService.validateTokenExp(refresh);
-                Cookie refreshCokie = cookieService.generateCookie("refresh", jwtService.refreshToken(refresh, refreshExp), refreshExp);
-                Cookie cookie = cookieService.generateCookie("Authorization", jwtService.refreshToken(refresh, exp), exp);
-                response.addCookie(refreshCokie);
-                response.addCookie(cookie);
+                Cookie refreshCookie = cookieService.generateCookie("refresh", jwtService.refreshToken(refresh, refreshExp), refreshExp);
+                Cookie authCookie = cookieService.generateCookie("Authorization", jwtService.refreshToken(refresh, exp), exp);
+                response.addCookie(authCookie);
+                response.addCookie(refreshCookie);
+            } catch (ExpiredJwtException | IllegalArgumentException refreshEx) {
+                log.error("Both tokens are expired or invalid");
+                throw new IllegalArgumentException("Both token and refresh token are invalid");
             }
-        } else {
-            throw new IllegalArgumentException("Token nie może być pusty.");
         }
     }
+
+    public ResponseEntity<LoginResponse> loggedIn(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            validateToken(request, response);
+            return ResponseEntity.ok(new LoginResponse(true));
+        } catch (ExpiredJwtException | IllegalArgumentException e) {
+            return ResponseEntity.ok(new LoginResponse(false));
+        }
+    }
+
+
 
     public ResponseEntity<?> loginByToken(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -176,15 +198,6 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<LoginResponse> loggedIn(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            validateToken(request, response);
-            return ResponseEntity.ok(new LoginResponse(true));
-        } catch (IllegalArgumentException | ExpiredJwtException e) {
-            return ResponseEntity.ok(new LoginResponse(false));
-        }
-    }
-
     public ResponseEntity<AuthResponse> activateUser(String uuid) {
         UserEntity user = userRepository.findByUuid(uuid).orElse(null);
         if (user != null) {
@@ -210,7 +223,7 @@ public class UserService {
     public void resetPassword(ChangePasswordData changePasswordData) throws RuntimeException {
         ResetOperations resetOperations = resetOperationsRepository.findByUuid(changePasswordData.getUuid()).orElse(null);
         if (resetOperations != null) {
-            UserEntity user = userRepository.findByUuid(changePasswordData.getUuid()).orElse(null);
+            UserEntity user = userRepository.findByUuid(resetOperations.getUser().getUuid()).orElse(null);
             if (user != null) {
                 user.setPassword(passwordEncoder.encode(changePasswordData.getPassword()));
                 userRepository.saveAndFlush(user);
@@ -222,14 +235,19 @@ public class UserService {
     }
 
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
-        Cookie cookie = cookieService.removeCookie(request.getCookies(), "Authorization");
-        if (cookie != null) {
-            response.addCookie(cookie);
+        log.info("Delete all cookies");
+        Cookie authCookie = cookieService.removeCookie(request.getCookies(), "Authorization");
+        if (authCookie != null) {
+            response.addCookie(authCookie);
         }
-        cookie = cookieService.removeCookie(request.getCookies(), "refresh");
-        if (cookie != null) {
-            response.addCookie(cookie);
+
+        Cookie refreshCookie = cookieService.removeCookie(request.getCookies(), "refresh");
+        if (refreshCookie != null) {
+            response.addCookie(refreshCookie);
         }
+
         return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
     }
+
+
 }
