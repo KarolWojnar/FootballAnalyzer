@@ -13,6 +13,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AccoutActivationComponent } from './components/accout-activation/accout-activation.component';
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { PasswordRecoveryFormComponent } from './components/password-recovery-form/password-recovery-form.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { PasswordRecoveryFormComponent } from './components/password-recovery-fo
     SharedModule,
     ReactiveFormsModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
   ],
   exports: [LoginComponent, RegisterComponent],
 })
