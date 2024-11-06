@@ -140,7 +140,6 @@ public class UserService {
         }
 
         if (token == null || refresh == null) {
-            log.info("Can't login because token or refresh token is empty");
             throw new IllegalArgumentException("Token or refresh token can't be null");
         }
 
@@ -154,7 +153,6 @@ public class UserService {
                 response.addCookie(authCookie);
                 response.addCookie(refreshCookie);
             } catch (ExpiredJwtException | IllegalArgumentException refreshEx) {
-                log.error("Both tokens are expired or invalid");
                 throw new IllegalArgumentException("Both token and refresh token are invalid");
             }
         }

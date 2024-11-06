@@ -12,30 +12,38 @@
              routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">
              Strona główna</a>
         </li>
-        <li class="nav-item">
-          <a routerLink="players" class="text-white nav-link"
-             routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
-            graczy</a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="team" class="text-white nav-link"
-             routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
-            drużyny</a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="admin" class="text-white nav-link"
-             routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Panel
-            admina</a>
-        </li>
-        <li class="nav-item">
-          <a routerLink="login" class="text-white nav-link justify-content-end"
-             routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Zaloguj</a>
-        </li>
-        <li class="nav-item">
-          <button mat-stroked-button class="border-0" (click)="onLogout()"
-                  routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Wyloguj
-          </button>
-        </li>
+        <ng-container *ngIf="userRoles$ | async as role">
+          <li class="nav-item">
+            <a routerLink="players" class="text-white nav-link"
+               routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
+              graczy</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="team" class="text-white nav-link"
+               routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
+              drużyny</a>
+          </li>
+          <ng-container *ngIf="role === 'ADMIN'">
+            <li class="nav-item">
+              <a routerLink="admin" class="text-white nav-link"
+                 routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Panel
+                admina</a>
+            </li>
+          </ng-container>
+        </ng-container>
+        <ng-container *ngIf="user$ | async; else loggedOut">
+          <li class="nav-item">
+            <button mat-stroked-button class="border-0" (click)="onLogout()"
+                    routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Wyloguj
+            </button>
+          </li>
+        </ng-container>
+        <ng-template #loggedOut>
+          <li class="nav-item">
+            <a routerLink="login" class="text-white nav-link justify-content-end"
+               routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Zaloguj</a>
+          </li>
+        </ng-template>
       </ul>
     </div>
   </div>

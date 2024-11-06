@@ -28,7 +28,7 @@ const _authReducer = createReducer(
       action.user.firstname,
       action.user.lastname,
       action.user.teamId,
-      action.user.role,
+      action.user.roleName,
     ),
     loading: false,
     error: null,
@@ -38,20 +38,34 @@ const _authReducer = createReducer(
     error: action.error,
     loading: false,
   })),
-  on(AuthActions.logout, (state) => ({
-    ...state,
-  })),
+  on(
+    AuthActions.logout,
+    AuthActions.logoutFailure,
+    AuthActions.autoLoginFailure,
+    AuthActions.autoLogin,
+    (state) => ({
+      ...state,
+    }),
+  ),
   on(AuthActions.logoutSuccess, (state) => ({
     ...state,
     user: null,
     error: null,
   })),
-  on(AuthActions.logoutFailure, (state) => ({
-    ...state,
-  })),
   on(AuthActions.clearError, (state) => ({
     ...state,
     error: null,
+  })),
+  on(AuthActions.autoLoginSuccess, (state, action) => ({
+    ...state,
+    user: new User(
+      action.user.email,
+      action.user.login,
+      action.user.firstname,
+      action.user.lastname,
+      action.user.teamId,
+      action.user.roleName,
+    ),
   })),
 );
 

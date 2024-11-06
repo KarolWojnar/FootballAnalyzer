@@ -6,7 +6,7 @@ import {
   RouterStateSnapshot,
   UrlTree,
 } from '@angular/router';
-import { map, Observable, take } from 'rxjs';
+import { catchError, map, Observable, of, take } from 'rxjs';
 import { ApiService } from '../services/api.service';
 
 @Injectable({
@@ -31,11 +31,13 @@ export class UnauthGuard implements CanActivate {
       map((res) => {
         const isLoggedIn = res.message;
         if (isLoggedIn) {
-          console.log('isLoggedIn: ', isLoggedIn);
           this.router.navigate(['/home']);
           return false;
         }
         return true;
+      }),
+      catchError(() => {
+        return of(true);
       }),
     );
   }

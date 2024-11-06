@@ -42,6 +42,23 @@ export class AuthEffects {
     );
   });
 
+  autoLogin$ = createEffect(() =>
+    this.actions$.pipe(
+      ofType(AuthActions.autoLogin),
+      switchMap(() => {
+        return this.apiService.autoLogin().pipe(
+          map((user) => {
+            return AuthActions.autoLoginSuccess({ user: { ...user } });
+          }),
+          catchError(() => {
+            localStorage.clear();
+            return of(AuthActions.autoLoginFailure());
+          }),
+        );
+      }),
+    ),
+  );
+
   logout$ = createEffect(() => {
     return this.actions$.pipe(
       ofType(AuthActions.logout),
