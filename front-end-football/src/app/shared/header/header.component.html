@@ -1,47 +1,62 @@
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
   <div class="container-fluid">
-    <span class="navbar-brand text-white">Football Analyzer</span>
+    <span class="logo"><img class="" src="../../assets/images/logo_white.png" alt="AppLogo"></span>
+    <span class="navbar-brand logotext text-white">Football Analyzer</span>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar-nav"
             aria-controls="navbar-nav" aria-expanded="false" aria-label="Nav toggle">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbar-nav">
+    <div class="collapse navbar-collapse justify-content-end" id="navbar-nav">
       <ul class="navbar-nav">
         <li class="nav-item">
           <a routerLink="home" class="text-white nav-link"
-             routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">
+             routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">
              Strona główna</a>
         </li>
         <ng-container *ngIf="userRoles$ | async as role">
           <li class="nav-item">
             <a routerLink="players" class="text-white nav-link"
-               routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
+               routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
               graczy</a>
           </li>
           <li class="nav-item">
             <a routerLink="team" class="text-white nav-link"
-               routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
+               routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
               drużyny</a>
           </li>
-          <ng-container *ngIf="role === 'ADMIN'">
+          <ng-container *ngIf="role === 'ROLE_COACH' || role === 'ROLE_ADMIN'">
+            <li class="nav-item">
+              <a routerLink="oponent" class="text-white nav-link"
+                 routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Kolejny rywal</a>
+            </li>
+          </ng-container>
+          <ng-container *ngIf="role === 'ROLE_ADMIN'">
             <li class="nav-item">
               <a routerLink="admin" class="text-white nav-link"
-                 routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Panel
+                 routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Panel
                 admina</a>
             </li>
           </ng-container>
+          <li class="nav-item">
+            <a routerLink="profile" class="text-white nav-link"
+               routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Profil</a>
+          </li>
         </ng-container>
         <ng-container *ngIf="user$ | async; else loggedOut">
           <li class="nav-item">
             <button mat-stroked-button class="border-0" (click)="onLogout()"
-                    routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Wyloguj
+                    routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Wyloguj
             </button>
           </li>
         </ng-container>
         <ng-template #loggedOut>
           <li class="nav-item">
             <a routerLink="login" class="text-white nav-link justify-content-end"
-               routerLinkActive="fw-bold bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Zaloguj</a>
+               routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Zaloguj</a>
+          </li>
+          <li class="nav-item">
+            <a routerLink="about" class="text-white nav-link justify-content-end"
+               routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">O nas</a>
           </li>
         </ng-template>
       </ul>

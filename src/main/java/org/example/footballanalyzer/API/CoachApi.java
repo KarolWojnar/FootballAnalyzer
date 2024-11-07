@@ -9,18 +9,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", allowedHeaders = "*")
 @RequestMapping("/api/coach")
 public interface CoachApi {
     @GetMapping("/stats/team")
-    @PreAuthorize("hasRole('COACH')")
-    ResponseEntity<?> getStatsTeamCoach(@RequestParam String teamName,
-                                               @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+    @PreAuthorize("hasAuthority('ROLE_COACH')")
+    ResponseEntity<?> getStatsTeamCoach(@RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
                                                @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
                                                @RequestParam(value = "rounding", required = false, defaultValue = "week") String rounding);
 
     @GetMapping("/stats/players")
-    @PreAuthorize("hasRole('COACH')")
+    @PreAuthorize("hasAuthority('ROLE_COACH')")
     ResponseEntity<?> getStatsPlayers(@RequestParam String teamName);
 
     @GetMapping("/futureMatches")

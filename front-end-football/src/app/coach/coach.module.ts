@@ -14,6 +14,7 @@ import { TeamDialogComponent } from './team/team-dialog/team-dialog.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { OponentComponent } from './oponent/oponent.component';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     TeamChartComponent,
     TeamRadarChartComponent,
     TeamDialogComponent,
+    OponentComponent,
   ],
   imports: [
     CommonModule,

@@ -1,5 +1,5 @@
 package org.example.footballanalyzer.Data;
 
 public enum RoleName {
-    ADMIN, COACH, ANALYST
+    ROLE_ADMIN, ROLE_COACH, ROLE_ANALYST
 }

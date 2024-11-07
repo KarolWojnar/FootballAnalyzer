@@ -11,8 +11,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class TeamComponent {
   teamStats: Stats = JSON.parse(localStorage.getItem('teamStats')!);
-  //todo: on logout delete localStorage
   form!: FormGroup;
+  formVisible: boolean = true;
   sub!: Subscription;
   selectedChart = 'line';
 
@@ -21,7 +21,6 @@ export class TeamComponent {
     private apiService: ApiService,
   ) {
     this.form = this.fb.group({
-      teamName: ['Barcelona'],
       startDate: ['2022-09-11'],
       endDate: ['2024-12-02'],
       rounding: ['week'],
@@ -31,7 +30,6 @@ export class TeamComponent {
   fetchTeamData() {
     this.sub = this.apiService
       .fetchTeamData(
-        this.form.value.teamName,
         this.form.value.startDate,
         this.form.value.endDate,
         this.form.value.rounding,
@@ -42,6 +40,9 @@ export class TeamComponent {
           localStorage.setItem('teamStats', JSON.stringify(teamStats));
           this.selectedChart = 'line';
         },
+        error: (err) => {
+          console.log(err);
+        },
       });
   }
 
@@ -51,5 +52,10 @@ export class TeamComponent {
 
   selectChart(chartType: string) {
     this.selectedChart = chartType;
+  }
+
+  toggleForm() {
+    this.formVisible = !this.formVisible;
+    this.teamStats = JSON.parse(localStorage.getItem('teamStats')!);
   }
 }

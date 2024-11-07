@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.text.ParseException;
@@ -39,6 +40,8 @@ public class FootballService {
     private final FixturesStatsRepository fixturesStatsRepository;
     private final FixtureStatsTeamRepository fixtureStatsTeamRepository;
     private final RatingService ratingService;
+    private final HttpServletRequest request;
+    private final UserRepository userRepository;
 
     public ResponseEntity<?> saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
         int attempts = 0;
@@ -243,14 +246,16 @@ public class FootballService {
         dataUtil.collectStatsAndSave(fixture, teamStats);
     }
 
-    public ResponseEntity<?> getStatsTeamCoach(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
-        Optional<Long> teamId = teamRepository.findByName(teamName).map(Team::getId);
+    public ResponseEntity<?> getStatsTeamCoach(LocalDate startDate, LocalDate endDate, String rounding) {
+        String username = request.getUserPrincipal().getName();
 
-        if (teamId.isEmpty()) {
+        Optional<Team> team = userRepository.findByLogin(username).map(UserEntity::getTeam);
+
+        if (team.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(teamName, startDate, endDate, rounding));
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(team.get().getName(), startDate, endDate, rounding));
 
         if (ratings.isEmpty()) {
             return ResponseEntity.notFound().build();
