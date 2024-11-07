@@ -1,7 +1,6 @@
 package org.example.footballanalyzer.Config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.footballanalyzer.Filter.RouteValidator;
 import org.example.footballanalyzer.Repository.UserRepository;
 import org.example.footballanalyzer.Service.Auth.JwtAuthFilter;
 import org.example.footballanalyzer.Service.Auth.UserEntityUserDetailsService;
@@ -39,7 +38,6 @@ public class ConfigSecurity {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http, JwtAuthFilter jwtAuthFilter) throws Exception {
         http.csrf().disable()
                 .authorizeRequests(auth -> auth
-                        .antMatchers(RouteValidator.openApiEndpoints.toArray(new String[0])).permitAll()
                         .anyRequest().permitAll()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

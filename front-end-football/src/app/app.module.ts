@@ -19,11 +19,18 @@ import { StoreModule } from '@ngrx/store';
 import { authReducer } from './auth/store/auth.reducer';
 import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './auth/store/auth.effects';
+import { AdminModule } from './admin/admin.module';
+import { AboutComponent } from './about/about.component';
 
 registerLocaleData(localePl);
 
 @NgModule({
-  declarations: [AppComponent, AdminComponent, PageNotFoundComponent],
+  declarations: [
+    AppComponent,
+    AdminComponent,
+    PageNotFoundComponent,
+    AboutComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -31,6 +38,7 @@ registerLocaleData(localePl);
     MatProgressSpinnerModule,
     HttpClientModule,
     MatSortModule,
+    AdminModule,
     AuthModule,
     StoreModule.forRoot({ auth: authReducer }),
     EffectsModule.forRoot([AuthEffects]),

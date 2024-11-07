@@ -37,25 +37,24 @@ export class TeamRadarChartComponent implements OnChanges {
   }
 
   initializeRadarChart() {
-    this.cutNumbers();
     this.chartOptions = {
       series: [
         {
           name: this.teamStats.teamRating.team,
           data: [
-            this.teamStats.teamRating.aggression,
-            this.teamStats.teamRating.attacking,
-            this.teamStats.teamRating.creativity,
-            this.teamStats.teamRating.defending,
+            (this.teamStats.teamRating.aggression * 10000) / 100,
+            (this.teamStats.teamRating.attacking * 10000) / 100,
+            (this.teamStats.teamRating.creativity * 10000) / 100,
+            (this.teamStats.teamRating.defending * 10000) / 100,
           ],
         },
         {
           name: 'Średnia wszystkich drużyn',
           data: [
-            this.teamStats.allTeamsRating.aggression,
-            this.teamStats.allTeamsRating.attacking,
-            this.teamStats.allTeamsRating.creativity,
-            this.teamStats.allTeamsRating.defending,
+            (this.teamStats.allTeamsRating.aggression * 10000) / 100,
+            (this.teamStats.allTeamsRating.attacking * 10000) / 100,
+            (this.teamStats.allTeamsRating.creativity * 10000) / 100,
+            (this.teamStats.allTeamsRating.defending * 10000) / 100,
           ],
         },
       ],
@@ -90,25 +89,6 @@ export class TeamRadarChartComponent implements OnChanges {
         categories: ['Agresja', 'Atak', 'Kreatywność', 'Obrona'],
       },
     };
-  }
-
-  private cutNumbers() {
-    this.teamStats.teamRating.defending =
-      Math.floor(this.teamStats.teamRating.defending * 10000) / 100;
-    this.teamStats.allTeamsRating.defending =
-      Math.floor(this.teamStats.allTeamsRating.defending * 10000) / 100;
-    this.teamStats.teamRating.creativity =
-      Math.floor(this.teamStats.teamRating.creativity * 10000) / 100;
-    this.teamStats.allTeamsRating.creativity =
-      Math.floor(this.teamStats.allTeamsRating.creativity * 10000) / 100;
-    this.teamStats.teamRating.attacking =
-      Math.floor(this.teamStats.teamRating.attacking * 10000) / 100;
-    this.teamStats.allTeamsRating.attacking =
-      Math.floor(this.teamStats.allTeamsRating.attacking * 10000) / 100;
-    this.teamStats.teamRating.aggression =
-      Math.floor(this.teamStats.teamRating.aggression * 10000) / 100;
-    this.teamStats.allTeamsRating.aggression =
-      Math.floor(this.teamStats.allTeamsRating.aggression * 10000) / 100;
   }
 
   private addExampleChart(): ChartOptions {
