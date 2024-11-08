@@ -59,7 +59,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.isSubmitting = true;
       this.apiService.register(this.registerForm.value).subscribe({
-        next: (next) => {
+        next: () => {
           this.isSubmitting = false;
           this.alertMessage =
             'Konto zostało pomyślnie założone! Przekierowanie do logowania...';
@@ -88,6 +88,9 @@ export class RegisterComponent implements OnInit {
 
   getRoles() {
     this.apiService.getRoles().subscribe((roles) => {
+      roles.forEach((role) => {
+        role.roleName = role.roleName.replace('ROLE_', '');
+      });
       this.roles = roles;
     });
   }
