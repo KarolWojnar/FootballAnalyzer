@@ -15,6 +15,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { OponentComponent } from './oponent/oponent.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { OponentComponent } from './oponent/oponent.component';
     NgApexchartsModule,
     MatInputModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   exports: [PlayersComponent, TeamComponent, ProfileComponent],
 })

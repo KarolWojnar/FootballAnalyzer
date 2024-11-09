@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", allowedHeaders = "*")
 @Description("API for managing users")
 public interface UserApi {
     @GetMapping

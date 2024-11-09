@@ -1,26 +1,24 @@
 package org.example.footballanalyzer.API;
+
+import org.example.footballanalyzer.Data.DateReturn;
+import org.example.footballanalyzer.Data.DateReturnRounding;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", allowedHeaders = "*")
 @RequestMapping("/api/coach")
 public interface CoachApi {
-    @GetMapping("/stats/team")
+    @PostMapping("/stats/team")
     @PreAuthorize("hasAuthority('ROLE_COACH')")
-    ResponseEntity<?> getStatsTeamCoach(@RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-                                               @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
-                                               @RequestParam(value = "rounding", required = false, defaultValue = "week") String rounding);
+    ResponseEntity<?> getStatsTeamCoach(@RequestBody DateReturnRounding date);
 
-    @GetMapping("/stats/players")
+    @PostMapping("/stats/players")
     @PreAuthorize("hasAuthority('ROLE_COACH')")
-    ResponseEntity<?> getStatsPlayers(@RequestParam String teamName);
+    ResponseEntity<?> getStatsPlayers(@RequestBody DateReturn datesReturn);
 
     @GetMapping("/futureMatches")
     ResponseEntity<?> futureMatches(@RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam(value = "page") int page, @RequestParam(required = false) Long leagueId);

@@ -9,7 +9,7 @@ const routes: Routes = [
   { path: 'players', component: PlayersComponent, title: 'Players' },
   { path: 'team', component: TeamComponent, title: 'Team' },
   { path: 'profile', component: ProfileComponent, title: 'Profile' },
-  { path: 'opponent', component: OponentComponent, title: 'Profile' },
+  { path: 'opponent', component: OponentComponent, title: 'Opponent' },
   { path: '**', redirectTo: 'home', pathMatch: 'full' },
 ];
 

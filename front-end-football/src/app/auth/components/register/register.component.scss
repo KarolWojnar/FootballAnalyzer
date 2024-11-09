@@ -12,3 +12,20 @@
   padding: 15px;
   font-size: 1.1rem;
 }
+
+.dark-theme {
+  color: #f6f4e9;
+
+  .register-container {
+    background-color: #1e1e1e;
+  }
+}
+
+.light-theme {
+  color: #3c3c3c;
+  background-color: #e1e8f0;
+
+  .register-container {
+    background-color: #ffffff;
+  }
+}

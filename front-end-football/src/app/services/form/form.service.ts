@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   LoginForm,
   PasswordRecoveryForm,
+  PlayerStatsForm,
   RecoveryPasswdForm,
   RegisterForm,
 } from '../../models/forms/forms.model';
@@ -104,5 +105,65 @@ export class FormService {
       },
       { validators: [equivalentValidator('password', 'confirmPassword')] },
     );
+  }
+
+  today = new Date();
+
+  initPlayerStatsForm(): FormGroup<PlayerStatsForm> {
+    return new FormGroup({
+      startDate: new FormControl(
+        this.today.getFullYear() +
+          (this.today.getMonth() - 1 > 9 ? '-' : '-0') +
+          (this.today.getMonth() - 1) +
+          (this.today.getDay() > 9 ? '-' : '-0') +
+          this.today.getDay(),
+        {
+          validators: [Validators.required],
+          nonNullable: true,
+        },
+      ),
+      endDate: new FormControl(
+        this.today.getFullYear() +
+          (this.today.getMonth() > 9 ? '-' : '-0') +
+          this.today.getMonth() +
+          (this.today.getDay() > 9 ? '-' : '-0') +
+          this.today.getDay(),
+        {
+          validators: [Validators.required],
+          nonNullable: true,
+        },
+      ),
+    });
+  }
+
+  initTeamStatsForm(): FormGroup {
+    return new FormGroup({
+      startDate: new FormControl(
+        this.today.getFullYear() +
+          (this.today.getMonth() - 1 > 9 ? '-' : '-0') +
+          (this.today.getMonth() - 1) +
+          (this.today.getDay() > 9 ? '-' : '-0') +
+          this.today.getDay(),
+        {
+          validators: [Validators.required],
+          nonNullable: true,
+        },
+      ),
+      endDate: new FormControl(
+        this.today.getFullYear() +
+          (this.today.getMonth() > 9 ? '-' : '-0') +
+          this.today.getMonth() +
+          (this.today.getDay() > 9 ? '-' : '-0') +
+          this.today.getDay(),
+        {
+          validators: [Validators.required],
+          nonNullable: true,
+        },
+      ),
+      rounding: new FormControl('week', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+    });
   }
 }

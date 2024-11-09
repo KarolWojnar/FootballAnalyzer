@@ -5,6 +5,7 @@ export interface IUser {
   lastname: string;
   teamId: number;
   roleName: string;
+  teamLogo: string;
 }
 
 export interface UserLoginData {

@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 @Repository
@@ -21,6 +22,6 @@ public interface FixturesStatsRepository extends JpaRepository<FixturesStats, Lo
             "f.duelsTotal, f.duelsWon, f.dribblesAttempts, f.dribblesSuccess, f.foulsDrawn, " +
             "f.foulsCommitted, f.cardsYellow, f.cardsRed, f.penaltyWon, f.penaltyCommitted, " +
             "f.penaltyScored, f.penaltySaved, f.penaltyMissed) " +
-            "FROM FixturesStats f WHERE f.player IN :players AND f.minutes > 0")
-    List<PlayerStatsDto> findAllPlayerStatsByPlayers(List<Player> players);
+            "FROM FixturesStats f WHERE f.player IN :players AND f.minutes > 0 AND f.fixture.date BETWEEN :startDate AND :endDate")
+    List<PlayerStatsDto> findAllPlayerStatsByPlayers(List<Player> players, Date startDate, Date endDate);
 }

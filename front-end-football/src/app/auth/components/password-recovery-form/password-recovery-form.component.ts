@@ -5,6 +5,7 @@ import { FormService } from '../../../services/form/form.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../services/api.service';
 import { BehaviorSubject, interval, takeWhile } from 'rxjs';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-password-recovery-form',
@@ -21,13 +22,19 @@ export class PasswordRecoveryFormComponent implements OnInit {
   successMessage: string | null = null;
   progress$ = new BehaviorSubject<number>(100);
   private progress = 100;
+  isDarkMode = true;
 
   constructor(
     private formService: FormService,
     private route: ActivatedRoute,
     private apiService: ApiService,
     private router: Router,
-  ) {}
+    private themeService: ThemeService,
+  ) {
+    this.themeService.darkMode$.subscribe((darkmode) => {
+      this.isDarkMode = darkmode;
+    });
+  }
 
   ngOnInit(): void {
     this.updateProgressBar();

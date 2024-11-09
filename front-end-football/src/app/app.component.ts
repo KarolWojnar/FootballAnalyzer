@@ -10,6 +10,7 @@ import * as AuthActions from './auth/store/auth.actions';
 })
 export class AppComponent implements OnInit {
   title = 'front-end-football';
+  isLogoNull = localStorage.getItem('logoUrl');
 
   constructor(private store: Store<AppState>) {}
 

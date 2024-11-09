@@ -25,13 +25,9 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) {}
 
-  fetchTeamData(
-    startDate: string,
-    endDate: string,
-    rounding: string,
-  ): Observable<Stats> {
-    const apiUrl = `${this.apiUrl}/coach/stats/team?startDate=${startDate}&endDate=${endDate}&rounding=${rounding}`;
-    return this.httpClient.get<Stats>(apiUrl, {
+  fetchTeamData(object: any): Observable<Stats> {
+    const apiUrl = `${this.apiUrl}/coach/stats/team`;
+    return this.httpClient.post<Stats>(apiUrl, object, {
       withCredentials: true,
     });
   }
@@ -48,9 +44,9 @@ export class ApiService {
     return this.httpClient.get<ApiMatches>(requestUrl);
   }
 
-  fetchPlayerData(teamName: string): Observable<PlayerStats[]> {
-    const requestUrl = `${this.apiUrl}/coach/stats/players?teamName=${teamName}`;
-    return this.httpClient.get<PlayerStats[]>(requestUrl, {
+  fetchPlayerData(teamName: any): Observable<PlayerStats[]> {
+    const requestUrl = `${this.apiUrl}/coach/stats/players`;
+    return this.httpClient.post<PlayerStats[]>(requestUrl, teamName, {
       withCredentials: true,
     });
   }

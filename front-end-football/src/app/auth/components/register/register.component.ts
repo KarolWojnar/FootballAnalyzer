@@ -8,6 +8,7 @@ import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog
 import { FormService } from '../../../services/form/form.service';
 import { RegisterForm } from '../../../models/forms/forms.model';
 import { RequestProblem } from '../../../models/request/request';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-register',
@@ -23,13 +24,19 @@ export class RegisterComponent implements OnInit {
   showAlert = false;
   alertMessage = '';
   isSubmitting = false;
+  isDarkMode = true;
 
   constructor(
     private apiService: ApiService,
     private router: Router,
     private dialog: MatDialog,
     private formService: FormService,
-  ) {}
+    private themeService: ThemeService,
+  ) {
+    this.themeService.darkMode$.subscribe((isDark) => {
+      this.isDarkMode = isDark;
+    });
+  }
 
   registerForm: FormGroup<RegisterForm> = this.formService.initRegisterForm();
 

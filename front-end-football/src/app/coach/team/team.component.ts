@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { Stats } from '../../models/stats';
 import { ApiService } from '../../services/api.service';
+import { TeamStatsForm } from '../../models/forms/forms.model';
+import { FormService } from '../../services/form/form.service';
 
 @Component({
   selector: 'app-team',
@@ -11,7 +13,7 @@ import { ApiService } from '../../services/api.service';
 })
 export class TeamComponent {
   teamStats: Stats = JSON.parse(localStorage.getItem('teamStats')!);
-  form!: FormGroup;
+  form: FormGroup<TeamStatsForm> = this.formService.initTeamStatsForm();
   formVisible: boolean = true;
   sub!: Subscription;
   selectedChart = 'line';
@@ -19,31 +21,20 @@ export class TeamComponent {
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
-  ) {
-    this.form = this.fb.group({
-      startDate: ['2022-09-11'],
-      endDate: ['2024-12-02'],
-      rounding: ['week'],
-    });
-  }
+    private formService: FormService,
+  ) {}
 
   fetchTeamData() {
-    this.sub = this.apiService
-      .fetchTeamData(
-        this.form.value.startDate,
-        this.form.value.endDate,
-        this.form.value.rounding,
-      )
-      .subscribe({
-        next: (teamStats) => {
-          this.teamStats = teamStats;
-          localStorage.setItem('teamStats', JSON.stringify(teamStats));
-          this.selectedChart = 'line';
-        },
-        error: (err) => {
-          console.log(err);
-        },
-      });
+    this.sub = this.apiService.fetchTeamData(this.form.value).subscribe({
+      next: (teamStats) => {
+        this.teamStats = teamStats;
+        localStorage.setItem('teamStats', JSON.stringify(teamStats));
+        this.selectedChart = 'line';
+      },
+      error: (err) => {
+        console.log(err);
+      },
+    });
   }
 
   onSubmit(): void {

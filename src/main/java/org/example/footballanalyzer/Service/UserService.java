@@ -114,6 +114,7 @@ public class UserService {
                 return ResponseEntity.ok(
                         UserDTO.builder()
                                 .login(userEntity.getLogin())
+                                .teamLogo(userEntity.getTeam() == null ? null : userEntity.getTeam().getLogo())
                                 .email(userEntity.getEmail())
                                 .roleName(userEntity.getRole().getRoleName().name())
                                 .firstName(userEntity.getFirstName())
@@ -184,6 +185,7 @@ public class UserService {
                 return ResponseEntity.ok(
                         UserDTO.builder()
                                 .login(user.getLogin())
+                                .teamLogo(user.getTeam() == null ? null : user.getTeam().getLogo())
                                 .email(user.getEmail())
                                 .roleName(user.getRole().getRoleName().name())
                                 .firstName(user.getFirstName())
