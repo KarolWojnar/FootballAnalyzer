@@ -68,8 +68,8 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
   constructor(
     private apiService: ApiService,
     private playerService: PlayerService,
-    private themeService: ThemeService,
     private formService: FormService,
+    private themeService: ThemeService,
   ) {
     this.themeService.darkMode$.subscribe((theme) => {
       this.isDarkMode = theme;

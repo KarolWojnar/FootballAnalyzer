@@ -29,7 +29,7 @@
           </button>
           <input class="shadow" (keyup)="applyFilter($event)" placeholder="Filtruj graczy">
         </div>
-        <div *ngIf="dataSource.data && !isSubmitting" class="example-table-container">
+        <div *ngIf="dataSource.data && !isSubmitting && alertMessage === ''" class="example-table-container">
           <table mat-table matSort [dataSource]="dataSource" class="mat-elevation-z8">
 
             <ng-container matColumnDef="player">

@@ -4,6 +4,7 @@ import {
   ApexChart,
   ApexDataLabels,
   ApexStroke,
+  ApexTheme,
   ApexTitleSubtitle,
   ApexTooltip,
   ApexXAxis,
@@ -16,6 +17,7 @@ export type ChartOptions = {
   chart: ApexChart;
   xaxis: ApexXAxis;
   stroke: ApexStroke;
+  theme: ApexTheme;
   tooltip: ApexTooltip;
   dataLabels: ApexDataLabels;
   title: ApexTitleSubtitle;
@@ -33,6 +35,7 @@ export class TeamChartComponent implements OnChanges {
   sortedDates: string[] = [];
   myTeamForm: number[] = [];
   allTeamForm: number[] = [];
+  @Input() isDarkMode!: boolean;
 
   ngOnChanges(): void {
     const sortedDates = Object.keys(this.teamStats.teamForm.rating).sort(
@@ -64,9 +67,14 @@ export class TeamChartComponent implements OnChanges {
         },
       ],
       chart: {
-        foreColor: 'white',
         height: 500,
         type: 'area',
+        foreColor: this.isDarkMode ? '#f1f1f1' : '#2a2f3b',
+        background: this.isDarkMode ? '#1e1e1e' : '#fff',
+      },
+      theme: {
+        mode: this.isDarkMode ? 'dark' : 'light',
+        palette: 'palette5',
       },
       dataLabels: {
         enabled: false,
@@ -87,7 +95,8 @@ export class TeamChartComponent implements OnChanges {
         text: 'Forma drużyny',
         align: 'left',
         style: {
-          color: 'white',
+          color: this.isDarkMode ? '#f1f1f1' : '#2a2f3b',
+          fontSize: '20px',
         },
       },
     };
@@ -111,6 +120,9 @@ export class TeamChartComponent implements OnChanges {
       },
       dataLabels: {
         enabled: false,
+      },
+      theme: {
+        mode: 'light',
       },
       stroke: {
         curve: 'smooth',

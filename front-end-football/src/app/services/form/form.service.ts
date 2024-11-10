@@ -115,8 +115,8 @@ export class FormService {
         this.today.getFullYear() +
           (this.today.getMonth() - 1 > 9 ? '-' : '-0') +
           (this.today.getMonth() - 1) +
-          (this.today.getDay() > 9 ? '-' : '-0') +
-          this.today.getDay(),
+          (this.today.getDate() > 9 ? '-' : '-0') +
+          this.today.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -126,8 +126,8 @@ export class FormService {
         this.today.getFullYear() +
           (this.today.getMonth() > 9 ? '-' : '-0') +
           this.today.getMonth() +
-          (this.today.getDay() > 9 ? '-' : '-0') +
-          this.today.getDay(),
+          (this.today.getDate() > 9 ? '-' : '-0') +
+          this.today.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -142,8 +142,8 @@ export class FormService {
         this.today.getFullYear() +
           (this.today.getMonth() - 1 > 9 ? '-' : '-0') +
           (this.today.getMonth() - 1) +
-          (this.today.getDay() > 9 ? '-' : '-0') +
-          this.today.getDay(),
+          (this.today.getDate() > 9 ? '-' : '-0') +
+          this.today.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -153,8 +153,8 @@ export class FormService {
         this.today.getFullYear() +
           (this.today.getMonth() > 9 ? '-' : '-0') +
           this.today.getMonth() +
-          (this.today.getDay() > 9 ? '-' : '-0') +
-          this.today.getDay(),
+          (this.today.getDate() > 9 ? '-' : '-0') +
+          this.today.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,

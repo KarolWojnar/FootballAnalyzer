@@ -104,6 +104,13 @@ export class ApiService {
     });
   }
 
+  getRole(): Observable<any> {
+    const requestUrl = `${this.apiUrl}/users/role`;
+    return this.httpClient.get<any>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
   activateAccount(uuid: string): Observable<AuthResponse> {
     const params = new HttpParams().append('uuid', uuid);
     const requestUrl = `${this.apiUrl}/users/activate`;

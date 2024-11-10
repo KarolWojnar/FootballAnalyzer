@@ -41,15 +41,13 @@ export class ForgotPasswordComponent {
     this.apiService
       .resetPassword(this.passwdRecoveryForm.getRawValue())
       .subscribe({
-        next: (param) => {
-          console.log(param);
+        next: () => {
           this.loading = false;
           this.successMessage =
             'Na podany email został wysłany link do zmiany hasła.';
           this.errorMessage = null;
         },
         error: (error) => {
-          console.log(error);
           this.loading = false;
           this.errorMessage = error.error.message;
           this.successMessage = null;

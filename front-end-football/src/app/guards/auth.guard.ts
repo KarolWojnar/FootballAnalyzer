@@ -6,7 +6,7 @@ import { ApiService } from '../services/api.service';
 @Injectable({
   providedIn: 'root',
 })
-export class UnauthGuard implements CanActivate {
+export class AuthGuard implements CanActivate {
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -21,7 +21,7 @@ export class UnauthGuard implements CanActivate {
       take(1),
       map((res) => {
         const isLoggedIn = res.message;
-        if (isLoggedIn) {
+        if (!isLoggedIn) {
           this.router.navigate(['/home']);
           return false;
         }

@@ -33,6 +33,9 @@ public interface UserApi {
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody UserLoginData user, HttpServletResponse response);
 
+    @GetMapping("/role")
+    ResponseEntity<?> getRole();
+
     @GetMapping("/auto-login")
     ResponseEntity<?> autoLogin(HttpServletRequest request, HttpServletResponse response);
 

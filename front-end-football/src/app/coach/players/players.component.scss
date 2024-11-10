@@ -43,10 +43,6 @@
     background-color: #0056b3;
   }
 
-  //tr:nth-child(even) {
-  //  background-color: #1e1e1e;
-  //}
-
   .active {
     background-color: #1e1e1e;
     color: white;
@@ -57,7 +53,7 @@
   }
 
   .example-table-container::-webkit-scrollbar-track {
-    background: #2e2e2e;
+    background: #202020;
   }
 
   .example-table-container::-webkit-scrollbar-thumb {

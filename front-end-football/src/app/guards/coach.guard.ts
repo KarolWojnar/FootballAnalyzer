@@ -6,7 +6,7 @@ import { ApiService } from '../services/api.service';
 @Injectable({
   providedIn: 'root',
 })
-export class UnauthGuard implements CanActivate {
+export class CoachGuard implements CanActivate {
   constructor(
     private apiService: ApiService,
     private router: Router,
@@ -17,11 +17,10 @@ export class UnauthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    return this.apiService.isLoggedIn().pipe(
+    return this.apiService.getRole().pipe(
       take(1),
       map((res) => {
-        const isLoggedIn = res.message;
-        if (isLoggedIn) {
+        if (res !== 'ROLE_COACH' || res !== 'ROLE_ADMIN') {
           this.router.navigate(['/home']);
           return false;
         }
