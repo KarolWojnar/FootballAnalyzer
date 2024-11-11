@@ -5,6 +5,7 @@ import org.example.footballanalyzer.API.AdminApi;
 import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.UserEntityEditData;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
+import org.example.footballanalyzer.Data.Entity.UserRequest;
 import org.example.footballanalyzer.Service.FootballService;
 import org.example.footballanalyzer.Service.UserService;
 import org.json.JSONException;
@@ -107,5 +108,19 @@ public class AdminController implements AdminApi {
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(404).body(new AuthResponse(Code.A2));
         }
+    }
+
+    @Override
+    public ResponseEntity<?> getAllRequests() {
+        try {
+            return ResponseEntity.status(200).body(userService.getAllRequests());
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.R3));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> approveRequest(Long id, UserRequest.RequestStatus status) {
+        return null;
     }
 }

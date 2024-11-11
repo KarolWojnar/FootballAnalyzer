@@ -14,6 +14,16 @@ public class UserRequest {
     @JoinColumn(name = "user_id")
     private UserEntity user;
     private String requestType;
-    private String requestStatus;
+    @Enumerated(EnumType.STRING)
+    private RequestStatus requestStatus;
     private String requestData;
+
+    public enum RequestStatus {
+        NOWE,
+        ROZWIĄZANE,
+        ZAMKNIĘTE
+    }
 }
+
+
+

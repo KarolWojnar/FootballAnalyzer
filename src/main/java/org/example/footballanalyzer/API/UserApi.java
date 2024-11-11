@@ -4,7 +4,7 @@ import jdk.jfr.Description;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Dto.UserLoginData;
-import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
+import org.example.footballanalyzer.Data.Dto.UserRequestDto;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Data.ResetPasswordMail;
 import org.example.footballanalyzer.Data.ValidationMessage;
@@ -42,7 +42,7 @@ public interface UserApi {
     @GetMapping("/logout")
     ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response);
     @PostMapping("/requests")
-    ResponseEntity<?> request(@RequestBody UserRequesetDto userRequest);
+    ResponseEntity<?> request(@RequestBody UserRequestDto userRequest);
 
     @GetMapping("/activate")
     ResponseEntity<AuthResponse> activeUser(@RequestParam String uuid);

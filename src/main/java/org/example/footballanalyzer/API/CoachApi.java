@@ -13,11 +13,11 @@ import java.time.LocalDate;
 @RequestMapping("/api/coach")
 public interface CoachApi {
     @PostMapping("/stats/team")
-    @PreAuthorize("hasAnyAuthority('ROLE_COACH', 'ROLE_ANALYST')")
+    @PreAuthorize("hasAnyAuthority('TRENER', 'ANALITYK')")
     ResponseEntity<?> getStatsTeamCoach(@RequestBody DateReturnRounding date);
 
     @PostMapping("/stats/players")
-    @PreAuthorize("hasAnyAuthority('ROLE_COACH', 'ROLE_ANALYST')")
+    @PreAuthorize("hasAnyAuthority('TRENER', 'ANALITYK')")
     ResponseEntity<?> getStatsPlayers(@RequestBody DateReturn datesReturn);
 
     @GetMapping("/futureMatches")

@@ -7,7 +7,7 @@ import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Dto.UserLoginData;
-import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
+import org.example.footballanalyzer.Data.Dto.UserRequestDto;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Data.ResetPasswordMail;
 import org.example.footballanalyzer.Data.ValidationMessage;
@@ -68,7 +68,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ResponseEntity<?> request(UserRequesetDto userRequest) {
+    public ResponseEntity<?> request(UserRequestDto userRequest) {
         return userService.request(userRequest);
     }
 

@@ -15,6 +15,7 @@ public enum Code {
     PERMIT("Przyznano dostep."),
     R1("Brak danej roli."),
     R2("Podana drużyna posiada już trenera."),
+    R3("Brak zgłoszeń."),
     T1("Brak drużyny."),
     T2("Brak danych w tym okresie."),
     T3("Dana drużyna już posiada trenera głównego."),

@@ -8,7 +8,7 @@ import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Dto.UserEntityEditData;
 import org.example.footballanalyzer.Data.Dto.UserLoginData;
-import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
+import org.example.footballanalyzer.Data.Dto.UserRequestDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Data.RoleName;
 import org.example.footballanalyzer.Repository.*;
@@ -66,7 +66,7 @@ public class UserService {
         Optional<Team> optionalTeam = teamRepository.findByTeamId(user.getTeamId());
 
         if (optionalTeam.isPresent()) {
-            Optional<UserEntity> headCoach = userRepository.findByTeamAndRole_RoleName(optionalTeam.get(), RoleName.ROLE_COACH);
+            Optional<UserEntity> headCoach = userRepository.findByTeamAndRole_RoleName(optionalTeam.get(), RoleName.TRENER);
             if (headCoach.isPresent() && user.getRoleId() == 3){
                 return ResponseEntity.badRequest().body(new AuthResponse(Code.R2));
             }
@@ -92,11 +92,11 @@ public class UserService {
     }
 
     public ResponseEntity<?> getRoles() {
-        RoleName role = RoleName.ROLE_ADMIN;
+        RoleName role = RoleName.ADMIN;
         return ResponseEntity.ok().body(roleRepository.findAllByRoleNameNot(role));
     }
 
-    public ResponseEntity<?> request(UserRequesetDto userRequest) {
+    public ResponseEntity<?> request(UserRequestDto userRequest) {
         log.info("Saving new request: {}", userRequest.getRequestType());
         String requestData = userRequest.getRequestData().toString();
         return dataUtil.saveNewRequest(userRequest, requestData);
@@ -314,8 +314,8 @@ public class UserService {
     public UserEntityEditData updateUserTeam(Long id, Long teamId) throws FileAlreadyExistsException {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found"));
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new FileAlreadyExistsException("Not found"));
-        Optional<UserEntity> otherCoach = userRepository.findByTeamAndRole_RoleName(team, RoleName.ROLE_COACH);
-        if (otherCoach.isPresent() && userEntity.getRole().getRoleName().name().equals("ROLE_COACH")) {
+        Optional<UserEntity> otherCoach = userRepository.findByTeamAndRole_RoleName(team, RoleName.TRENER);
+        if (otherCoach.isPresent() && userEntity.getRole().getRoleName().name().equals("TRENER")) {
             throw new ExceptionInInitializerError("Team already has a coach");
         }
 
@@ -342,5 +342,18 @@ public class UserService {
         if (userEntity.isLocked() != unlock) {
             userRepository.unlockUser(userEntity.getUuid(), unlock);
         }
+    }
+
+    public List<UserRequestDto> getAllRequests() {
+        List<UserRequest> userRequests = userRequestRepository.findAll();
+        if (userRequests.isEmpty()) {
+            throw new UsernameNotFoundException("Not found");
+        }
+        return userRequests.stream().map(userRequest -> UserRequestDto.builder()
+                .userId(userRequest.getUser().getId())
+                .login(userRequest.getUser().getLogin())
+                .requestType(userRequest.getRequestType())
+                .requestStatus(userRequest.getRequestStatus())
+                .build()).toList();
     }
 }
