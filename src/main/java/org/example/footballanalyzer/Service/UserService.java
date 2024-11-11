@@ -17,6 +17,7 @@ import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -350,10 +351,24 @@ public class UserService {
             throw new UsernameNotFoundException("Not found");
         }
         return userRequests.stream().map(userRequest -> UserRequestDto.builder()
+                .id(userRequest.getId())
                 .userId(userRequest.getUser().getId())
                 .login(userRequest.getUser().getLogin())
                 .requestType(userRequest.getRequestType())
+                .requestData(userRequest.getRequestData())
                 .requestStatus(userRequest.getRequestStatus())
                 .build()).toList();
+    }
+
+    @Transactional
+    public void setAsResolved(Long id) {
+        UserRequest userRequest = userRequestRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found"));
+        userRequest.setRequestStatus(UserRequest.RequestStatus.ROZWIĄZANE);
+        userRequestRepository.save(userRequest);
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void deleteExpiredRequests() {
+        userRequestRepository.deleteByRequestStatus(UserRequest.RequestStatus.ZAMKNIĘTE);
     }
 }

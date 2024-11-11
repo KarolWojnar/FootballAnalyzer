@@ -4,7 +4,7 @@ import lombok.Data;
 import org.apache.commons.lang3.builder.HashCodeExclude;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Data
@@ -22,5 +22,5 @@ public class Player {
 
     @OneToMany(mappedBy = "player")
     @HashCodeExclude
-    private Set<FixturesStats> fixtureStats;
+    private List<FixturesStats> fixtureStats;
 }

@@ -7,6 +7,7 @@ import org.example.footballanalyzer.Data.Entity.UserRequest;
 @Builder
 @Data
 public class UserRequestDto {
+    private Long id;
     private Long userId;
     private String login;
     private String requestType;

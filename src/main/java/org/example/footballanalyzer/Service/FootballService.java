@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,19 @@ public class FootballService {
     private final RatingService ratingService;
     private final HttpServletRequest request;
     private final UserRepository userRepository;
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void scheduleStatsFromApi() throws IOException, InterruptedException, JSONException {
+
+        List<Fixture> fixtures = fixtureRepository.findAllByDateBeforeAndIsCountedOrderByDate(new Date(), false);
+        for (Fixture fixture : fixtures) {
+            log.info("Fixture date: {}", fixture.getDate());
+            log.info("Fixture counted: {}", fixture.isCounted());
+            saveStatsFixtureByPlayer(fixture);
+            dataUtil.setFixtureAsCounted(fixture.getId());
+        }
+        log.info("{} stats counted for {}", fixtures.size(), new Date());
+    }
 
     public ResponseEntity<?> saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
         int attempts = 0;

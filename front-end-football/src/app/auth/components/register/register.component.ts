@@ -95,9 +95,6 @@ export class RegisterComponent implements OnInit {
 
   getRoles() {
     this.apiService.getRoles().subscribe((roles) => {
-      roles.forEach((role) => {
-        role.roleName = role.roleName.replace('ROLE_', '');
-      });
       this.roles = roles;
     });
   }
@@ -115,7 +112,7 @@ export class RegisterComponent implements OnInit {
         this.request = {
           requestData: result,
           requestType: 'ADD_TEAM',
-          requestStatus: 'PENDING',
+          requestStatus: 'NOWE',
           login: '',
         };
       }
