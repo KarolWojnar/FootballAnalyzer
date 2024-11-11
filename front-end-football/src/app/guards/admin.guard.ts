@@ -20,7 +20,7 @@ export class AdminGuard implements CanActivate {
     return this.apiService.getRole().pipe(
       take(1),
       map((res) => {
-        if (res !== 'ROLE_ADMIN') {
+        if (res !== 'ADMIN') {
           this.router.navigate(['/home']);
           return false;
         }

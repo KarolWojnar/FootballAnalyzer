@@ -20,7 +20,7 @@ export class CoachGuard implements CanActivate {
     return this.apiService.getRole().pipe(
       take(1),
       map((res) => {
-        if (res !== 'ROLE_COACH' || res !== 'ROLE_ADMIN') {
+        if (res !== 'TRENER' || res !== 'ADMIN') {
           this.router.navigate(['/home']);
           return false;
         }
