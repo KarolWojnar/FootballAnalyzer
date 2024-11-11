@@ -36,7 +36,7 @@ public class UserEntity {
     private Role role;
     @ManyToOne
     private Team team;
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRequest> userRequest;
 
     public UserEntity(Long id, String uuid, String login, String password, String firstName, String lastName, String email, boolean isLocked, boolean isEnabled, Role role, Team team, Set<UserRequest> userRequest) {

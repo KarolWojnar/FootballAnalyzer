@@ -2,6 +2,7 @@ package org.example.footballanalyzer.Data;
 
 public enum Code {
     SUCCESS("Operacja zakończona sukcesem."),
+    ERROR("Wystąpił błąd podczas wykonania operacji."),
     A1("Nie udało się zalogować."),
     A2("Nie ma takiego uzytkownika lub konto jest niekatywne."),
     A3("Podany token jest nieważny."),
@@ -15,7 +16,10 @@ public enum Code {
     R1("Brak danej roli."),
     R2("Podana drużyna posiada już trenera."),
     T1("Brak drużyny."),
-    T2("Brak danych w tym okresie.");
+    T2("Brak danych w tym okresie."),
+    T3("Dana drużyna już posiada trenera głównego."),
+    C1("Brak danych o danym państwie."),
+    C2("Brak danych o danej lidze.");
     public final String label;
 
     Code(String label) {
