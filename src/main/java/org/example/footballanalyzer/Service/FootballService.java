@@ -360,4 +360,92 @@ public class FootballService {
                         .build()).toList();
         return ResponseEntity.ok(leagues);
     }
+
+    public ResponseEntity<?> findPossibleLeagues(String country) throws IOException, InterruptedException {
+        int attempts = 0;
+
+        while (attempts < apiKeyManager.getApiKeysLength()) {
+            HttpResponse<String> responseLeaguesByCountry = footballApiUtil.getLeaguesByCountry(country, apiKeyManager.getApiKey());
+            if (responseLeaguesByCountry.statusCode() == 429) {
+                apiKeyManager.switchToNextApiKey();
+                attempts++;
+            } else if (responseLeaguesByCountry.statusCode() == 200) {
+                JSONObject jsonResponse = new JSONObject(responseLeaguesByCountry.body());
+                if (jsonResponse.has("response")) {
+                    return ResponseEntity.ok(allLeaguesFromCountry(jsonResponse.getJSONArray("response")));
+
+                } else {
+                    throw new UsernameNotFoundException("Not found");
+                }
+            } else {
+                throw new UsernameNotFoundException("Not found");
+            }
+        }
+        throw new UsernameNotFoundException("Not found");
+    }
+
+    private List<LeagueDto> allLeaguesFromCountry(JSONArray response) {
+        List<LeagueDto> leagues = new ArrayList<>();
+        for (int i = 0; i < response.length(); i++) {
+            JSONObject leagueObject = response.getJSONObject(i);
+            JSONArray seasonsArray = leagueObject.getJSONArray("seasons");
+            for (int j = 0; j < seasonsArray.length(); j++) {
+                JSONObject currenSeason = seasonsArray.getJSONObject(j);
+                if (currenSeason.getBoolean("current")) {
+                    boolean hasStatisticsFixtures = currenSeason.getJSONObject("coverage")
+                            .getJSONObject("fixtures").optBoolean("statistics_fixtures", false);
+                    boolean hasStatisticsPlayers = currenSeason.getJSONObject("coverage")
+                            .getJSONObject("fixtures").optBoolean("statistics_players", false);
+                    if (hasStatisticsFixtures && hasStatisticsPlayers) {
+                        leagues.add(LeagueDto.builder()
+                                .leagueId(leagueObject.getJSONObject("league").getLong("id"))
+                                .name(leagueObject.getJSONObject("league").getString("name"))
+                                .logo(leagueObject.getJSONObject("league").getString("logo"))
+                                .build());
+                    }
+                }
+            }
+        }
+        if (leagues.isEmpty()) {
+            throw new UsernameNotFoundException("Not found");
+        }
+        return leagues;
+    }
+
+    public ResponseEntity<?> findPossibleClubs(Long leagueId) throws IOException, InterruptedException {
+        int attempts = 0;
+
+        while (attempts < apiKeyManager.getApiKeysLength()) {
+            HttpResponse<String> responseClubs = footballApiUtil.getClubsFromLeague(leagueId, apiKeyManager.getApiKey());
+            if (responseClubs.statusCode() == 429) {
+                apiKeyManager.switchToNextApiKey();
+                attempts++;
+            } else if (responseClubs.statusCode() == 200) {
+                JSONObject jsonResponse = new JSONObject(responseClubs.body());
+                if (jsonResponse.has("response")) {
+                    return ResponseEntity.ok(allTeamsByLeague(jsonResponse.getJSONArray("response")));
+
+                } else {
+                    throw new UsernameNotFoundException("Not found");
+                }
+            } else {
+                throw new UsernameNotFoundException("Not found");
+            }
+        }
+        throw new UsernameNotFoundException("Not found");
+    }
+
+    private List<TeamSelectDto> allTeamsByLeague(JSONArray response) {
+        List<TeamSelectDto> teams = new ArrayList<>();
+
+        for (int i = 0; i < response.length(); i++) {
+            JSONObject teamObject = response.getJSONObject(i).getJSONObject("team");
+            teams.add(new TeamSelectDto(teamObject.getLong("id"), teamObject.getString("name")));
+        }
+
+        if (teams.isEmpty()) {
+            throw new UsernameNotFoundException("Not found");
+        }
+        return teams;
+    }
 }

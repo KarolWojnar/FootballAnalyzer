@@ -24,13 +24,13 @@
                routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Statystyki
               drużyny</a>
           </li>
-          <ng-container *ngIf="role === 'ROLE_COACH' || role === 'ROLE_ADMIN'">
+          <ng-container *ngIf="role === 'TRENER' || role === 'ADMIN'">
             <li class="nav-item">
               <a routerLink="opponent" class="text-white nav-link"
                  routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Kolejny rywal</a>
             </li>
           </ng-container>
-          <ng-container *ngIf="role === 'ROLE_ADMIN'">
+          <ng-container *ngIf="role === 'ADMIN'">
             <li class="nav-item">
               <a routerLink="admin" class="text-white nav-link"
                  routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Panel
