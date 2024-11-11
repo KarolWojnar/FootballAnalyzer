@@ -32,6 +32,10 @@ public class Fixture {
     @OneToMany(mappedBy = "fixture", cascade = CascadeType.ALL)
     private Set<FixturesStats> fixtureStats;
 
+    @ManyToOne
+    @JoinColumn(name = "league_id")
+    private League league;
+
     private boolean isCounted = false;
     private boolean isCollected = false;
 }

@@ -5,7 +5,6 @@ import org.example.footballanalyzer.Data.Entity.ResetOperations;
 import org.example.footballanalyzer.Data.Entity.UserEntity;
 import org.example.footballanalyzer.Repository.ResetOperationsRepository;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -33,7 +32,7 @@ public class ResetOperationsService {
         resetOperationsRepository.findByUuid(uuid).ifPresent(resetOperationsRepository::delete);
     }
 
-    @Scheduled(cron = "0 0/15 * * * *")
+    //    @Scheduled(cron = "0 0/15 * * * *")
     protected void deleteExpiredOperations() {
         List<ResetOperations> resetOperations = resetOperationsRepository.findExpiredOperations();
         if (resetOperations != null && !resetOperations.isEmpty()) {

@@ -19,8 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Component
@@ -48,34 +51,59 @@ public class DataUtil {
         newLeague.setName(league.getString("name"));
         newLeague.setLogo(league.getString("logo"));
 
-        leagueRepository.save(newLeague);
+        newLeague = leagueRepository.save(newLeague);
 
         log.info("Saved new league: {}", newLeague.getName());
         return newLeague;
     }
 
+    @Transactional
+    public Team addTeamToLeague(Team team, League league) {
+        findLeague(team, league);
+        return team;
+    }
+
+    @Transactional
     public Team saveTeam(JSONObject team, League league) throws JSONException {
         Team newTeam = new Team();
-
         newTeam.setTeamId(team.getLong("id"));
         newTeam.setName(team.getString("name"));
         newTeam.setLogo(team.getString("logo"));
-        newTeam.setLeague(league);
 
-        teamRepository.save(newTeam);
+        newTeam = teamRepository.save(newTeam);
+
+        findLeague(newTeam, league);
+
         log.info("Saved new team: {}", newTeam.getName());
-
         return newTeam;
+    }
+
+    @Transactional
+    public void findLeague(Team team, League league) {
+        Optional<League> optionalLeague = leagueRepository.findByLeagueId(league.getLeagueId());
+        Optional<Team> optionalTeam = teamRepository.findByTeamId(team.getTeamId());
+        if (optionalLeague.isPresent() && optionalTeam.isPresent()) {
+            league = optionalLeague.get();
+            team = optionalTeam.get();
+            if (!league.getTeams().contains(team) && !team.getLeagues().contains(league)) {
+                team.getLeagues().add(league);
+                Team team2 = teamRepository.save(team);
+                league.getTeams().add(team2);
+                leagueRepository.save(league);
+            }
+        }
     }
 
     public Fixture saveFixture(JSONObject fixture, Team homeTeam, Team awayTeam) throws JSONException, ParseException {
         Fixture newFixture = new Fixture();
+        League league = leagueRepository.findByLeagueId(fixture.getJSONObject("league").getLong("id")).orElseThrow();
         JSONObject fixtureInfo = fixture.getJSONObject("fixture");
         JSONObject fixtureResult = fixture.getJSONObject("goals");
         newFixture.setFixtureId(fixtureInfo.getLong("id"));
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
         Date date = formatter.parse(fixtureInfo.getString("date"));
         newFixture.setDate(date);
+        newFixture.setLeague(league);
         newFixture.setSeason(fixture.getJSONObject("league").getInt("season"));
         newFixture.setHomeTeam(homeTeam);
         newFixture.setAwayTeam(awayTeam);
@@ -91,8 +119,8 @@ public class DataUtil {
     public Player savePlayer(JSONObject player, JSONObject team) {
         Player newPlayer = new Player();
         newPlayer.setPlayerId(player.getLong("id"));
-        newPlayer.setName(player.getString("name"));
-        newPlayer.setPhoto(player.getString("photo"));
+        newPlayer.setName(player.optString("name", null));
+        newPlayer.setPhoto(player.optString("photo", null));
 
         Optional<Team> optionalTeam = teamRepository.findByTeamId(team.getLong("id"));
         optionalTeam.ifPresent(newPlayer::setTeam);
@@ -155,15 +183,23 @@ public class DataUtil {
         }
     }
 
-    public List<PlayerStatsDto> findAllPlayersStatsByTeam(Team team) {
+    public List<PlayerStatsDto> findAllPlayersStatsByTeamAndDate(Team team, LocalDate startDate, LocalDate endDate) {
         List<Player> playersFromTeam = playerRepository.findAllByTeam(team);
 
-        return fixturesStatsRepository.findAllPlayerStatsByPlayers(playersFromTeam);
+        Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date dateEnd = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        return fixturesStatsRepository.findAllPlayerStatsByPlayers(playersFromTeam, dateStart, dateEnd);
     }
 
-    public ResponseEntity<?> closestMatches(Date startDate, int page) {
+    public ResponseEntity<?> closestMatches(Date startDate, int page, Long leagueId) {
         Pageable pageable = PageRequest.of(page, 10);
-        Page<Fixture> fixtures = fixtureRepository.findAllByDateAfterOrderByDateAsc(startDate, pageable);
+        Page<Fixture> fixtures;
+        if (leagueId != null) {
+            fixtures = fixtureRepository.findAllByLeague_IdAndDateAfterOrderByDateAsc(leagueId, startDate, pageable);
+        } else {
+            fixtures = fixtureRepository.findAllByDateAfterOrderByDateAsc(startDate, pageable);
+        }
         if (fixtures.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -175,7 +211,10 @@ public class DataUtil {
             FixturesDto fixturesDto = new FixturesDto();
             fixturesDto.setDate(fixture.getDate());
             fixturesDto.setHomeTeam(fixture.getHomeTeam().getName());
+            fixturesDto.setLogoHome(fixture.getHomeTeam().getLogo());
             fixturesDto.setAwayTeam(fixture.getAwayTeam().getName());
+            fixturesDto.setLeagueId(leagueId);
+            fixturesDto.setLogoAway(fixture.getAwayTeam().getLogo());
             fixturesDtos.add(fixturesDto);
         }
         response.put("fixtures", fixturesDtos);

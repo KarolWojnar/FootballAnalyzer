@@ -9,9 +9,20 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { SharedModule } from '../shared/shared.module';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { AccoutActivationComponent } from './components/accout-activation/accout-activation.component';
+import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
+import { PasswordRecoveryFormComponent } from './components/password-recovery-form/password-recovery-form.component';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent],
+  declarations: [
+    LoginComponent,
+    RegisterComponent,
+    AccoutActivationComponent,
+    ForgotPasswordComponent,
+    PasswordRecoveryFormComponent,
+  ],
   imports: [
     CommonModule,
     AuthRoutingModule,
@@ -21,6 +32,8 @@ import { SharedModule } from '../shared/shared.module';
     MatIconModule,
     SharedModule,
     ReactiveFormsModule,
+    MatProgressSpinnerModule,
+    MatProgressBarModule,
   ],
   exports: [LoginComponent, RegisterComponent],
 })

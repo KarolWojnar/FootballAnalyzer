@@ -1,34 +1,83 @@
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  HostListener,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { HomePageFixture } from '../models/home-page-fixture';
 import { MatPaginator } from '@angular/material/paginator';
 import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../services/api.service';
+import { League } from '../models/league';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements AfterViewInit {
-  constructor(private apiService: ApiService) {}
-
-  displayedColumns: string[] = ['matchDate', 'homeTeam', 'awayTeam'];
-
+export class HomeComponent implements AfterViewInit, OnInit {
+  isDarkMode = false;
   today: Date = new Date();
+
+  leagueId!: number;
   data: HomePageFixture[] = [];
+  leagues: League[] = [];
   resultsLength = 0;
   isLoadingResults = true;
   isRateLimitReached = false;
+  isSmallScreen = false;
+  isExtraSmallScreen = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
+  constructor(
+    private apiService: ApiService,
+    private themeService: ThemeService,
+  ) {
+    this.updateScreenSize();
+  }
+
+  ngOnInit(): void {
+    this.themeService.darkMode$.subscribe((isDark) => {
+      this.isDarkMode = isDark;
+    });
+  }
+
+  displayedColumns: string[] = ['matchDate', 'homeTeam', 'awayTeam'];
+
   ngAfterViewInit(): void {
+    this.getLeagues();
+    this.getMatches();
+  }
+
+  getLeagues() {
+    this.apiService.getLeagues().subscribe((leagues) => {
+      this.leagues = leagues;
+    });
+    this.leagues.forEach((l) => {
+      l.selected = false;
+    });
+  }
+
+  selectLeague(league: League) {
+    this.leagues.forEach((l) => {
+      l.selected = false;
+    });
+    league.selected = true;
+    this.leagueId = league.leagueId;
+    this.paginator.pageIndex = 0;
+    this.getMatches();
+  }
+
+  private getMatches() {
     merge(this.paginator.page)
       .pipe(
         startWith({}),
         switchMap(() => {
           this.isLoadingResults = true;
           return this.apiService
-            .getMatches(this.today, this.paginator.pageIndex)
+            .getMatches(this.today, this.paginator.pageIndex, this.leagueId)
             .pipe(catchError(() => of(null)));
         }),
         map((data) => {
@@ -53,5 +102,17 @@ export class HomeComponent implements AfterViewInit {
         }),
       )
       .subscribe((data) => (this.data = data));
+  }
+
+  @HostListener('window:resize', [])
+  updateScreenSize() {
+    this.isSmallScreen = window.innerWidth <= 768;
+    this.isExtraSmallScreen = window.innerWidth <= 576;
+  }
+
+  getDate(date: any) {
+    return new Date(date).toLocaleDateString('pl-PL', {
+      weekday: 'long',
+    });
   }
 }

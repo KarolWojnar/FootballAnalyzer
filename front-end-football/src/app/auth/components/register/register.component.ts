@@ -1,11 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { ApiService } from '../../../services/api.service';
 import { Team } from '../../../models/team/team';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog.component';
-import { Request } from '../../../models/request/request';
+import { FormService } from '../../../services/form/form.service';
+import { RegisterForm } from '../../../models/forms/forms.model';
+import { RequestProblem } from '../../../models/request/request';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-register',
@@ -14,49 +17,28 @@ import { Request } from '../../../models/request/request';
 })
 export class RegisterComponent implements OnInit {
   hide = true;
-  request: Request | undefined;
+  request: RequestProblem | undefined;
   teams: Team[] = [];
   roles: Role[] = [];
+  coachTaken = false;
   showAlert = false;
   alertMessage = '';
+  isSubmitting = false;
+  isDarkMode = true;
 
   constructor(
     private apiService: ApiService,
     private router: Router,
     private dialog: MatDialog,
-  ) {}
-  registerForm = new FormGroup(
-    {
-      firstName: new FormControl('sdadasd', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      lastName: new FormControl('sdadasd', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      email: new FormControl('sdadasd@wp.pl', {
-        validators: [Validators.required, Validators.email],
-        nonNullable: true,
-      }),
-      password: new FormControl('sdadasd', {
-        validators: [Validators.required, Validators.minLength(8)],
-        nonNullable: true,
-      }),
-      login: new FormControl('sdadasd', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-      teamId: new FormControl('', {
-        validators: [],
-      }),
-      roleId: new FormControl('', {
-        validators: [Validators.required],
-        nonNullable: true,
-      }),
-    },
-    { updateOn: 'submit' },
-  );
+    private formService: FormService,
+    private themeService: ThemeService,
+  ) {
+    this.themeService.darkMode$.subscribe((isDark) => {
+      this.isDarkMode = isDark;
+    });
+  }
+
+  registerForm: FormGroup<RegisterForm> = this.formService.initRegisterForm();
 
   get controls() {
     return this.registerForm.controls;
@@ -66,37 +48,45 @@ export class RegisterComponent implements OnInit {
     this.controls;
     this.getTeams();
     this.getRoles();
+    this.coachTaken = false;
   }
 
   getErrorMessage(control: FormControl) {
-    if (control?.hasError('required')) {
-      return 'Pole nie może byc puste';
-    } else if (control?.hasError('minlength')) {
-      return 'Hasło musi mieć co najmniej 8 znaków';
-    } else if (control?.hasError('email')) {
-      return 'Nieprawidłowy adres email';
-    }
-    return control?.hasError('') ? 'Not a valid email' : '';
+    return this.formService.getErrorMessage(control);
   }
 
-  handleNewRequest(request: Request) {
+  handleNewRequest(request: RequestProblem) {
     this.apiService.addRequest(request).subscribe();
   }
 
   onRegister() {
     this.showAlert = this.registerForm.invalid;
     this.alertMessage = 'Formularz zawiera błędy';
+
     if (this.registerForm.valid) {
+      this.isSubmitting = true;
       this.apiService.register(this.registerForm.value).subscribe({
-        next: (next) => {
+        next: () => {
+          this.isSubmitting = false;
+          this.alertMessage =
+            'Konto zostało pomyślnie założone! Przekierowanie do logowania...';
+
           if (this.request) {
-            this.request.login = next.login;
+            this.request.login = this.registerForm.value.login;
             this.handleNewRequest(this.request);
           }
-          this.router.navigate(['/login']).then();
+
+          setTimeout(() => {
+            this.router.navigate(['/login']);
+          }, 2000);
         },
         error: ({ error }: { error: any }) => {
-          this.alertMessage = error;
+          this.isSubmitting = false;
+          this.alertMessage = error.message;
+
+          if (error.code === 'R2') {
+            this.coachTaken = true;
+          }
           this.showAlert = true;
         },
       });
@@ -105,6 +95,9 @@ export class RegisterComponent implements OnInit {
 
   getRoles() {
     this.apiService.getRoles().subscribe((roles) => {
+      roles.forEach((role) => {
+        role.roleName = role.roleName.replace('ROLE_', '');
+      });
       this.roles = roles;
     });
   }

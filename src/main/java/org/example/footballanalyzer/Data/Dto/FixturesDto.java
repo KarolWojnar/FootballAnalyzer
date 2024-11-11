@@ -9,4 +9,7 @@ public class FixturesDto {
     private Date date;
     private String homeTeam;
     private String awayTeam;
+    private String logoHome;
+    private String logoAway;
+    private Long leagueId;
 }

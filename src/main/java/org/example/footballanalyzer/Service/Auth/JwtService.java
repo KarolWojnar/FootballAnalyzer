@@ -17,7 +17,6 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-
     @Setter
     private static String SECRET;
 
@@ -34,7 +33,7 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) throws ExpiredJwtException {
         return Jwts.parser()
                 .setSigningKey(getSignKey())
                 .build()
@@ -57,8 +56,18 @@ public class JwtService {
     }
 
     public void validateTokenExp(final String token) throws ExpiredJwtException, IllegalArgumentException {
-        Jwts.parser().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+        if (token == null || token.isEmpty()) {
+            throw new IllegalArgumentException("Token cannot be null or empty");
+        }
+        try {
+            Jwts.parser().setSigningKey(getSignKey()).build().parseClaimsJws(token);
+        } catch (ExpiredJwtException e) {
+            throw e;
+        } catch (IllegalArgumentException e) {
+            throw e;
+        }
     }
+
 
     public String generateToken(String username, int exp) {
         Map<String, Object> claim = new HashMap<>();

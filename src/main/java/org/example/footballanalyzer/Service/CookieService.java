@@ -10,10 +10,14 @@ public class CookieService {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(exp);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         return cookie;
     }
 
     public Cookie removeCookie(Cookie[] cookies, String name) {
+        if (cookies == null) {
+            return null;
+        }
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(name)) {
                 cookie.setPath("/");
@@ -24,4 +28,5 @@ public class CookieService {
         }
         return null;
     }
+
 }

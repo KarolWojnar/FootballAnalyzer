@@ -6,6 +6,7 @@ import {
   ApexFill,
   ApexMarkers,
   ApexStroke,
+  ApexTheme,
   ApexTitleSubtitle,
   ApexXAxis,
   ChartComponent,
@@ -17,6 +18,7 @@ export type ChartOptions = {
   chart: ApexChart;
   title: ApexTitleSubtitle;
   stroke: ApexStroke;
+  theme: ApexTheme;
   fill: ApexFill;
   markers: ApexMarkers;
   xaxis: ApexXAxis;
@@ -30,6 +32,7 @@ export type ChartOptions = {
 export class TeamRadarChartComponent implements OnChanges {
   @ViewChild('chart') chart!: ChartComponent;
   @Input() teamStats!: Stats;
+  @Input() isDarkMode!: boolean;
   public chartOptions: ChartOptions = this.addExampleChart();
 
   ngOnChanges(): void {
@@ -37,78 +40,57 @@ export class TeamRadarChartComponent implements OnChanges {
   }
 
   initializeRadarChart() {
-    this.cutNumbers();
     this.chartOptions = {
       series: [
         {
           name: this.teamStats.teamRating.team,
           data: [
-            this.teamStats.teamRating.aggression,
-            this.teamStats.teamRating.attacking,
-            this.teamStats.teamRating.creativity,
-            this.teamStats.teamRating.defending,
+            (this.teamStats.teamRating.aggression * 10000) / 100,
+            (this.teamStats.teamRating.attacking * 10000) / 100,
+            (this.teamStats.teamRating.creativity * 10000) / 100,
+            (this.teamStats.teamRating.defending * 10000) / 100,
           ],
         },
         {
           name: 'Średnia wszystkich drużyn',
           data: [
-            this.teamStats.allTeamsRating.aggression,
-            this.teamStats.allTeamsRating.attacking,
-            this.teamStats.allTeamsRating.creativity,
-            this.teamStats.allTeamsRating.defending,
+            (this.teamStats.allTeamsRating.aggression * 10000) / 100,
+            (this.teamStats.allTeamsRating.attacking * 10000) / 100,
+            (this.teamStats.allTeamsRating.creativity * 10000) / 100,
+            (this.teamStats.allTeamsRating.defending * 10000) / 100,
           ],
         },
       ],
       chart: {
-        foreColor: 'white',
-        height: 600,
+        height: 500,
         type: 'radar',
-        dropShadow: {
-          opacity: 0.5,
-          enabled: true,
-          blur: 1,
-          left: 1,
-          top: 1,
-        },
+        foreColor: this.isDarkMode ? '#f1f1f1' : '#2a2f3b',
+        background: this.isDarkMode ? '#1e1e1e' : '#fff',
       },
-      title: {
-        text: 'Radar statystyk',
-        style: {
-          color: 'white',
-        },
+      theme: {
+        mode: this.isDarkMode ? 'dark' : 'light',
+        palette: 'palette5',
       },
       stroke: {
-        width: 0,
+        width: 1,
       },
       fill: {
-        opacity: 0.4,
+        opacity: 0.6,
       },
       markers: {
-        size: 2,
+        size: 3,
       },
       xaxis: {
         categories: ['Agresja', 'Atak', 'Kreatywność', 'Obrona'],
       },
+      title: {
+        text: 'Radar statystyk',
+        style: {
+          color: this.isDarkMode ? '#f1f1f1' : '#2a2f3b',
+          fontSize: '20px',
+        },
+      },
     };
-  }
-
-  private cutNumbers() {
-    this.teamStats.teamRating.defending =
-      Math.floor(this.teamStats.teamRating.defending * 10000) / 100;
-    this.teamStats.allTeamsRating.defending =
-      Math.floor(this.teamStats.allTeamsRating.defending * 10000) / 100;
-    this.teamStats.teamRating.creativity =
-      Math.floor(this.teamStats.teamRating.creativity * 10000) / 100;
-    this.teamStats.allTeamsRating.creativity =
-      Math.floor(this.teamStats.allTeamsRating.creativity * 10000) / 100;
-    this.teamStats.teamRating.attacking =
-      Math.floor(this.teamStats.teamRating.attacking * 10000) / 100;
-    this.teamStats.allTeamsRating.attacking =
-      Math.floor(this.teamStats.allTeamsRating.attacking * 10000) / 100;
-    this.teamStats.teamRating.aggression =
-      Math.floor(this.teamStats.teamRating.aggression * 10000) / 100;
-    this.teamStats.allTeamsRating.aggression =
-      Math.floor(this.teamStats.allTeamsRating.aggression * 10000) / 100;
   }
 
   private addExampleChart(): ChartOptions {
@@ -142,6 +124,9 @@ export class TeamRadarChartComponent implements OnChanges {
       },
       stroke: {
         width: 0,
+      },
+      theme: {
+        mode: 'light',
       },
       fill: {
         opacity: 0.4,

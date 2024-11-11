@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserLoginData;
 import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Data.RoleName;
@@ -21,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -48,18 +51,27 @@ public class UserService {
     private final CookieService cookieService;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final HttpServletRequest request;
     @Value("${jwt.exp}")
     private int exp;
     @Value("${jwt.refresh.exp}")
     private int refreshExp;
 
     public ResponseEntity<?> createUser(UserDTO user) {
-        Optional<UserEntity> userEntity = userRepository.findByEmailOrLogin(user.getEmail(), user.getLogin());
+        Optional<UserEntity> userEntity = userRepository.findFirstByEmailOrLogin(user.getEmail(), user.getLogin());
         if (userEntity.isPresent()) {
             return ResponseEntity.badRequest().body(new AuthResponse(Code.A4));
         }
-        log.info("Creating user");
         Optional<Team> optionalTeam = teamRepository.findByTeamId(user.getTeamId());
+
+        if (optionalTeam.isPresent()) {
+            Optional<UserEntity> headCoach = userRepository.findByTeamAndRole_RoleName(optionalTeam.get(), RoleName.ROLE_COACH);
+            if (headCoach.isPresent() && user.getRoleId() == 3){
+                return ResponseEntity.badRequest().body(new AuthResponse(Code.R2));
+            }
+        }
+
+        log.info("Creating user");
 
         return dataUtil.saveUserToDb(user, optionalTeam);
     }
@@ -76,7 +88,7 @@ public class UserService {
     }
 
     public ResponseEntity<?> getRoles() {
-        RoleName role = RoleName.ADMIN;
+        RoleName role = RoleName.ROLE_ADMIN;
         return ResponseEntity.ok().body(roleRepository.findAllByRoleNameNot(role));
     }
 
@@ -86,7 +98,7 @@ public class UserService {
         return dataUtil.saveNewRequest(userRequest, requestData);
     }
 
-    public ResponseEntity<?> login(UserDTO user, HttpServletResponse response) {
+    public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) throws AuthenticationException {
         UserEntity userEntity = userRepository.findByLoginAndLockAndEnabled(user.getLogin()).orElse(null);
         if (userEntity == null) {
             return ResponseEntity.badRequest().body(new AuthResponse(Code.A2));
@@ -95,13 +107,15 @@ public class UserService {
                     new UsernamePasswordAuthenticationToken(user.getLogin(), user.getPassword())
             );
             if (authentication.isAuthenticated()) {
-                Cookie cookie = cookieService.generateCookie("token", jwtService.generateToken(user.getLogin(), exp), exp);
                 Cookie refresh = cookieService.generateCookie("refresh", jwtService.generateToken(user.getLogin(), refreshExp), refreshExp);
+                Cookie cookie = cookieService.generateCookie("Authorization", jwtService.generateToken(user.getLogin(), exp), exp);
+
                 response.addCookie(cookie);
                 response.addCookie(refresh);
                 return ResponseEntity.ok(
                         UserDTO.builder()
                                 .login(userEntity.getLogin())
+                                .teamLogo(userEntity.getTeam() == null ? null : userEntity.getTeam().getLogo())
                                 .email(userEntity.getEmail())
                                 .roleName(userEntity.getRole().getRoleName().name())
                                 .firstName(userEntity.getFirstName())
@@ -113,30 +127,49 @@ public class UserService {
         }
     }
 
-    public void validateToken(HttpServletRequest request, HttpServletResponse response) {
+    public void validateToken(HttpServletRequest request, HttpServletResponse response) throws ExpiredJwtException, IllegalArgumentException {
         String token = null;
         String refresh = null;
+
         if (request.getCookies() != null) {
-            for (Cookie cookie : Arrays.stream(request.getCookies()).toList()) {
-                if (cookie.getName().equals("Authorization")) {
-                    token = cookie.getValue();
-                } else if (cookie.getName().equals("refresh")) {
-                    refresh = cookie.getValue();
+            for (Cookie value : Arrays.stream(request.getCookies()).toList()) {
+                if (value.getName().equals("Authorization")) {
+                    token = value.getValue();
+                } else if (value.getName().equals("refresh")) {
+                    refresh = value.getValue();
                 }
             }
+        }
+
+        if (token == null || refresh == null) {
+            throw new IllegalArgumentException("Token or refresh token can't be null");
+        }
+
+        try {
+            jwtService.validateTokenExp(token);
+        } catch (ExpiredJwtException | IllegalArgumentException e) {
             try {
-                jwtService.validateTokenExp(token);
-            } catch (IllegalArgumentException | ExpiredJwtException e) {
                 jwtService.validateTokenExp(refresh);
-                Cookie refreshCokie = cookieService.generateCookie("refresh", jwtService.refreshToken(refresh, refreshExp), refreshExp);
-                Cookie cookie = cookieService.generateCookie("Authorization", jwtService.refreshToken(refresh, exp), exp);
-                response.addCookie(refreshCokie);
-                response.addCookie(cookie);
+                Cookie refreshCookie = cookieService.generateCookie("refresh", jwtService.refreshToken(refresh, refreshExp), refreshExp);
+                Cookie authCookie = cookieService.generateCookie("Authorization", jwtService.refreshToken(refresh, exp), exp);
+                response.addCookie(authCookie);
+                response.addCookie(refreshCookie);
+            } catch (ExpiredJwtException | IllegalArgumentException refreshEx) {
+                throw new IllegalArgumentException("Both token and refresh token are invalid");
             }
-        } else {
-            throw new IllegalArgumentException("Token nie może być pusty.");
         }
     }
+
+    public ResponseEntity<LoginResponse> loggedIn(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            validateToken(request, response);
+            return ResponseEntity.ok(new LoginResponse(true));
+        } catch (ExpiredJwtException | IllegalArgumentException e) {
+            return ResponseEntity.ok(new LoginResponse(false));
+        }
+    }
+
+
 
     public ResponseEntity<?> loginByToken(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -153,6 +186,7 @@ public class UserService {
                 return ResponseEntity.ok(
                         UserDTO.builder()
                                 .login(user.getLogin())
+                                .teamLogo(user.getTeam() == null ? null : user.getTeam().getLogo())
                                 .email(user.getEmail())
                                 .roleName(user.getRole().getRoleName().name())
                                 .firstName(user.getFirstName())
@@ -165,39 +199,32 @@ public class UserService {
         }
     }
 
-    public ResponseEntity<LoginResponse> loggedIn(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            validateToken(request, response);
-            return ResponseEntity.ok(new LoginResponse(true));
-        } catch (IllegalArgumentException | ExpiredJwtException e) {
-            return ResponseEntity.ok(new LoginResponse(false));
-        }
-    }
-
-    public void activateUser(String uuid) {
+    public ResponseEntity<AuthResponse> activateUser(String uuid) {
         UserEntity user = userRepository.findByUuid(uuid).orElse(null);
         if (user != null) {
-            user.setLocked(false);
-            userRepository.save(user);
-            return;
+            userRepository.unlockUser(uuid);
+            log.info("User id: {} has been activated", user.getId());
+            return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
         }
-        throw new RuntimeException("Użytkownik nie istnieje");
+        return ResponseEntity.status(400).body(new AuthResponse(Code.A9));
     }
 
-    public void recoveryPassword(String email) throws RuntimeException {
+    public void recoveryPassword(String email) throws IOException {
         UserEntity user = userRepository.findByEmail(email).orElse(null);
         if (user != null) {
+            log.info("User id: {} has been sent reset password", user.getId());
             ResetOperations resetOperations = resetOperationsService.initResetOperation(user);
             emailService.sedPasswordRecovery(user, resetOperations.getUuid());
+        } else {
+            throw new IOException("Użytkownik nie istnieje");
         }
-        throw new RuntimeException("Użytkownik nie istnieje");
     }
 
     @Transactional
     public void resetPassword(ChangePasswordData changePasswordData) throws RuntimeException {
         ResetOperations resetOperations = resetOperationsRepository.findByUuid(changePasswordData.getUuid()).orElse(null);
         if (resetOperations != null) {
-            UserEntity user = userRepository.findByUuid(changePasswordData.getUuid()).orElse(null);
+            UserEntity user = userRepository.findByUuid(resetOperations.getUser().getUuid()).orElse(null);
             if (user != null) {
                 user.setPassword(passwordEncoder.encode(changePasswordData.getPassword()));
                 userRepository.saveAndFlush(user);
@@ -210,14 +237,31 @@ public class UserService {
 
     public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
         log.info("Delete all cookies");
-        Cookie cookie = cookieService.removeCookie(request.getCookies(), "Authorization");
-        if (cookie != null) {
-            response.addCookie(cookie);
+        Cookie authCookie = cookieService.removeCookie(request.getCookies(), "Authorization");
+        if (authCookie != null) {
+            response.addCookie(authCookie);
         }
-        cookie = cookieService.removeCookie(request.getCookies(), "refresh");
-        if (cookie != null) {
-            response.addCookie(cookie);
+
+        Cookie refreshCookie = cookieService.removeCookie(request.getCookies(), "refresh");
+        if (refreshCookie != null) {
+            response.addCookie(refreshCookie);
         }
+
         return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
+    }
+
+
+    public ResponseEntity<?> getRole() {
+        String username = request.getUserPrincipal().getName();
+        if (username == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.R1));
+        }
+        UserEntity user = userRepository.findByLogin(username).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.R1));
+        }
+        RoleName roleName = user.getRole().getRoleName();
+
+        return ResponseEntity.ok(roleName);
     }
 }

@@ -3,7 +3,10 @@ package org.example.footballanalyzer.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Config.ApiKeyManager;
+import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.GroupRecord;
+import org.example.footballanalyzer.Data.Dto.LeagueDto;
+import org.example.footballanalyzer.Data.Dto.PlayerStatsDto;
 import org.example.footballanalyzer.Data.Dto.TeamSelectDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
@@ -14,8 +17,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.http.HttpResponse;
 import java.text.ParseException;
@@ -38,6 +43,8 @@ public class FootballService {
     private final FixturesStatsRepository fixturesStatsRepository;
     private final FixtureStatsTeamRepository fixtureStatsTeamRepository;
     private final RatingService ratingService;
+    private final HttpServletRequest request;
+    private final UserRepository userRepository;
 
     public ResponseEntity<?> saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
         int attempts = 0;
@@ -64,7 +71,7 @@ public class FootballService {
         return new ResponseEntity<Error>(HttpStatus.CONFLICT);
     }
 
-    private ResponseEntity<?> saveFixtures(JSONArray fixtures) throws JSONException, ParseException, IOException, InterruptedException {
+    public ResponseEntity<?> saveFixtures(JSONArray fixtures) throws JSONException, ParseException, IOException, InterruptedException {
         League league = getLeague(fixtures.getJSONObject(0).getJSONObject("league"));
         if (fixtures.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -98,12 +105,19 @@ public class FootballService {
         return dataUtil.saveFixture(fixture, homeTeam, awayTeam);
     }
 
-    private Team getTeam(JSONObject team, League league) throws JSONException {
-        Optional<Team> optionalTeam = teamRepository.findByName(team.getString("name"));
-        return optionalTeam.orElseGet(() -> dataUtil.saveTeam(team, league));
+    public Team getTeam(JSONObject team, League league) throws JSONException {
+        Team retrievedTeam;
+        Optional<Team> optionalTeam = teamRepository.findByTeamId(team.getLong("id"));
+        if (optionalTeam.isEmpty()) {
+            retrievedTeam = dataUtil.saveTeam(team, league);
+        } else {
+            retrievedTeam = dataUtil.addTeamToLeague(optionalTeam.get(), league);
+        }
+
+        return retrievedTeam;
     }
 
-    private League getLeague(JSONObject league) throws JSONException {
+    public League getLeague(JSONObject league) throws JSONException {
         Optional<League> optionalLeague = leagueRepository.findByName(league.getString("name"));
         return optionalLeague.orElseGet(() -> dataUtil.saveLeague(league));
     }
@@ -181,6 +195,9 @@ public class FootballService {
 
     public void saveCollectedFixture(Fixture fixture) {
         List<FixturesStats> playersStatsFixture = fixturesStatsRepository.getFixturesStatsByFixture(fixture);
+        if (playersStatsFixture.isEmpty()) {
+            return;
+        }
         List<FixturesStats> playersHome = playersStatsFixture.stream()
                 .filter(stat -> stat.getPlayer().getTeam().getName().equals(fixture.getHomeTeam().getName()))
                 .toList();
@@ -232,14 +249,12 @@ public class FootballService {
         dataUtil.collectStatsAndSave(fixture, teamStats);
     }
 
-    public ResponseEntity<?> getStatsTeamCoach(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
-        Optional<Long> teamId = teamRepository.findByName(teamName).map(Team::getId);
+    public ResponseEntity<?> getStatsTeamCoach(LocalDate startDate, LocalDate endDate, String rounding) {
+        String username = request.getUserPrincipal().getName();
 
-        if (teamId.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        Team team = findTeam(username);
 
-        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(teamName, startDate, endDate, rounding));
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(team.getName(), startDate, endDate, rounding));
 
         if (ratings.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -305,18 +320,27 @@ public class FootballService {
     }
 
 
-    public ResponseEntity<?> getPlayerStatsByTeam(String teamName) {
-        Optional<Team> optionalTeam = teamRepository.findByName(teamName);
-        if (optionalTeam.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getPlayerStatsByTeam(LocalDate startDate, LocalDate endDate) {
+        String username = request.getUserPrincipal().getName();
+        Team coachTeam = findTeam(username);
+        List<PlayerStatsDto> playerList = dataUtil.findAllPlayersStatsByTeamAndDate(coachTeam, startDate, endDate);
+        if (playerList.isEmpty()) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.T2));
         }
-        Team team = optionalTeam.get();
-        return ResponseEntity.ok(dataUtil.findAllPlayersStatsByTeam(team));
+        return ResponseEntity.ok(playerList);
     }
 
-    public ResponseEntity<?> closestMatches(LocalDate startDate, int page) {
+    private Team findTeam(String username) throws UsernameNotFoundException {
+        Optional<Team> team = userRepository.findByLogin(username).map(UserEntity::getTeam);
+        if (team.isEmpty()) {
+            throw new UsernameNotFoundException("User not found " + username);
+        }
+        return team.get();
+    }
+
+    public ResponseEntity<?> closestMatches(LocalDate startDate, int page, Long leagueId) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        return dataUtil.closestMatches(dateStart, page);
+        return dataUtil.closestMatches(dateStart, page, leagueId);
     }
 
     public ResponseEntity<?> getAllTeams() {
@@ -325,5 +349,15 @@ public class FootballService {
         List<TeamSelectDto> teamSelectDtos = teams.stream()
                 .map(team -> new TeamSelectDto(team.getTeamId(), team.getName())).toList();
         return ResponseEntity.ok(teamSelectDtos);
+    }
+
+    public ResponseEntity<?> getAllLeagues() {
+        List<LeagueDto> leagues = leagueRepository.findAll().stream().map(
+                league -> LeagueDto.builder()
+                        .leagueId(league.getId())
+                        .logo(league.getLogo())
+                        .name(league.getName())
+                        .build()).toList();
+        return ResponseEntity.ok(leagues);
     }
 }

@@ -14,6 +14,8 @@ import { TeamDialogComponent } from './team/team-dialog/team-dialog.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { OponentComponent } from './oponent/oponent.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -25,6 +27,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     TeamChartComponent,
     TeamRadarChartComponent,
     TeamDialogComponent,
+    OponentComponent,
   ],
   imports: [
     CommonModule,
@@ -38,6 +41,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     NgApexchartsModule,
     MatInputModule,
     MatButtonModule,
+    MatProgressSpinnerModule,
   ],
   exports: [PlayersComponent, TeamComponent, ProfileComponent],
 })

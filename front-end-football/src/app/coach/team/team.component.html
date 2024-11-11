@@ -1,41 +1,62 @@
-<div class="team-container">
-  <h1 *ngIf="teamStats">{{ teamStats.teamRating.team }}</h1>
-
-  <div *ngIf="teamStats">
-    <ul class="nav nav-tabs">
-      <li class="nav-item">
-        <a class="nav-link" [ngClass]="{ active: selectedChart === 'line' }" (click)="selectChart('line')">Wykres liniowy</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" [ngClass]="{ active: selectedChart === 'radar' }" (click)="selectChart('radar')">Wykres pajęczynowy</a>
-      </li>
-    </ul>
-
-    <div *ngIf="selectedChart === 'line'">
-      <app-team-chart [teamStats]="teamStats"></app-team-chart>
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <div class="team-container">
+    <div class="d-flex justify-content-center gap-4">
+      <div>
+        <h1 *ngIf="teamStats">{{ teamStats.teamRating.team }}</h1>
+      </div>
+      <div *ngIf="logoUrl">
+        <img class="w-50" src="{{ logoUrl }}" alt="logo">
+      </div>
     </div>
 
-    <div *ngIf="selectedChart === 'radar'">
-      <app-team-radar-chart [teamStats]="teamStats"></app-team-radar-chart>
+    <div class="form-toggle">
+      <button class="toggle-button" (click)="toggleForm()">
+        {{ formVisible ? 'Ukryj formularz' : 'Pokaż formularz' }}
+      </button>
+    </div>
+
+    <div class="main-content">
+
+      <div *ngIf="formVisible" class="form-container">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="team-form p-2 rounded shadow">
+          <label for="startDate">Data początkowa:</label>
+          <input id="startDate" type="date" formControlName="startDate" required/>
+
+          <label for="endDate">Data końcowa:</label>
+          <input id="endDate" type="date" formControlName="endDate" required/>
+
+          <label for="rounding">Zaokrąglenie:</label>
+          <select id="rounding" formControlName="rounding">
+            <option value="week">Tydzień</option>
+            <option value="month">Miesiąc</option>
+          </select>
+
+          <button class="toggle-button" type="submit">Pobierz statystyki</button>
+        </form>
+      </div>
+
+      <div *ngIf="teamStats" [ngClass]="formVisible ? 'chart-container-with-form' : 'chart-container-no-form'">
+        <ul class="nav nav-tabs">
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{ active: selectedChart === 'line' }" (click)="selectChart('line')">Wykres
+              liniowy</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" [ngClass]="{ active: selectedChart === 'radar' }" (click)="selectChart('radar')">Wykres
+              radarowy</a>
+          </li>
+        </ul>
+
+        <div class="rounded shadow team-form">
+          <ng-container *ngIf="selectedChart === 'line'">
+            <app-team-chart [isDarkMode]="isDarkMode" [teamStats]="teamStats"></app-team-chart>
+          </ng-container>
+
+          <div *ngIf="selectedChart === 'radar'">
+            <app-team-radar-chart [isDarkMode]="isDarkMode" [teamStats]="teamStats"></app-team-radar-chart>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="team-form">
-      <label for="teamName">Nazwa drużyny:</label>
-      <input id="teamName" formControlName="teamName" required />
-
-      <label for="startDate">Data początkowa:</label>
-      <input id="startDate" type="date" formControlName="startDate" required />
-
-      <label for="endDate">Data końcowa:</label>
-      <input id="endDate" type="date" formControlName="endDate" required />
-
-      <label for="rounding">Zaokrąglenie:</label>
-      <select id="rounding" formControlName="rounding">
-        <option value="week">Tydzień</option>
-        <option value="month">Miesiąc</option>
-      </select>
-
-      <button type="submit">Pobierz statystyki</button>
-    </form>
-
 </div>

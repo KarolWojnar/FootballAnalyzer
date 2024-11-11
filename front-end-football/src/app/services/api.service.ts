@@ -1,14 +1,21 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { HomePageFixture } from '../models/home-page-fixture';
 import { Stats } from '../models/stats';
 import { PlayerStats } from '../models/players/player-stats';
 import { environment } from '../../environments/environment.development';
-import { Team } from '../models/team/team';
-import { UserResponse } from '../models/user.model';
+import { ApiMatches, Team } from '../models/team/team';
+import {
+  AuthResponse,
+  ChangePassword,
+  IUser,
+  LoggedIn,
+  ResetPassword,
+  UserLoginData,
+} from '../models/user.model';
 import { Role } from '../auth/components/register/register.component';
-import { Request } from '../models/request/request';
+import { League } from '../models/league';
+import { RequestProblem } from '../models/request/request';
 
 @Injectable({
   providedIn: 'root',
@@ -18,24 +25,30 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) {}
 
-  fetchTeamData(
-    teamName: string,
-    startDate: string,
-    endDate: string,
-    rounding: string,
-  ): Observable<Stats> {
-    const apiUrl = `${this.apiUrl}/coach/stats/team?teamName=${teamName}&startDate=${startDate}&endDate=${endDate}&rounding=${rounding}`;
-    return this.httpClient.get<Stats>(apiUrl);
+  fetchTeamData(object: any): Observable<Stats> {
+    const apiUrl = `${this.apiUrl}/coach/stats/team`;
+    return this.httpClient.post<Stats>(apiUrl, object, {
+      withCredentials: true,
+    });
   }
 
-  getMatches(today: Date, page: number): Observable<ApiMatches> {
-    const requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}`;
+  getMatches(
+    today: Date,
+    page: number,
+    leagueId: number,
+  ): Observable<ApiMatches> {
+    let requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}`;
+    if (leagueId != null) {
+      requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}&leagueId=${leagueId}`;
+    }
     return this.httpClient.get<ApiMatches>(requestUrl);
   }
 
-  fetchPlayerData(teamName: string): Observable<PlayerStats[]> {
-    const requestUrl = `${this.apiUrl}/coach/stats/players?teamName=${teamName}`;
-    return this.httpClient.get<PlayerStats[]>(requestUrl);
+  fetchPlayerData(teamName: any): Observable<PlayerStats[]> {
+    const requestUrl = `${this.apiUrl}/coach/stats/players`;
+    return this.httpClient.post<PlayerStats[]>(requestUrl, teamName, {
+      withCredentials: true,
+    });
   }
 
   getTeams(): Observable<Team[]> {
@@ -48,18 +61,71 @@ export class ApiService {
     return this.httpClient.get<Role[]>(requestUrl);
   }
 
-  register(data: any): Observable<UserResponse> {
+  register(data: any): Observable<AuthResponse> {
     const requestUrl = `${this.apiUrl}/users/register`;
-    return this.httpClient.post<UserResponse>(requestUrl, data);
+    return this.httpClient.post<AuthResponse>(requestUrl, data);
   }
 
-  addRequest(request: Request) {
+  addRequest(request: RequestProblem) {
     const requestUrl = `${this.apiUrl}/users/requests`;
     return this.httpClient.post(requestUrl, request);
   }
-}
 
-export interface ApiMatches {
-  fixtures: HomePageFixture[];
-  emelents: number;
+  getLeagues() {
+    const requestUrl = `${this.apiUrl}/coach/all-leagues`;
+    return this.httpClient.get<League[]>(requestUrl);
+  }
+
+  login(body: UserLoginData): Observable<IUser> {
+    const requestUrl = `${this.apiUrl}/users/login`;
+    return this.httpClient.post<IUser>(requestUrl, body, {
+      withCredentials: true,
+    });
+  }
+
+  logout(): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/users/logout`;
+    return this.httpClient.get<AuthResponse>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
+  autoLogin(): Observable<IUser> {
+    const requestUrl = `${this.apiUrl}/users/auto-login`;
+    return this.httpClient.get<IUser>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
+  isLoggedIn(): Observable<LoggedIn> {
+    const requestUrl = `${this.apiUrl}/users/logged-in`;
+    return this.httpClient.get<LoggedIn>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
+  getRole(): Observable<any> {
+    const requestUrl = `${this.apiUrl}/users/role`;
+    return this.httpClient.get<any>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
+  activateAccount(uuid: string): Observable<AuthResponse> {
+    const params = new HttpParams().append('uuid', uuid);
+    const requestUrl = `${this.apiUrl}/users/activate`;
+    return this.httpClient.get<AuthResponse>(requestUrl, {
+      params: params,
+    });
+  }
+
+  resetPassword(email: ResetPassword): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/users/reset-password`;
+    return this.httpClient.post<AuthResponse>(requestUrl, email);
+  }
+
+  changePassword(changePassword: ChangePassword): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/users/reset-password`;
+    return this.httpClient.patch<AuthResponse>(requestUrl, changePassword);
+  }
 }

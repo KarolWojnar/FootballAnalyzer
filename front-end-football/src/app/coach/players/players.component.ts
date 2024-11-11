@@ -1,19 +1,28 @@
-import { AfterViewInit, Component, OnDestroy, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { PlayerStats } from '../../models/players/player-stats';
 import { ApiService } from '../../services/api.service';
 import { PlayerService } from '../../services/players/player.service';
+import { ThemeService } from '../../services/theme.service';
+import { PlayerStatsForm } from '../../models/forms/forms.model';
+import { FormService } from '../../services/form/form.service';
 
 @Component({
   selector: 'app-players',
   templateUrl: './players.component.html',
   styleUrls: ['./players.component.scss'],
 })
-export class PlayersComponent implements OnDestroy, AfterViewInit {
-  form!: FormGroup;
+export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
+  form: FormGroup<PlayerStatsForm> = this.formService.initPlayerStatsForm();
   playerStats!: PlayerStats[];
   dataSource: MatTableDataSource<PlayerStats> =
     new MatTableDataSource<PlayerStats>(
@@ -50,13 +59,27 @@ export class PlayersComponent implements OnDestroy, AfterViewInit {
     'penaltyWon',
     'penaltyCommitted',
   ];
+  isDarkMode = true;
+  formVisible: boolean = true;
+  showAlert = false;
+  alertMessage = '';
+  isSubmitting = false;
 
   constructor(
-    private fb: FormBuilder,
     private apiService: ApiService,
     private playerService: PlayerService,
+    private formService: FormService,
+    private themeService: ThemeService,
   ) {
-    this.form = this.fb.group({ teamName: ['Arsenal'] });
+    this.themeService.darkMode$.subscribe((theme) => {
+      this.isDarkMode = theme;
+    });
+  }
+
+  ngOnInit(): void {
+    if (localStorage.getItem('dataSource') == null) {
+      this.getPlayersData();
+    }
   }
 
   ngAfterViewInit(): void {
@@ -64,25 +87,29 @@ export class PlayersComponent implements OnDestroy, AfterViewInit {
   }
 
   getPlayersData() {
-    this.sub = this.apiService
-      .fetchPlayerData(this.form.value.teamName)
-      .subscribe({
-        next: (player) => {
+    this.isSubmitting = true;
+    this.sub = this.apiService.fetchPlayerData(this.form.value).subscribe({
+      next: (player) => {
+        setTimeout(() => {
           this.playerStats = this.playerService.calcualtePlayers(player);
+          this.showAlert = false;
+          this.isSubmitting = false;
+          this.alertMessage = '';
+          this.dataSource = new MatTableDataSource(this.playerStats);
+          localStorage.setItem('dataSource', JSON.stringify(this.playerStats));
           setTimeout(() => {
-            this.dataSource = new MatTableDataSource(this.playerStats);
-            localStorage.setItem(
-              'dataSource',
-              JSON.stringify(this.playerStats),
-            );
             this.dataSource.sort = this.sort;
             this.sub.unsubscribe();
           }, 500);
-        },
-      });
+        }, 500);
+      },
+      error: (error) => {
+        this.isSubmitting = false;
+        this.showAlert = true;
+        this.alertMessage = error.error.message;
+      },
+    });
   }
-
-  //todo: on logout delete localStorage
 
   onSubmit(): void {
     this.getPlayersData();
@@ -97,5 +124,9 @@ export class PlayersComponent implements OnDestroy, AfterViewInit {
     if (this.sub) {
       this.sub.unsubscribe();
     }
+  }
+
+  toggleForm() {
+    this.formVisible = !this.formVisible;
   }
 }
