@@ -166,11 +166,12 @@ public class FootballService {
         for (int i = 0; i < playerStats.length(); i++) {
             JSONObject playerStat = playerStats.getJSONObject(i);
             JSONObject jsonTeam = playerStat.getJSONObject("team");
+            Team team = teamRepository.findByTeamId(jsonTeam.getLong("id")).orElse(null);
             JSONArray players = playerStat.getJSONArray("players");
             for (int j = 0; j < players.length(); j++) {
                 JSONObject jsonPlayer = players.getJSONObject(j);
                 Player player = getPlayer(jsonPlayer.getJSONObject("player"), jsonTeam);
-                savePlayerStats(player, fixture, jsonPlayer.getJSONArray("statistics"));
+                savePlayerStats(player, fixture, jsonPlayer.getJSONArray("statistics"), team);
             }
         }
         log.info("Saved players stats for fixture: {}", fixture.getFixtureId());
@@ -181,7 +182,7 @@ public class FootballService {
         return optionalPlayer.orElseGet(() -> dataUtil.savePlayer(jsonPlayer, jsonTeam));
     }
 
-    private void savePlayerStats(Player player, Fixture fixture, JSONArray statistics) {
+    private void savePlayerStats(Player player, Fixture fixture, JSONArray statistics, Team team) {
         JSONObject jsonStatistics = statistics.getJSONObject(0);
         JSONObject games = jsonStatistics.getJSONObject("games");
         int offsides = jsonStatistics.optInt("offsides");
@@ -194,7 +195,7 @@ public class FootballService {
         JSONObject fouls = jsonStatistics.getJSONObject("fouls");
         JSONObject cards = jsonStatistics.getJSONObject("cards");
         JSONObject penalty = jsonStatistics.getJSONObject("penalty");
-        dataUtil.savePlayerStats(player, fixture, offsides, games, shots, goals, passes, tackles, duels, dribbles, fouls, cards, penalty);
+        dataUtil.savePlayerStats(player, fixture, team, offsides, games, shots, goals, passes, tackles, duels, dribbles, fouls, cards, penalty);
     }
 
     public ResponseEntity<?> collectFixtures() {
@@ -203,8 +204,7 @@ public class FootballService {
         fixtures.forEach(
                 this::saveCollectedFixture
         );
-        String response = !fixtures.isEmpty() ? "Successfull collect " + fixtures.size() + " fixtures" : "Nothing to collect";
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
     }
 
     public void saveCollectedFixture(Fixture fixture) {
@@ -213,11 +213,11 @@ public class FootballService {
             return;
         }
         List<FixturesStats> playersHome = playersStatsFixture.stream()
-                .filter(stat -> stat.getPlayer().getTeam().getName().equals(fixture.getHomeTeam().getName()))
+                .filter(stat -> stat.getTeam().getName().equals(fixture.getHomeTeam().getName()))
                 .toList();
 
         List<FixturesStats> playersAway = playersStatsFixture.stream()
-                .filter(stat -> stat.getPlayer().getTeam().getName().equals(fixture.getAwayTeam().getName()))
+                .filter(stat -> stat.getTeam().getName().equals(fixture.getAwayTeam().getName()))
                 .toList();
 
         collectStatsAndSave(playersHome, fixture);
