@@ -48,6 +48,11 @@ public class UserController implements UserApi {
     }
 
     @Override
+    public ResponseEntity<?> getRole() {
+        return userService.getRole();
+    }
+
+    @Override
     public ResponseEntity<?> autoLogin(HttpServletRequest request, HttpServletResponse response) {
         return userService.loginByToken(request, response);
     }

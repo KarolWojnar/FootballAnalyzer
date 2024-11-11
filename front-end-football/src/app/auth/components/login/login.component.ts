@@ -8,6 +8,7 @@ import * as AuthActions from '../../store/auth.actions';
 import { clearError } from '../../store/auth.actions';
 import { selectAuthError, selectAuthLoading } from '../../store/auth.selectors';
 import { Observable } from 'rxjs';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-login',
@@ -19,11 +20,17 @@ export class LoginComponent implements OnDestroy, OnInit {
   loginForm: FormGroup<LoginForm> = this.formService.initLoginForm();
   errorMsg$: Observable<string | null> = this.store.select(selectAuthError);
   loading$: Observable<boolean> = this.store.select(selectAuthLoading);
+  isDarkMode = true;
 
   constructor(
     private formService: FormService,
     private store: Store<AppState>,
-  ) {}
+    private themeService: ThemeService,
+  ) {
+    this.themeService.darkMode$.subscribe((mode) => {
+      this.isDarkMode = mode;
+    });
+  }
 
   ngOnInit(): void {
     this.loading$ = this.store.select(selectAuthLoading);

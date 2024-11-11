@@ -1,13 +1,14 @@
 body {
-  background-color: #121212;
+  background-color: #e1e8f0;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
 
 html, body {
   height: 100%;
-}
-
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }

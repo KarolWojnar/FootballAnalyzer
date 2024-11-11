@@ -20,7 +20,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/users")
-@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", allowedHeaders = "*")
 @Description("API for managing users")
 public interface UserApi {
     @GetMapping
@@ -32,6 +32,9 @@ public interface UserApi {
 
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody UserLoginData user, HttpServletResponse response);
+
+    @GetMapping("/role")
+    ResponseEntity<?> getRole();
 
     @GetMapping("/auto-login")
     ResponseEntity<?> autoLogin(HttpServletRequest request, HttpServletResponse response);

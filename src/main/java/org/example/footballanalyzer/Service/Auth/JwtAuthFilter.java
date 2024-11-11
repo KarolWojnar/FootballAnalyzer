@@ -1,5 +1,6 @@
 package org.example.footballanalyzer.Service.Auth;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -34,14 +35,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             JwtService jwtService = new JwtService();
             username = jwtService.extractUsername(token);
         } else {
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if ("Authorization".equals(cookie.getName())) {
-                        token = cookie.getValue();
-                        username = jwtService.extractUsername(token);
-                        break;
+            try {
+                if (cookies != null) {
+                    for (Cookie cookie : cookies) {
+                        if ("Authorization".equals(cookie.getName())) {
+                            token = cookie.getValue();
+                            username = jwtService.extractUsername(token);
+                            break;
+                        }
                     }
                 }
+            } catch (ExpiredJwtException e) {
+                filterChain.doFilter(request, response);
             }
         }
 

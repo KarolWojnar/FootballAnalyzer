@@ -3,6 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormService } from '../../../services/form/form.service';
 import { RecoveryPasswdForm } from '../../../models/forms/forms.model';
 import { ApiService } from '../../../services/api.service';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-forgot-password',
@@ -15,11 +16,17 @@ export class ForgotPasswordComponent {
   errorMessage: null | string = null;
   successMessage: null | string = null;
   loading = false;
+  isDarkMode = true;
 
   constructor(
     private formService: FormService,
     private apiService: ApiService,
-  ) {}
+    private themeService: ThemeService,
+  ) {
+    this.themeService.darkMode$.subscribe((mode) => {
+      this.isDarkMode = mode;
+    });
+  }
 
   get controls() {
     return this.passwdRecoveryForm.controls;
@@ -34,15 +41,13 @@ export class ForgotPasswordComponent {
     this.apiService
       .resetPassword(this.passwdRecoveryForm.getRawValue())
       .subscribe({
-        next: (param) => {
-          console.log(param);
+        next: () => {
           this.loading = false;
           this.successMessage =
             'Na podany email został wysłany link do zmiany hasła.';
           this.errorMessage = null;
         },
         error: (error) => {
-          console.log(error);
           this.loading = false;
           this.errorMessage = error.error.message;
           this.successMessage = null;

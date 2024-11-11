@@ -22,6 +22,8 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.*;
 
 @Component
@@ -181,10 +183,13 @@ public class DataUtil {
         }
     }
 
-    public List<PlayerStatsDto> findAllPlayersStatsByTeam(Team team) {
+    public List<PlayerStatsDto> findAllPlayersStatsByTeamAndDate(Team team, LocalDate startDate, LocalDate endDate) {
         List<Player> playersFromTeam = playerRepository.findAllByTeam(team);
 
-        return fixturesStatsRepository.findAllPlayerStatsByPlayers(playersFromTeam);
+        Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date dateEnd = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+        return fixturesStatsRepository.findAllPlayerStatsByPlayers(playersFromTeam, dateStart, dateEnd);
     }
 
     public ResponseEntity<?> closestMatches(Date startDate, int page, Long leagueId) {

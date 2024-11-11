@@ -14,6 +14,7 @@ public class UserDTO {
     private Long id;
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long teamId;
+    private String teamLogo;
     private String login;
     @Length(min = 8, message = "Hasło musi mieć minimum 8 znaków.")
     @JsonInclude(JsonInclude.Include.NON_NULL)

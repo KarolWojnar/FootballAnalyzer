@@ -13,7 +13,9 @@ public enum Code {
     A9("Podany użytkownik nie istnieje."),
     PERMIT("Przyznano dostep."),
     R1("Brak danej roli."),
-    R2("Podana drużyna posiada już trenera.");
+    R2("Podana drużyna posiada już trenera."),
+    T1("Brak drużyny."),
+    T2("Brak danych w tym okresie.");
     public final String label;
 
     Code(String label) {

@@ -1,0 +1,48 @@
+$primary-color: #1976d2;
+$background-light: #e1e8f0;
+$background-dark: #121212;
+$text-light: #ffffff;
+$text-dark: #333333;
+
+// Styl kontenera
+.about-container {
+  padding: 1.5rem;
+  background-color: $background-light;
+  color: $text-dark;
+
+  &.dark-theme {
+    background-color: $background-dark;
+    color: $text-light;
+  }
+
+  .header-toolbar {
+    display: flex;
+    justify-content: space-between;
+    background-color: $primary-color;
+  }
+
+  .content {
+    h1, h2 {
+      margin-top: 1rem;
+      font-weight: bold;
+    }
+
+    p, ol {
+      line-height: 1.6;
+      margin-top: 0.5rem;
+    }
+
+    ol {
+      padding-left: 1.5rem;
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    em {
+      font-style: italic;
+      color: $primary-color;
+    }
+  }
+}

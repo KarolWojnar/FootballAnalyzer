@@ -2,6 +2,7 @@ import {
   AfterViewInit,
   Component,
   HostListener,
+  OnInit,
   ViewChild,
 } from '@angular/core';
 import { HomePageFixture } from '../models/home-page-fixture';
@@ -9,20 +10,17 @@ import { MatPaginator } from '@angular/material/paginator';
 import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { League } from '../models/league';
+import { ThemeService } from '../services/theme.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
-export class HomeComponent implements AfterViewInit {
-  constructor(private apiService: ApiService) {
-    this.updateScreenSize();
-  }
-
-  displayedColumns: string[] = ['matchDate', 'homeTeam', 'awayTeam'];
-
+export class HomeComponent implements AfterViewInit, OnInit {
+  isDarkMode = false;
   today: Date = new Date();
+
   leagueId!: number;
   data: HomePageFixture[] = [];
   leagues: League[] = [];
@@ -32,6 +30,21 @@ export class HomeComponent implements AfterViewInit {
   isSmallScreen = false;
   isExtraSmallScreen = false;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+
+  constructor(
+    private apiService: ApiService,
+    private themeService: ThemeService,
+  ) {
+    this.updateScreenSize();
+  }
+
+  ngOnInit(): void {
+    this.themeService.darkMode$.subscribe((isDark) => {
+      this.isDarkMode = isDark;
+    });
+  }
+
+  displayedColumns: string[] = ['matchDate', 'homeTeam', 'awayTeam'];
 
   ngAfterViewInit(): void {
     this.getLeagues();

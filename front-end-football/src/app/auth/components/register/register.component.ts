@@ -8,6 +8,7 @@ import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog
 import { FormService } from '../../../services/form/form.service';
 import { RegisterForm } from '../../../models/forms/forms.model';
 import { RequestProblem } from '../../../models/request/request';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-register',
@@ -23,13 +24,19 @@ export class RegisterComponent implements OnInit {
   showAlert = false;
   alertMessage = '';
   isSubmitting = false;
+  isDarkMode = true;
 
   constructor(
     private apiService: ApiService,
     private router: Router,
     private dialog: MatDialog,
     private formService: FormService,
-  ) {}
+    private themeService: ThemeService,
+  ) {
+    this.themeService.darkMode$.subscribe((isDark) => {
+      this.isDarkMode = isDark;
+    });
+  }
 
   registerForm: FormGroup<RegisterForm> = this.formService.initRegisterForm();
 
@@ -59,7 +66,7 @@ export class RegisterComponent implements OnInit {
     if (this.registerForm.valid) {
       this.isSubmitting = true;
       this.apiService.register(this.registerForm.value).subscribe({
-        next: (next) => {
+        next: () => {
           this.isSubmitting = false;
           this.alertMessage =
             'Konto zostało pomyślnie założone! Przekierowanie do logowania...';
@@ -88,6 +95,9 @@ export class RegisterComponent implements OnInit {
 
   getRoles() {
     this.apiService.getRoles().subscribe((roles) => {
+      roles.forEach((role) => {
+        role.roleName = role.roleName.replace('ROLE_', '');
+      });
       this.roles = roles;
     });
   }

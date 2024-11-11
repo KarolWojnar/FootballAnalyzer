@@ -21,6 +21,10 @@ import { EffectsModule } from '@ngrx/effects';
 import { AuthEffects } from './auth/store/auth.effects';
 import { AdminModule } from './admin/admin.module';
 import { AboutComponent } from './about/about.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSliderModule } from '@angular/material/slider';
 
 registerLocaleData(localePl);
 
@@ -37,6 +41,7 @@ registerLocaleData(localePl);
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
     HttpClientModule,
+    MatSliderModule,
     MatSortModule,
     AdminModule,
     AuthModule,
@@ -45,6 +50,9 @@ registerLocaleData(localePl);
     HomeModule,
     CoachModule,
     SharedModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatButtonModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

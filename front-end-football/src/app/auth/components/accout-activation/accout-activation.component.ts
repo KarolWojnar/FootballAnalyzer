@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { ApiService } from '../../../services/api.service';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-accout-activation',
@@ -11,12 +12,18 @@ import { ApiService } from '../../../services/api.service';
 export class AccoutActivationComponent implements OnInit {
   error: string | null = null;
   success: string | null = null;
+  isDarkMode = true;
 
   constructor(
     private route: ActivatedRoute,
     private apiService: ApiService,
     private router: Router,
-  ) {}
+    private themeService: ThemeService,
+  ) {
+    this.themeService.darkMode$.subscribe((mode) => {
+      this.isDarkMode = mode;
+    });
+  }
 
   ngOnInit(): void {
     this.route.paramMap

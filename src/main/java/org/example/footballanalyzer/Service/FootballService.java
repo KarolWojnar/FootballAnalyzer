@@ -3,8 +3,10 @@ package org.example.footballanalyzer.Service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Config.ApiKeyManager;
+import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.GroupRecord;
 import org.example.footballanalyzer.Data.Dto.LeagueDto;
+import org.example.footballanalyzer.Data.Dto.PlayerStatsDto;
 import org.example.footballanalyzer.Data.Dto.TeamSelectDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
@@ -15,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -249,13 +252,9 @@ public class FootballService {
     public ResponseEntity<?> getStatsTeamCoach(LocalDate startDate, LocalDate endDate, String rounding) {
         String username = request.getUserPrincipal().getName();
 
-        Optional<Team> team = userRepository.findByLogin(username).map(UserEntity::getTeam);
+        Team team = findTeam(username);
 
-        if (team.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(team.get().getName(), startDate, endDate, rounding));
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(team.getName(), startDate, endDate, rounding));
 
         if (ratings.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -321,13 +320,22 @@ public class FootballService {
     }
 
 
-    public ResponseEntity<?> getPlayerStatsByTeam(String teamName) {
-        Optional<Team> optionalTeam = teamRepository.findByName(teamName);
-        if (optionalTeam.isEmpty()) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity<?> getPlayerStatsByTeam(LocalDate startDate, LocalDate endDate) {
+        String username = request.getUserPrincipal().getName();
+        Team coachTeam = findTeam(username);
+        List<PlayerStatsDto> playerList = dataUtil.findAllPlayersStatsByTeamAndDate(coachTeam, startDate, endDate);
+        if (playerList.isEmpty()) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.T2));
         }
-        Team team = optionalTeam.get();
-        return ResponseEntity.ok(dataUtil.findAllPlayersStatsByTeam(team));
+        return ResponseEntity.ok(playerList);
+    }
+
+    private Team findTeam(String username) throws UsernameNotFoundException {
+        Optional<Team> team = userRepository.findByLogin(username).map(UserEntity::getTeam);
+        if (team.isEmpty()) {
+            throw new UsernameNotFoundException("User not found " + username);
+        }
+        return team.get();
     }
 
     public ResponseEntity<?> closestMatches(LocalDate startDate, int page, Long leagueId) {

@@ -20,6 +20,7 @@ export class AuthEffects {
       switchMap((action) => {
         return this.apiService.login(action.loginData).pipe(
           map((user) => {
+            localStorage.setItem('logoUrl', user.teamLogo);
             this.router.navigate(['/home']);
             return AuthActions.loginSuccess({ user: { ...user } });
           }),
@@ -48,6 +49,7 @@ export class AuthEffects {
       switchMap(() => {
         return this.apiService.autoLogin().pipe(
           map((user) => {
+            localStorage.setItem('logoUrl', user.teamLogo);
             return AuthActions.autoLoginSuccess({ user: { ...user } });
           }),
           catchError(() => {

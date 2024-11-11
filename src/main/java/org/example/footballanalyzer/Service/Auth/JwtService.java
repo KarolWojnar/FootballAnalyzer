@@ -33,7 +33,7 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) throws ExpiredJwtException {
         return Jwts.parser()
                 .setSigningKey(getSignKey())
                 .build()

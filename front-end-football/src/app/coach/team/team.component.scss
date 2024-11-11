@@ -1,7 +1,85 @@
+.dark-theme {
+
+  .team-container {
+    background-color: #121212;
+    color: #ffffff;
+  }
+
+  .toggle-button {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .toggle-button:hover {
+    background-color: #0056b3;
+  }
+
+  .team-form {
+    background-color: #1e1e1e;
+  }
+
+  .team-form input, .team-form select {
+    border: 1px solid #333;
+    background-color: #1e1e1e;
+    color: #ffffff;
+  }
+
+  .team-form button {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .team-form button:hover {
+    background-color: #0056b3;
+  }
+
+  .active {
+    background-color: #1e1e1e;
+    color: white;
+  }
+
+  .nav-link {
+    color: white;
+  }
+}
+
+
+.light-theme {
+  .team-container {
+    background-color: #e1e8f0;
+    color: #2a2f3b;
+  }
+
+  .toggle-button {
+    background-color: rgba(0, 123, 255, 0.45);
+
+    &:hover {
+      background-color: rgba(0, 123, 255, 0.67);
+    }
+  }
+
+  .team-form {
+    background-color: #ffffff;
+  }
+
+  .team-form input, .team-form select {
+    border: 1px solid #333;
+    background-color: #ffffff;
+    color: #2a2f3b;
+  }
+
+  .nav-link {
+    color: #2a2f3b;
+  }
+
+  .active {
+    background-color: rgba(0, 123, 255, 0.45);
+    color: white;
+  }
+}
+
 .team-container {
   padding: 20px;
-  background-color: #121212;
-  color: #ffffff;
   border-radius: 10px;
 }
 
@@ -22,8 +100,6 @@ h1 {
 }
 
 .toggle-button {
-  background-color: #007bff;
-  color: white;
   border: none;
   border-radius: 5px;
   padding: 8px 16px;
@@ -31,17 +107,13 @@ h1 {
   font-size: 14px;
 }
 
-.toggle-button:hover {
-  background-color: #0056b3;
-}
-
 .form-container {
-  width: 25%;
+  width: 20%;
   margin-top: 20px;
 }
 
 .chart-container-with-form {
-  width: 75%;
+  width: 80%;
 }
 
 .chart-container-no-form {
@@ -61,23 +133,14 @@ h1 {
 .team-form input, .team-form select {
   padding: 8px;
   margin-bottom: 10px;
-  border: 1px solid #333;
   border-radius: 5px;
-  background-color: #1e1e1e;
-  color: #ffffff;
 }
 
 .team-form button {
   padding: 10px;
-  background-color: #007bff;
-  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-}
-
-.team-form button:hover {
-  background-color: #0056b3;
 }
 
 h2 {
@@ -90,31 +153,9 @@ table {
   margin-bottom: 20px;
 }
 
-th, td {
-  padding: 10px;
-  border: 1px solid #333;
-  text-align: center;
-}
-
-th {
-  background-color: #272727;
-}
-
-tr:nth-child(even) {
-  background-color: #1e1e1e;
-}
 
 p {
   font-size: 1.1em;
-}
-
-.active {
-  background-color: #1e1e1e;
-  color: white;
-}
-
-.nav-link {
-  color: white;
 }
 
 @media (max-width: 768px) {

@@ -1,46 +1,50 @@
-<div class="login-wrapper w-75 mt-3 container bg-light rounded-4 bg-opacity-10">
-  <h2 class="text-white justify-content-center d-flex">Zaloguj się</h2>
-  <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
-    <div class="justify-content-center d-flex">
-      <mat-form-field color="accent" class="w-75" appearance="fill">
-        <mat-label>Nazwa użytkownika</mat-label>
-        <input matInput required maxlength="50" name="login" [formControl]="controls.login">
-        <mat-error *ngIf="controls.login.invalid">{{ getErrorMessage(controls.login) }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div class="justify-content-center d-flex">
-      <mat-form-field color="accent" class="w-75" appearance="fill">
-        <mat-label>Hasło</mat-label>
-        <input [type]="hide ? 'password' : 'text'" matInput required name="password" [formControl]="controls.password">
-        <button (click)="hide = !hide" [attr.aria-label]="'Ukryj hasło'" [attr.aria-pressed]="hide" mat-icon-button
-                matSuffix>
-          <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
-        </button>
-        <mat-error *ngIf="controls.login.invalid">{{ getErrorMessage(controls.password) }}</mat-error>
-      </mat-form-field>
-    </div>
-    <div class="d-flex justify-content-center">
-      <ng-container *ngIf="(loginForm.controls?.['login']?.invalid && (loginForm.controls?.['login']?.touched || loginForm.controls?.['login']?.dirty))
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <div class="login-wrapper w-75 mt-3 shadow container login-container rounded-4">
+    <h2 class=" justify-content-center d-flex">Zaloguj się</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" class="create-account-form">
+      <div class="justify-content-center d-flex">
+        <mat-form-field color="accent" class="w-75 input-field" appearance="fill">
+          <mat-label class="input-type">Nazwa użytkownika</mat-label>
+          <input matInput required maxlength="50" name="login" [formControl]="controls.login">
+          <mat-error *ngIf="controls.login.invalid">{{ getErrorMessage(controls.login) }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="justify-content-center d-flex">
+        <mat-form-field color="accent" class="w-75" appearance="fill">
+          <mat-label>Hasło</mat-label>
+          <input [type]="hide ? 'password' : 'text'" matInput required name="password"
+                 [formControl]="controls.password">
+          <button (click)="hide = !hide" [attr.aria-label]="'Ukryj hasło'" [attr.aria-pressed]="hide" mat-icon-button
+                  matSuffix>
+            <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          <mat-error *ngIf="controls.login.invalid">{{ getErrorMessage(controls.password) }}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="d-flex justify-content-center">
+        <ng-container *ngIf="(loginForm.controls?.['login']?.invalid && (loginForm.controls?.['login']?.touched || loginForm.controls?.['login']?.dirty))
           || (loginForm.controls?.['password']?.invalid && (loginForm.controls?.['password']?.touched || loginForm.controls?.['password']?.dirty))">
-        <app-alert *ngIf="loginForm.controls?.['login']?.errors || loginForm.controls?.['password']?.errors"
-                   [text]="'Pola nie mogą być puste.'"></app-alert>
-      </ng-container>
-      <div class="d-flex justify-content-center" *ngIf="errorMsg$ | async as error">
-        <ng-container>
-          <app-alert [text]="error.toString()"></app-alert>
+          <app-alert *ngIf="loginForm.controls?.['login']?.errors || loginForm.controls?.['password']?.errors"
+                     [text]="'Pola nie mogą być puste.'"></app-alert>
         </ng-container>
+        <div class="d-flex justify-content-center" *ngIf="errorMsg$ | async as error">
+          <ng-container>
+            <app-alert [text]="error.toString()"></app-alert>
+          </ng-container>
+        </div>
+        <div class="d-flex flex-column align-items-center" *ngIf="loading$ | async as error">
+          <mat-spinner diameter="50" color="accent"></mat-spinner>
+          <p class=" mt-2">Trwa logowanie...</p>
+        </div>
       </div>
-      <div class="d-flex flex-column align-items-center" *ngIf="loading$ | async as error">
-        <mat-spinner diameter="50" color="accent"></mat-spinner>
-        <p class="text-white mt-2">Trwa logowanie...</p>
+      <div class="d-flex justify-content-end">
+        <button type="submit" class="bg-primary m-2" (click)="clearError()" [disabled]="loginForm.invalid"
+                mat-raised-button>Zaloguj
+        </button>
+        <a routerLink="/register" class="bg-primary m-2" mat-raised-button>Zarejestruj</a>
       </div>
-    </div>
-    <div class="d-flex justify-content-end">
-      <button type="submit" class="bg-primary m-2" (click)="clearError()" [disabled]="loginForm.invalid"
-              mat-raised-button>Zaloguj
-      </button>
-      <a routerLink="/register" class="bg-primary m-2" mat-raised-button>Zarejestruj</a>
-    </div>
-    <p class="text-center text-white">Zapomniałeś hasła? <a routerLink="/forgot-password" class="link-primary">Odzyskaj hasło.</a></p>
-  </form>
+      <p class="text-center ">Zapomniałeś hasła? <a routerLink="/forgot-password" class="link-primary">Odzyskaj
+        hasło.</a></p>
+    </form>
+  </div>
 </div>

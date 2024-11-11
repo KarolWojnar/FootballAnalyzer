@@ -6,6 +6,7 @@ import {
   ApexFill,
   ApexMarkers,
   ApexStroke,
+  ApexTheme,
   ApexTitleSubtitle,
   ApexXAxis,
   ChartComponent,
@@ -17,6 +18,7 @@ export type ChartOptions = {
   chart: ApexChart;
   title: ApexTitleSubtitle;
   stroke: ApexStroke;
+  theme: ApexTheme;
   fill: ApexFill;
   markers: ApexMarkers;
   xaxis: ApexXAxis;
@@ -30,6 +32,7 @@ export type ChartOptions = {
 export class TeamRadarChartComponent implements OnChanges {
   @ViewChild('chart') chart!: ChartComponent;
   @Input() teamStats!: Stats;
+  @Input() isDarkMode!: boolean;
   public chartOptions: ChartOptions = this.addExampleChart();
 
   ngOnChanges(): void {
@@ -59,34 +62,33 @@ export class TeamRadarChartComponent implements OnChanges {
         },
       ],
       chart: {
-        foreColor: 'white',
-        height: 600,
+        height: 500,
         type: 'radar',
-        dropShadow: {
-          opacity: 0.5,
-          enabled: true,
-          blur: 1,
-          left: 1,
-          top: 1,
-        },
+        foreColor: this.isDarkMode ? '#f1f1f1' : '#2a2f3b',
+        background: this.isDarkMode ? '#1e1e1e' : '#fff',
+      },
+      theme: {
+        mode: this.isDarkMode ? 'dark' : 'light',
+        palette: 'palette5',
+      },
+      stroke: {
+        width: 1,
+      },
+      fill: {
+        opacity: 0.6,
+      },
+      markers: {
+        size: 3,
+      },
+      xaxis: {
+        categories: ['Agresja', 'Atak', 'Kreatywność', 'Obrona'],
       },
       title: {
         text: 'Radar statystyk',
         style: {
-          color: 'white',
+          color: this.isDarkMode ? '#f1f1f1' : '#2a2f3b',
+          fontSize: '20px',
         },
-      },
-      stroke: {
-        width: 0,
-      },
-      fill: {
-        opacity: 0.4,
-      },
-      markers: {
-        size: 2,
-      },
-      xaxis: {
-        categories: ['Agresja', 'Atak', 'Kreatywność', 'Obrona'],
       },
     };
   }
@@ -122,6 +124,9 @@ export class TeamRadarChartComponent implements OnChanges {
       },
       stroke: {
         width: 0,
+      },
+      theme: {
+        mode: 'light',
       },
       fill: {
         opacity: 0.4,

@@ -26,7 +26,7 @@
           </li>
           <ng-container *ngIf="role === 'ROLE_COACH' || role === 'ROLE_ADMIN'">
             <li class="nav-item">
-              <a routerLink="oponent" class="text-white nav-link"
+              <a routerLink="opponent" class="text-white nav-link"
                  routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">Kolejny rywal</a>
             </li>
           </ng-container>
@@ -59,6 +59,11 @@
                routerLinkActive="bg-primary bg-light bg-gradient bg-opacity-10 m-0 shadow rounded">O nas</a>
           </li>
         </ng-template>
+        <li class="nav-item">
+          <button mat-button (click)="toggleDarkMode()" class="dark-mode-toggle">
+            <mat-icon>{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</mat-icon>
+          </button>
+        </li>
       </ul>
     </div>
   </div>

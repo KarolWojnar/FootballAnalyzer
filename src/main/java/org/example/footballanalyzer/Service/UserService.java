@@ -51,6 +51,7 @@ public class UserService {
     private final CookieService cookieService;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
+    private final HttpServletRequest request;
     @Value("${jwt.exp}")
     private int exp;
     @Value("${jwt.refresh.exp}")
@@ -114,6 +115,7 @@ public class UserService {
                 return ResponseEntity.ok(
                         UserDTO.builder()
                                 .login(userEntity.getLogin())
+                                .teamLogo(userEntity.getTeam() == null ? null : userEntity.getTeam().getLogo())
                                 .email(userEntity.getEmail())
                                 .roleName(userEntity.getRole().getRoleName().name())
                                 .firstName(userEntity.getFirstName())
@@ -184,6 +186,7 @@ public class UserService {
                 return ResponseEntity.ok(
                         UserDTO.builder()
                                 .login(user.getLogin())
+                                .teamLogo(user.getTeam() == null ? null : user.getTeam().getLogo())
                                 .email(user.getEmail())
                                 .roleName(user.getRole().getRoleName().name())
                                 .firstName(user.getFirstName())
@@ -248,4 +251,17 @@ public class UserService {
     }
 
 
+    public ResponseEntity<?> getRole() {
+        String username = request.getUserPrincipal().getName();
+        if (username == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.R1));
+        }
+        UserEntity user = userRepository.findByLogin(username).orElse(null);
+        if (user == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.R1));
+        }
+        RoleName roleName = user.getRole().getRoleName();
+
+        return ResponseEntity.ok(roleName);
+    }
 }
