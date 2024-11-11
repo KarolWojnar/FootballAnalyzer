@@ -131,13 +131,15 @@ public class DataUtil {
         return newPlayer;
     }
 
-    public void savePlayerStats(Player player, Fixture fixture, int offsides, JSONObject games, JSONObject shots,
+    @Transactional
+    public void savePlayerStats(Player player, Fixture fixture, Team team, int offsides, JSONObject games, JSONObject shots,
                                 JSONObject goals, JSONObject passes, JSONObject tackles, JSONObject duels,
                                 JSONObject dribbles, JSONObject fouls, JSONObject cards, JSONObject penalty) {
         FixturesStats newFixturesStats = new FixturesStats();
         newFixturesStats.setPlayer(player);
         newFixturesStats.setFixture(fixture);
         newFixturesStats.setOffsides(offsides);
+        newFixturesStats.setTeam(team);
         newFixturesStats.setMinutes(games.optInt("minutes", 0));
         newFixturesStats.setPosition(games.optString("position", "N/A"));
         newFixturesStats.setRating(games.optDouble("rating", 0.0));
@@ -184,12 +186,11 @@ public class DataUtil {
     }
 
     public List<PlayerStatsDto> findAllPlayersStatsByTeamAndDate(Team team, LocalDate startDate, LocalDate endDate) {
-        List<Player> playersFromTeam = playerRepository.findAllByTeam(team);
 
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date dateEnd = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        return fixturesStatsRepository.findAllPlayerStatsByPlayers(playersFromTeam, dateStart, dateEnd);
+        return fixturesStatsRepository.findAllPlayerStatsByTeam(team, dateStart, dateEnd);
     }
 
     public ResponseEntity<?> closestMatches(Date startDate, int page, Long leagueId) {

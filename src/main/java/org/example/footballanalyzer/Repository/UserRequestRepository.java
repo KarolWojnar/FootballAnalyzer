@@ -14,4 +14,7 @@ public interface UserRequestRepository extends JpaRepository<UserRequest, Long> 
     @Transactional
     @Query("DELETE FROM UserRequest ur WHERE ur.user.id = :userId")
     void deleteAllByUserId(@Param("userId") Long userId);
+
+    @Transactional
+    void deleteByRequestStatus(UserRequest.RequestStatus requestStatus);
 }

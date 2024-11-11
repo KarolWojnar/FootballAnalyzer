@@ -34,4 +34,6 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
     @Transactional
     @Query("update Fixture f set f.isCollected = true where f.id = ?1")
     void setFixtureAsCollected(Long id);
+
+    List<Fixture> findAllByDateBeforeAndIsCountedOrderByDate(Date date, boolean counted);
 }

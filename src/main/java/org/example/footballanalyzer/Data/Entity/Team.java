@@ -36,6 +36,9 @@ public class Team {
     @ManyToMany(mappedBy = "teams")
     private Set<League> leagues = new HashSet<>();
 
+    @OneToMany(mappedBy = "team", cascade = CascadeType.ALL)
+    private Set<FixturesStats> fixtureStats;
+
     @Override
     public String toString() {
         return "Team{" +

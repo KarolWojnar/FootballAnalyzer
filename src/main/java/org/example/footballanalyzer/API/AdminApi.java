@@ -3,7 +3,6 @@ package org.example.footballanalyzer.API;
 
 import jdk.jfr.Description;
 import org.example.footballanalyzer.Data.Dto.UserEntityEditData;
-import org.example.footballanalyzer.Data.Entity.UserRequest;
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +13,7 @@ import java.text.ParseException;
 
 @Description("Api for admin.")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", allowedHeaders = "*")
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/api/admin")
 public interface AdminApi {
     @PostMapping("/fixtures/save-all-by-league-season")
@@ -50,6 +49,6 @@ public interface AdminApi {
     @GetMapping("/requests")
     ResponseEntity<?> getAllRequests();
 
-    @PostMapping("/requests/{id}/status")
-    ResponseEntity<?> approveRequest(@PathVariable Long id, @RequestBody UserRequest.RequestStatus status);
+    @PatchMapping("/requests/{id}")
+    ResponseEntity<?> setAsResolved(@PathVariable Long id);
 }

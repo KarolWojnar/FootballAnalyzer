@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.example.footballanalyzer.Service.Auth.JwtService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @RequiredArgsConstructor
+@EnableScheduling
 public class FootballAnalyzerApplication {
 
     public static void main(String[] args) {
