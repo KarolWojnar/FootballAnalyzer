@@ -45,19 +45,21 @@ export class TeamRadarChartComponent implements OnChanges {
         {
           name: this.teamStats.teamRating.team,
           data: [
-            (this.teamStats.teamRating.aggression * 10000) / 100,
-            (this.teamStats.teamRating.attacking * 10000) / 100,
-            (this.teamStats.teamRating.creativity * 10000) / 100,
-            (this.teamStats.teamRating.defending * 10000) / 100,
+            Math.round(this.teamStats.teamRating.aggression * 100000) / 1000,
+            Math.round(this.teamStats.teamRating.attacking * 100000) / 1000,
+            Math.round(this.teamStats.teamRating.creativity * 100000) / 1000,
+            Math.round(this.teamStats.teamRating.defending * 100000) / 1000,
           ],
         },
         {
           name: 'Średnia wszystkich drużyn',
           data: [
-            (this.teamStats.allTeamsRating.aggression * 10000) / 100,
-            (this.teamStats.allTeamsRating.attacking * 10000) / 100,
-            (this.teamStats.allTeamsRating.creativity * 10000) / 100,
-            (this.teamStats.allTeamsRating.defending * 10000) / 100,
+            Math.round(this.teamStats.allTeamsRating.aggression * 100000) /
+              1000,
+            Math.round(this.teamStats.allTeamsRating.attacking * 100000) / 1000,
+            Math.round(this.teamStats.allTeamsRating.creativity * 100000) /
+              1000,
+            Math.round(this.teamStats.allTeamsRating.defending * 100000) / 1000,
           ],
         },
       ],
