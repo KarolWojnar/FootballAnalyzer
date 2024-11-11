@@ -4,29 +4,23 @@ import jdk.jfr.Description;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Dto.UserLoginData;
-import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
+import org.example.footballanalyzer.Data.Dto.UserRequestDto;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Data.ResetPasswordMail;
 import org.example.footballanalyzer.Data.ValidationMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", allowedHeaders = "*")
 @Description("API for managing users")
 public interface UserApi {
-    @GetMapping
-    @PreAuthorize("hasAuthority('ADMIN')")
-    ResponseEntity<List<UserDTO>> getAllUsers();
-
     @PostMapping("/register")
     ResponseEntity<?> createUser(@Valid @RequestBody UserDTO user);
 
@@ -48,7 +42,7 @@ public interface UserApi {
     @GetMapping("/logout")
     ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response);
     @PostMapping("/requests")
-    ResponseEntity<?> request(@RequestBody UserRequesetDto userRequest);
+    ResponseEntity<?> request(@RequestBody UserRequestDto userRequest);
 
     @GetMapping("/activate")
     ResponseEntity<AuthResponse> activeUser(@RequestParam String uuid);

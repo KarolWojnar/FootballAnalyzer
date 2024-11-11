@@ -28,6 +28,11 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     @Modifying
     @Transactional
-    @Query("update UserEntity u set u.isLocked = false where u.uuid = ?1")
-    void unlockUser(String uuid);
+    @Query("update UserEntity u set u.isLocked = ?2 where u.uuid = ?1")
+    void unlockUser(String uuid, boolean isLocked);
+
+    @Modifying
+    @Transactional
+    @Query("update UserEntity u set u.team.id = ?2 where u.id = ?1")
+    void updateTeam(Long id, Long teamId);
 }

@@ -6,7 +6,7 @@ import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.FixturesDto;
 import org.example.footballanalyzer.Data.Dto.PlayerStatsDto;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
-import org.example.footballanalyzer.Data.Dto.UserRequesetDto;
+import org.example.footballanalyzer.Data.Dto.UserRequestDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
 import org.example.footballanalyzer.Service.EmailService;
@@ -232,7 +232,7 @@ public class DataUtil {
         }
     }
 
-    public ResponseEntity<?> saveNewRequest(UserRequesetDto userRequest, String requestData) {
+    public ResponseEntity<?> saveNewRequest(UserRequestDto userRequest, String requestData) {
         UserRequest newUserRequest = new UserRequest();
         Optional<UserEntity> optionalUser = userRepository.findByLogin(userRequest.getLogin());
         if (optionalUser.isEmpty()) {
