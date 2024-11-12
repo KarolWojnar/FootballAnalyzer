@@ -68,6 +68,9 @@ export class RegisterComponent implements OnInit {
       if (this.registerForm.value.checkBox?.valueOf() === true) {
         this.handleTakenTeam();
       }
+      if (this.request?.requestType === 'Nowa drużyna') {
+        this.registerForm.value.teamId = undefined;
+      }
       this.apiService.register(this.registerForm.value).subscribe({
         next: () => {
           this.isSubmitting = false;
