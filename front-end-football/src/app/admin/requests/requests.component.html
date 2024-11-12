@@ -1,14 +1,17 @@
 <div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
-  <div class="container-fluid row mt-4">
+  <div class="container-fluid row mt-1">
     <div class="col-12 col-md-12 main-content">
       <div class="d-flex justify-content-center">
         <mat-progress-spinner color="accent" mode="indeterminate" *ngIf="isSubmitting"></mat-progress-spinner>
         <div class="example-rate-limit-reached" *ngIf="showAlert">{{ alertMessage }}</div>
       </div>
 
-      <div class="example-table-container rounded shadow p-1">
-        <div *ngIf="!isSubmitting">
+      <div class="d-flex justify-content-between" *ngIf="!isSubmitting && dataSource">
           <h3>Wszystkie zgłoszenia</h3>
+        <button mat-raised-button class="button-save" (click)="saveChanges()">Zapisz zmiany</button>
+      </div>
+      <div class="example-table-container rounded shadow p-1">
+        <div *ngIf="!isSubmitting && dataSource">
           <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
             <ng-container matColumnDef="id">
@@ -66,9 +69,5 @@
         </div>
       </div>
     </div>
-  </div>
-
-  <div class="save-button-container">
-    <button mat-raised-button color="accent" (click)="saveChanges()">Zapisz zmiany</button>
   </div>
 </div>

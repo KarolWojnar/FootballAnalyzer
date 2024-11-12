@@ -67,9 +67,12 @@ public class UserService {
         Optional<Team> optionalTeam = teamRepository.findByTeamId(user.getTeamId());
 
         if (optionalTeam.isPresent()) {
-            Optional<UserEntity> headCoach = userRepository.findByTeamAndRole_RoleName(optionalTeam.get(), RoleName.TRENER);
-            if (headCoach.isPresent() && user.getRoleId() == 3){
-                return ResponseEntity.badRequest().body(new AuthResponse(Code.R2));
+            Optional<Role> role = roleRepository.findByRoleName(RoleName.TRENER);
+            if (role.isPresent()) {
+                Optional<UserEntity> headCoach = userRepository.findFirstByTeamAndRole(optionalTeam.get(), role.get());
+                if (headCoach.isPresent() && user.getRoleId() == role.get().getId()) {
+                    return ResponseEntity.badRequest().body(new AuthResponse(Code.R2));
+                }
             }
         }
 

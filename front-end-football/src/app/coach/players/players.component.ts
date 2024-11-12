@@ -106,7 +106,12 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
       error: (error) => {
         this.isSubmitting = false;
         this.showAlert = true;
-        this.alertMessage = error.error.message;
+        if (error.error.status === 403) {
+          this.alertMessage = 'Brak uprawnień do przeglądania zawodników.';
+          return;
+        }
+
+        this.alertMessage = 'Brak danych o drużynie.';
       },
     });
   }

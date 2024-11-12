@@ -1,5 +1,6 @@
 package org.example.footballanalyzer.Repository;
 
+import org.example.footballanalyzer.Data.Entity.Role;
 import org.example.footballanalyzer.Data.Entity.Team;
 import org.example.footballanalyzer.Data.Entity.UserEntity;
 import org.example.footballanalyzer.Data.RoleName;
@@ -17,7 +18,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
     Optional<UserEntity> findByEmail(String email);
 
-    Optional<UserEntity> findByTeamAndRole_RoleName(Team team, RoleName role);
+    Optional<UserEntity> findFirstByTeamAndRole(Team team, Role role);
 
     Optional<UserEntity> findFirstByEmailOrLogin(String email, String login);
 
@@ -35,4 +36,6 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Transactional
     @Query("update UserEntity u set u.team.id = ?2 where u.id = ?1")
     void updateTeam(Long id, Long teamId);
+
+    Optional<UserEntity> findByTeamAndRole_RoleName(Team team, RoleName roleName);
 }

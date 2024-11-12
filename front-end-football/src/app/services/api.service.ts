@@ -67,6 +67,7 @@ export class ApiService {
   }
 
   addRequest(request: RequestProblem) {
+    console.log(request);
     const requestUrl = `${this.apiUrl}/users/requests`;
     return this.httpClient.post(requestUrl, request);
   }

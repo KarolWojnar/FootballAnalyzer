@@ -110,13 +110,6 @@ export class FormService {
   today = new Date();
 
   initPlayerStatsForm(): FormGroup<PlayerStatsForm> {
-    console.log(
-      this.today.getFullYear() +
-        (this.today.getMonth() + 1 > 9 ? '-' : '-0') +
-        (this.today.getMonth() + 1) +
-        (this.today.getDate() > 9 ? '-' : '-0') +
-        this.today.getDate(),
-    );
     return new FormGroup({
       startDate: new FormControl(
         this.today.getFullYear() +

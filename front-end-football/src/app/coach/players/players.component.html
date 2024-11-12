@@ -3,7 +3,7 @@
 
     <div class="main-content gap-2 d-flex justify-content-center">
       <div class="form-container">
-        <div *ngIf="formVisible">
+        <div *ngIf="formVisible && dataSource.data">
           <form [formGroup]="form" (ngSubmit)="onSubmit()" class="team-form shadow rounded">
             <label for="startDate">Data początkowa:</label>
             <input type="date" id="startDate" formControlName="startDate" required/>
@@ -21,9 +21,9 @@
           <p class="mt-2">Zbieranie danych...</p>
         </div>
         <div *ngIf="showAlert && !isSubmitting" class="alert alert-warning text-center mt-3 opacity-75">
-          {{ alertMessage.toString() }}
+          {{ alertMessage }}
         </div>
-        <div class="form-toggle d-flex justify-content-between">
+        <div class="form-toggle d-flex justify-content-between" *ngIf="dataSource.data">
           <button class="toggle-button shadow" (click)="toggleForm()">
             {{ formVisible ? 'Ukryj formularz' : 'Pokaż formularz' }}
           </button>

@@ -94,8 +94,9 @@
         </ng-container>
       </div>
       <div *ngIf="coachTaken" class="d-flex justify-content-center">
-        <p class="text-white">
-          <input type="checkbox" [formControl]="controls.checkBox">Jeżeli to Ty jestes głównym trenerem, zaznacz.
+        <p>
+          <mat-checkbox class="custom-checkbox p-1 shadow rounded" [formControl]="controls.checkBox"><h6>Jeżeli to Ty
+            jestes głównym trenerem, zaznacz.</h6></mat-checkbox>
         </p>
       </div>
       <div class="d-flex justify-content-end">

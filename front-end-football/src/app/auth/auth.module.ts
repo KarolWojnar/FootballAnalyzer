@@ -14,6 +14,7 @@ import { AccoutActivationComponent } from './components/accout-activation/accout
 import { ForgotPasswordComponent } from './components/forgot-password/forgot-password.component';
 import { PasswordRecoveryFormComponent } from './components/password-recovery-form/password-recovery-form.component';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     ReactiveFormsModule,
     MatProgressSpinnerModule,
     MatProgressBarModule,
+    MatCheckboxModule,
   ],
   exports: [LoginComponent, RegisterComponent],
 })

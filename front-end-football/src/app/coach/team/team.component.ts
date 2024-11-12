@@ -20,6 +20,7 @@ export class TeamComponent implements OnInit {
   selectedChart = 'line';
   isDarkMode = true;
   logoUrl = localStorage.getItem('logoUrl')!;
+  alertMessage = '';
   constructor(
     private apiService: ApiService,
     private formService: FormService,
@@ -44,7 +45,12 @@ export class TeamComponent implements OnInit {
         this.selectedChart = 'line';
       },
       error: (err) => {
-        console.log(err);
+        if (err.error.status === 403) {
+          this.alertMessage = 'Brak uprawnień do przeglądania zawodników.';
+          return;
+        }
+
+        this.alertMessage = 'Brak danych o drużynie.';
       },
     });
   }

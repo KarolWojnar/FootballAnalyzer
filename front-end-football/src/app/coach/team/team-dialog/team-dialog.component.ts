@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-team-dialog',
@@ -9,15 +10,20 @@ import { MatDialogRef } from '@angular/material/dialog';
 })
 export class TeamDialogComponent {
   teamForm;
+  isDarkMode = false;
 
   constructor(
     private fb: FormBuilder,
     private dialogRef: MatDialogRef<TeamDialogComponent>,
+    private themeService: ThemeService,
   ) {
     this.teamForm = this.fb.group({
-      country: ['', Validators.required],
-      leagueName: ['', Validators.required],
-      teamName: ['', Validators.required],
+      kraj: ['', Validators.required],
+      liga: ['', Validators.required],
+      drużyna: ['', Validators.required],
+    });
+    this.themeService.darkMode$.subscribe((isDarkMode) => {
+      this.isDarkMode = isDarkMode;
     });
   }
 

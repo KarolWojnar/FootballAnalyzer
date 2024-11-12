@@ -19,6 +19,10 @@
   .register-container {
     background-color: #1e1e1e;
   }
+
+  h6 {
+    color: #f6f4e9;
+  }
 }
 
 .light-theme {
@@ -26,6 +30,11 @@
   background-color: #e1e8f0;
 
   .register-container {
-    background-color: #ffffff;
+    background-color: white;
+  }
+
+
+  .custom-checkbox {
+    background-color: rgb(80, 80, 80);
   }
 }

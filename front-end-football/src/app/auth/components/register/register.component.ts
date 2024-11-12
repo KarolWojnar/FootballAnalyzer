@@ -65,6 +65,9 @@ export class RegisterComponent implements OnInit {
 
     if (this.registerForm.valid) {
       this.isSubmitting = true;
+      if (this.registerForm.value.checkBox?.valueOf() === true) {
+        this.handleTakenTeam();
+      }
       this.apiService.register(this.registerForm.value).subscribe({
         next: () => {
           this.isSubmitting = false;
@@ -81,6 +84,7 @@ export class RegisterComponent implements OnInit {
           }, 2000);
         },
         error: ({ error }: { error: any }) => {
+          this.coachTaken = false;
           this.isSubmitting = false;
           this.alertMessage = error.message;
 
@@ -118,6 +122,27 @@ export class RegisterComponent implements OnInit {
         };
       }
     });
+  }
+
+  private handleTakenTeam() {
+    const teamId: number | undefined =
+      this.registerForm.value.teamId?.valueOf();
+    this.request = {
+      id: 0,
+      requestData: {
+        drużyna:
+          typeof teamId !== 'undefined'
+            ? this.teams.find((t) => t.id === teamId)?.name
+            : 'N/A',
+        id: teamId ? teamId.toString() : 'N/A',
+      },
+      requestType: 'Trener_zajęty',
+      requestStatus: 'NOWE',
+      login: '',
+    };
+    this.registerForm.value.roleId = this.roles.find(
+      (role) => role.roleName === 'ANALITYK',
+    )?.id;
   }
 }
 
