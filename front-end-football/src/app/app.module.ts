@@ -25,6 +25,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatMenuModule } from '@angular/material/menu';
 
 registerLocaleData(localePl);
 
@@ -53,6 +56,9 @@ registerLocaleData(localePl);
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
+    MatSidenavModule,
+    MatListModule,
+    MatMenuModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -2,12 +2,25 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { AdminRoutingModule } from './admin-routing.module';
-import { RequestFormComponent } from './components/request-form/request-form.component';
-import { UserFormComponent } from './components/user-form/user-form.component';
-import { TeamFormComponent } from './components/team-form/team-form.component';
+import { RequestsComponent } from './requests/requests.component';
+import { TeamsComponent } from './teams/teams.component';
+import { UsersComponent } from './users/users.component';
+import { HomeModule } from '../home/home.module';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
-  declarations: [RequestFormComponent, UserFormComponent, TeamFormComponent],
-  imports: [CommonModule, AdminRoutingModule],
+  declarations: [UsersComponent, RequestsComponent, TeamsComponent],
+  imports: [
+    CommonModule,
+    AdminRoutingModule,
+    HomeModule,
+    MatSelectModule,
+    MatExpansionModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+  ],
 })
 export class AdminModule {}

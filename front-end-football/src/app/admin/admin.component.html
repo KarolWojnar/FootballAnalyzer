@@ -1,3 +1,25 @@
-<p>admin works!</p>
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" class="sidenav" [opened]="!isMobile">
+      <mat-toolbar class="sidenav-header">
+        <span>Admin Panel</span>
+      </mat-toolbar>
+      <mat-nav-list>
+        <a mat-list-item routerLink="/admin/users" routerLinkActive="shadow radius active"><h6>Użytkownicy</h6></a>
+        <a mat-list-item routerLink="/admin/requests" routerLinkActive="active shadow radius"><h6>Zgłoszenia</h6></a>
+        <a mat-list-item routerLink="/admin/teams" routerLinkActive="active shadow radius"><h6>Drużyny</h6></a>
+      </mat-nav-list>
+    </mat-sidenav>
 
-<img class="opacity-25" src="../../assets/images/logo_white.png" alt="asd">
+    <mat-sidenav-content class="mat-side">
+      <mat-toolbar class="custom-toolbar">
+        <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </mat-toolbar>
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

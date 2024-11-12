@@ -71,6 +71,13 @@ export class ApiService {
     return this.httpClient.post(requestUrl, request);
   }
 
+  getRequests(): Observable<RequestProblem[]> {
+    const requestUrl = `${this.apiUrl}/admin/requests`;
+    return this.httpClient.get<RequestProblem[]>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
   getLeagues() {
     const requestUrl = `${this.apiUrl}/coach/all-leagues`;
     return this.httpClient.get<League[]>(requestUrl);

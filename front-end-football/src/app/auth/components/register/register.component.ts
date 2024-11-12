@@ -110,8 +110,9 @@ export class RegisterComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.request = {
+          id: null,
           requestData: result,
-          requestType: 'ADD_TEAM',
+          requestType: 'Nowa drużyna',
           requestStatus: 'NOWE',
           login: '',
         };

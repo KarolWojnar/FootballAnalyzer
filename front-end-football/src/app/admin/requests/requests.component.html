@@ -1,0 +1,74 @@
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <div class="container-fluid row mt-4">
+    <div class="col-12 col-md-12 main-content">
+      <div class="d-flex justify-content-center" *ngIf="isSubmitting">
+        <mat-progress-spinner color="accent" mode="indeterminate" *ngIf="isSubmitting"></mat-progress-spinner>
+        <div class="example-rate-limit-reached" *ngIf="showAlert">{{ alertMessage }}</div>
+      </div>
+
+      <div class="example-table-container rounded shadow p-1">
+        <div *ngIf="!isSubmitting">
+          <h3>Wszystkie zgłoszenia</h3>
+          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef>ID</th>
+              <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="login">
+              <th mat-header-cell *matHeaderCellDef>Login</th>
+              <td mat-cell *matCellDef="let element">{{ element.login }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="requestType">
+              <th mat-header-cell *matHeaderCellDef>Typ zgłoszenia</th>
+              <td mat-cell *matCellDef="let element">{{ element.requestType }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="requestStatus">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let element">{{ element.requestStatus }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="requestData">
+              <th mat-header-cell *matHeaderCellDef>Dane zgłoszenia</th>
+              <td mat-cell *matCellDef="let element">
+                <mat-expansion-panel class="request-data">
+                  <mat-expansion-panel-header>
+                    <mat-panel-title class="request-data">
+                      Rozwiń dane zgłoszenia
+                    </mat-panel-title>
+                  </mat-expansion-panel-header>
+                  <div *ngFor="let key of objectKeys(element.requestData)">
+                    <p><strong>{{ key }}:</strong> {{ element.requestData[key] }}</p>
+                  </div>
+                </mat-expansion-panel>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>Zmień status</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="d-flex justify-content-around">
+                  <button mat-raised-button color="accent" (click)="changeStatus(element.id, 'ROZWIĄZANE')">Rozwiązane
+                  </button>
+                  <button mat-raised-button color="warn" (click)="changeStatus(element.id, 'BRAK ROZWIĄZANIA')">Brak
+                    rozwiązania
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="save-button-container">
+    <button mat-raised-button color="accent" (click)="saveChanges()">Zapisz zmiany</button>
+  </div>
+</div>
