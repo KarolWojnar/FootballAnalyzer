@@ -361,9 +361,10 @@ public class UserService {
     }
 
     @Transactional
-    public void setAsResolved(Long id) {
+    public void setAsResolved(Long id, String status) {
         UserRequest userRequest = userRequestRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found"));
-        userRequest.setRequestStatus(UserRequest.RequestStatus.ROZWIĄZANE);
+        UserRequest.RequestStatus requestStatus = UserRequest.RequestStatus.valueOf(status);
+        userRequest.setRequestStatus(requestStatus);
         userRequestRepository.save(userRequest);
     }
 

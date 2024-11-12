@@ -119,9 +119,9 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<?> setAsResolved(Long id) {
+    public ResponseEntity<?> changeStatus(Long id, String status) {
         try {
-            userService.setAsResolved(id);
+            userService.setAsResolved(id, status);
             return ResponseEntity.status(200).body(new AuthResponse(Code.SUCCESS));
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(404).body(new AuthResponse(Code.ERROR));

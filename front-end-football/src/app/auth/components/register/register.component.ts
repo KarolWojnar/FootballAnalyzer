@@ -110,7 +110,7 @@ export class RegisterComponent implements OnInit {
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
         this.request = {
-          id: null,
+          id: 0,
           requestData: result,
           requestType: 'Nowa drużyna',
           requestStatus: 'NOWE',

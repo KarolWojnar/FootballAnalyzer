@@ -10,6 +10,7 @@ import { RequestProblem } from '../../models/request/request';
 })
 export class RequestsComponent implements OnInit {
   dataSource!: RequestProblem[];
+  originalDataSource!: RequestProblem[];
   objectKeys = Object.keys;
   isDarkMode = false;
   displayedColumns: string[] = [
@@ -43,6 +44,7 @@ export class RequestsComponent implements OnInit {
           );
         });
         this.dataSource = dataSource;
+        this.originalDataSource = JSON.parse(JSON.stringify(dataSource));
         this.isSubmitting = false;
       },
       error: (error) => {
@@ -73,5 +75,42 @@ export class RequestsComponent implements OnInit {
     }
   }
 
-  saveChanges() {}
+  getChangedRequests(): RequestProblem[] {
+    return this.dataSource.filter((request, index) => {
+      return (
+        request.requestStatus !== this.originalDataSource[index].requestStatus
+      );
+    });
+  }
+
+  saveChanges() {
+    this.isSubmitting = true;
+    console.log(this.dataSource);
+    console.log(this.originalDataSource);
+    const changedRequests = this.getChangedRequests();
+    console.log(changedRequests.length);
+    if (changedRequests.length > 0) {
+      changedRequests.forEach((request) => {
+        this.apiService.updateRequest(request).subscribe({
+          next: () => {
+            this.isSubmitting = false;
+            this.showAlert = true;
+            this.alertMessage = 'Zmiany zostały zapisane pomyślnie!';
+          },
+          error: (error) => {
+            this.isSubmitting = false;
+            this.showAlert = true;
+            this.alertMessage = error.error.message;
+          },
+        });
+      });
+    } else {
+      this.isSubmitting = false;
+      this.showAlert = true;
+      this.alertMessage = 'Brak zmienionych zgłoszeń do zapisania.';
+      setTimeout(() => {
+        this.showAlert = false;
+      }, 3000);
+    }
+  }
 }

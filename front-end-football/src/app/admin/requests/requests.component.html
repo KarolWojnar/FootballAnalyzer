@@ -1,7 +1,7 @@
 <div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
   <div class="container-fluid row mt-4">
     <div class="col-12 col-md-12 main-content">
-      <div class="d-flex justify-content-center" *ngIf="isSubmitting">
+      <div class="d-flex justify-content-center">
         <mat-progress-spinner color="accent" mode="indeterminate" *ngIf="isSubmitting"></mat-progress-spinner>
         <div class="example-rate-limit-reached" *ngIf="showAlert">{{ alertMessage }}</div>
       </div>
@@ -53,7 +53,7 @@
                 <div class="d-flex justify-content-around">
                   <button mat-raised-button color="accent" (click)="changeStatus(element.id, 'ROZWIĄZANE')">Rozwiązane
                   </button>
-                  <button mat-raised-button color="warn" (click)="changeStatus(element.id, 'BRAK ROZWIĄZANIA')">Brak
+                  <button mat-raised-button color="warn" (click)="changeStatus(element.id, 'BRAK_ROZWIĄZANIA')">Brak
                     rozwiązania
                   </button>
                 </div>

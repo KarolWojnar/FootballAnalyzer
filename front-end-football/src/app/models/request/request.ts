@@ -1,5 +1,5 @@
 export interface RequestProblem {
-  id: number | null;
+  id: number;
   requestData: { [key: string]: string };
   requestType: string | null | undefined;
   requestStatus: string | null | undefined;

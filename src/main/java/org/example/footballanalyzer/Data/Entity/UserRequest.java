@@ -21,6 +21,7 @@ public class UserRequest {
     public enum RequestStatus {
         NOWE,
         ROZWIĄZANE,
+        BRAK_ROZWIĄZANIA,
         ZAMKNIĘTE
     }
 }

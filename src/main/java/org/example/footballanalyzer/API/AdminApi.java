@@ -50,5 +50,5 @@ public interface AdminApi {
     ResponseEntity<?> getAllRequests();
 
     @PatchMapping("/requests/{id}")
-    ResponseEntity<?> setAsResolved(@PathVariable Long id);
+    ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestBody String status);
 }

@@ -78,6 +78,13 @@ export class ApiService {
     });
   }
 
+  updateRequest(request: RequestProblem) {
+    const requestUrl = `${this.apiUrl}/admin/requests/${request.id}`;
+    return this.httpClient.patch(requestUrl, request.requestStatus, {
+      withCredentials: true,
+    });
+  }
+
   getLeagues() {
     const requestUrl = `${this.apiUrl}/coach/all-leagues`;
     return this.httpClient.get<League[]>(requestUrl);
