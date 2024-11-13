@@ -10,9 +10,11 @@ import { RequestProblem } from '../../models/request/request';
 })
 export class RequestsComponent implements OnInit {
   dataSource!: RequestProblem[];
+  filteredDataSource!: RequestProblem[];
   originalDataSource!: RequestProblem[];
   objectKeys = Object.keys;
   isDarkMode = false;
+  onlyNew = false;
   displayedColumns: string[] = [
     'id',
     'login',
@@ -24,6 +26,7 @@ export class RequestsComponent implements OnInit {
   isSubmitting = false;
   showAlert = false;
   alertMessage = '';
+  buttonFilter = 'Nowe';
 
   constructor(
     private themeService: ThemeService,
@@ -34,7 +37,7 @@ export class RequestsComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
+  getRequestes(): void {
     this.isSubmitting = true;
     this.apiService.getRequests().subscribe({
       next: (dataSource) => {
@@ -45,6 +48,7 @@ export class RequestsComponent implements OnInit {
         });
         this.dataSource = dataSource;
         this.originalDataSource = JSON.parse(JSON.stringify(dataSource));
+        this.updateFilteredDataSource();
         this.isSubmitting = false;
       },
       error: (error) => {
@@ -53,6 +57,10 @@ export class RequestsComponent implements OnInit {
         this.alertMessage = error.error.message;
       },
     });
+  }
+
+  ngOnInit(): void {
+    this.getRequestes();
   }
 
   changeStatus(id: number, newStatus: string): void {
@@ -76,19 +84,21 @@ export class RequestsComponent implements OnInit {
   }
 
   getChangedRequests(): RequestProblem[] {
-    return this.dataSource.filter((request, index) => {
+    return this.dataSource.filter((request) => {
+      const originalRequest = this.originalDataSource.find(
+        (original) => original.id === request.id,
+      );
       return (
-        request.requestStatus !== this.originalDataSource[index].requestStatus
+        originalRequest &&
+        request.requestStatus !== originalRequest.requestStatus
       );
     });
   }
 
   saveChanges() {
     this.isSubmitting = true;
-    console.log(this.dataSource);
-    console.log(this.originalDataSource);
     const changedRequests = this.getChangedRequests();
-    console.log(changedRequests.length);
+
     if (changedRequests.length > 0) {
       changedRequests.forEach((request) => {
         this.apiService.updateRequest(request).subscribe({
@@ -96,6 +106,13 @@ export class RequestsComponent implements OnInit {
             this.isSubmitting = false;
             this.showAlert = true;
             this.alertMessage = 'Zmiany zostały zapisane pomyślnie!';
+            this.originalDataSource = JSON.parse(
+              JSON.stringify(this.dataSource),
+            );
+            this.getRequestes();
+            setTimeout(() => {
+              this.showAlert = false;
+            }, 5000);
           },
           error: (error) => {
             this.isSubmitting = false;
@@ -110,7 +127,24 @@ export class RequestsComponent implements OnInit {
       this.alertMessage = 'Brak zmienionych zgłoszeń do zapisania.';
       setTimeout(() => {
         this.showAlert = false;
-      }, 3000);
+      }, 5000);
     }
+  }
+
+  updateFilteredDataSource() {
+    if (this.onlyNew) {
+      this.filteredDataSource = this.dataSource.filter(
+        (request) => request.requestStatus === 'NOWE',
+      );
+      this.buttonFilter = 'Wszystkie';
+    } else {
+      this.filteredDataSource = this.dataSource;
+      this.buttonFilter = 'Nowe';
+    }
+  }
+
+  onlyNewRequest() {
+    this.onlyNew = !this.onlyNew;
+    this.updateFilteredDataSource();
   }
 }

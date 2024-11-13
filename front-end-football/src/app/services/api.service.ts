@@ -143,4 +143,9 @@ export class ApiService {
     const requestUrl = `${this.apiUrl}/users/reset-password`;
     return this.httpClient.patch<AuthResponse>(requestUrl, changePassword);
   }
+
+  getLeaguesByCountry(countryName: string): Observable<League[]> {
+    const requestUrl = `${this.apiUrl}/admin/leaguesFromCountry/${countryName}`;
+    return this.httpClient.get<League[]>(requestUrl, { withCredentials: true });
+  }
 }

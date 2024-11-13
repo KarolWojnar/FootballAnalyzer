@@ -1,1 +1,82 @@
-<p>teams works!</p>
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <div class="container-fluid mt-3 p-4 main-container">
+    <div class="row g-4">
+      <!-- Lewa kolumna z formularzem wyboru kraju i ligi -->
+      <div class="col-12 col-md-6">
+        <div class="rounded shadow check-container p-4">
+          <!-- Informacje o drużynie -->
+          <h5 *ngIf="teamInfo" class="team-info-title">
+            Sprawdzana drużyna:
+            <div *ngFor="let key of objectKeys(teamInfo)">
+              <span class="info-item">{{ key }}: <strong>{{ teamInfo[key] }}</strong></span>
+            </div>
+          </h5>
+
+          <!-- Formularz wyboru kraju -->
+          <div *ngIf="showCountryForm" class="form-section">
+            <h3>Wprowadź nazwę kraju</h3>
+            <form [formGroup]="countryForm" (ngSubmit)="submitCountryForm()" class="form-group">
+              <label for="countryName">Kraj:</label>
+              <input id="countryName" formControlName="countryName" class="form-control"/>
+              <button type="submit" [disabled]="countryForm.invalid" class="btn btn-primary mt-3">Szukaj</button>
+            </form>
+          </div>
+
+          <!-- Lista dostępnych lig -->
+          <div *ngIf="showLeagueList" class="league-list-section">
+            <div class="d-flex justify-content-between">
+              <h3>Dostępne ligi</h3>
+              <button class="btn" (click)="backToCountry(showCountryForm, showLeagueList)">
+                <h4>&lt;</h4>
+              </button>
+            </div>
+            <ul class="list-group">
+              <li *ngFor="let league of availableLeagues" class="list-group-item">
+                <span>{{ league.name }}</span>
+                <button (click)="selectLeagueAndSubmit(league)" class="btn btn-outline-primary btn-sm float-end">
+                  Wybierz
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Lista dostępnych drużyn -->
+          <div *ngIf="showTeamList" class="team-list-section">
+            <div class="d-flex justify-content-between">
+              <h3>Wybierz drużynę</h3>
+              <button (click)="backToLeagues(showLeagueList, showTeamList)" class="btn">
+                <h5>&lt;</h5>
+              </button>
+            </div>
+            <ul class="list-group">
+              <li *ngFor="let team of availableTeams" class="list-group-item">
+                <span>{{ team.name }}</span>
+                <button (click)="selectTeamAndSubmit(team)" class="btn btn-outline-primary btn-sm float-end">Wybierz
+                </button>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Prawa kolumna z formularzem tworzenia ligi -->
+      <div class="col-12 col-md-6">
+        <div class="rounded shadow new-container p-4">
+          <form [formGroup]="newLeagueForm" (ngSubmit)="selectLeagueAndSubmit(selectedLeague)" class="form-group">
+            <h3>Tworzenie nowej ligi</h3>
+            <label for="season">Sezon:</label>
+            <input id="season" formControlName="season" type="number" class="form-control"/>
+            <label for="leagueId" class="mt-3">ID Ligi:</label>
+            <input id="leagueId" formControlName="leagueId" type="number" class="form-control"/>
+            <button type="submit" [disabled]="newLeagueForm.invalid" class="btn btn-success mt-4">Utwórz ligę</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Wiadomość zwrotna -->
+      <div *ngIf="showFeedback" class="feedback mt-3">
+        <p class="alert alert-info">{{ feedbackMessage }}</p>
+      </div>
+    </div>
+  </div>
+</div>

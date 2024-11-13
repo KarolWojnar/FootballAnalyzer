@@ -158,9 +158,24 @@ p {
   font-size: 1.1em;
 }
 
+.logo {
+  height: 50px;
+  margin-top: 0;
+
+  img {
+    height: 140%;
+  }
+}
+
 @media (max-width: 768px) {
   .main-content {
     flex-direction: column;
+  }
+
+  .logo {
+    width: 0;
+    height: 0;
+    opacity: 0;
   }
 
   .chart-container-with-form {

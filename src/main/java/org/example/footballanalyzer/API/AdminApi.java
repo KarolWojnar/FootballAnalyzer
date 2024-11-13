@@ -22,10 +22,10 @@ public interface AdminApi {
     @GetMapping("/fixtures/collect")
     ResponseEntity<?> collectFixtures();
 
-    @PostMapping("/leaguesFromCountry/{country}")
+    @GetMapping("/leaguesFromCountry/{country}")
     ResponseEntity<?> findPossibleLeagues(@PathVariable String country);
 
-    @PostMapping("/clubsFromLeague/{leagueId}")
+    @GetMapping("/clubsFromLeague/{leagueId}")
     ResponseEntity<?> findPossibleClubs(@PathVariable Long leagueId);
 
     @GetMapping("/users")

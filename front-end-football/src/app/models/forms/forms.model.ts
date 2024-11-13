@@ -36,3 +36,8 @@ export interface TeamStatsForm {
   endDate: FormControl<string>;
   rounding: FormControl<string>;
 }
+
+export interface NewLeagueForm {
+  leagueId: FormControl<number>;
+  season: FormControl<number>;
+}

@@ -139,7 +139,7 @@ export class RegisterComponent implements OnInit {
             : 'N/A',
         id: teamId ? teamId.toString() : 'N/A',
       },
-      requestType: 'Trener_zajęty',
+      requestType: 'Trener zajęty',
       requestStatus: 'NOWE',
       login: '',
     };

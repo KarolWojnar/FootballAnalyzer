@@ -1,0 +1,117 @@
+.light-theme {
+  .check-container, .new-container {
+    background-color: #f9f9f9;
+    color: #333;
+  }
+
+  .main-container {
+    background-color: #f5f5f5;
+    color: #333;
+  }
+
+  .team-info-title {
+    color: #007bff;
+  }
+
+  .list-group-item {
+    background-color: #fff;
+  }
+
+  .btn {
+    background-color: rgba(255, 255, 255, 0);
+    color: #111416;
+
+    &:hover {
+      background-color: rgba(82, 82, 82, 0.22);
+    }
+  }
+}
+
+.dark-theme {
+  .check-container, .new-container {
+    background-color: #2e2e2e;
+    color: #f0f0f0;
+  }
+
+  .btn {
+    background-color: rgba(255, 255, 255, 0);
+    color: white;
+
+    &:hover {
+      background-color: rgba(82, 82, 82, 0.22);
+    }
+  }
+
+  .main-container {
+    background-color: #1e1e1e;
+    color: #ccc;
+  }
+
+  .team-info-title {
+    color: #76a9fa;
+  }
+
+  .list-group-item {
+    background-color: #3a3a3a;
+  }
+}
+
+.container-fluid.main-container {
+  border-radius: 10px;
+}
+
+.team-info-title {
+  margin-bottom: 1rem;
+  font-size: 1.25rem;
+}
+
+.form-section, .league-list-section {
+  margin-top: 1.5rem;
+}
+
+.info-item {
+  display: block;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.feedback p {
+  font-size: 0.95rem;
+}
+
+.btn {
+  font-weight: 500;
+}
+
+.form-control {
+  border-radius: 8px;
+  margin-top: 0.5rem;
+}
+
+.btn-primary, .btn-outline-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+
+.btn-outline-primary {
+  background-color: transparent;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+.list-group-item {
+  padding: 0.75rem 1.25rem;
+  border: none;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+}
+
+.alert {
+  padding: 0.75rem;
+}

@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {
   LoginForm,
+  NewLeagueForm,
   PasswordRecoveryForm,
   PlayerStatsForm,
   RecoveryPasswdForm,
   RegisterForm,
+  TeamStatsForm,
 } from '../../models/forms/forms.model';
 import { equivalentValidator } from '../../models/validatoros/equivalent.validator';
 
@@ -136,7 +138,7 @@ export class FormService {
     });
   }
 
-  initTeamStatsForm(): FormGroup {
+  initTeamStatsForm(): FormGroup<TeamStatsForm> {
     return new FormGroup({
       startDate: new FormControl(
         this.today.getFullYear() +
@@ -161,6 +163,19 @@ export class FormService {
         },
       ),
       rounding: new FormControl('week', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+    });
+  }
+
+  initNewLeagueForm(): FormGroup<NewLeagueForm> {
+    return new FormGroup({
+      season: new FormControl(0, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      leagueId: new FormControl(0, {
         validators: [Validators.required],
         nonNullable: true,
       }),

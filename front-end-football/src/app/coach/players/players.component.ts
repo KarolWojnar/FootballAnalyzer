@@ -15,6 +15,7 @@ import { PlayerService } from '../../services/players/player.service';
 import { ThemeService } from '../../services/theme.service';
 import { PlayerStatsForm } from '../../models/forms/forms.model';
 import { FormService } from '../../services/form/form.service';
+import { Stats } from '../../models/stats';
 
 @Component({
   selector: 'app-players',
@@ -64,6 +65,8 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
   showAlert = false;
   alertMessage = '';
   isSubmitting = false;
+  logoUrl = localStorage.getItem('logoUrl')!;
+  teamStats: Stats = JSON.parse(localStorage.getItem('teamStats')!);
 
   constructor(
     private apiService: ApiService,

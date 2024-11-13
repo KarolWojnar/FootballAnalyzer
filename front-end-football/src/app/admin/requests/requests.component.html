@@ -8,11 +8,14 @@
 
       <div class="d-flex justify-content-between" *ngIf="!isSubmitting && dataSource">
           <h3>Wszystkie zgłoszenia</h3>
-        <button mat-raised-button class="button-save" (click)="saveChanges()">Zapisz zmiany</button>
+        <div class="d-flex justify-content-end gap-3">
+          <button mat-raised-button class="button-new" (click)="onlyNewRequest()">{{ buttonFilter }}</button>
+          <button mat-raised-button class="button-save" (click)="saveChanges()">Zapisz zmiany</button>
+        </div>
       </div>
       <div class="example-table-container rounded shadow p-1">
-        <div *ngIf="!isSubmitting && dataSource">
-          <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <div *ngIf="!isSubmitting && filteredDataSource">
+          <table mat-table [dataSource]="filteredDataSource" class="mat-elevation-z8">
 
             <ng-container matColumnDef="id">
               <th mat-header-cell *matHeaderCellDef>ID</th>
@@ -46,6 +49,23 @@
                   <div *ngFor="let key of objectKeys(element.requestData)">
                     <p><strong>{{ key }}:</strong> {{ element.requestData[key] }}</p>
                   </div>
+                  <a
+                    routerLink="/admin/teams"
+                    [state]="{ teamInfo: element.requestData }"
+                    class="btn btn-secondary"
+                    *ngIf="element.requestStatus === 'NOWE' && element.requestType === 'Nowa drużyna'"
+                  >
+                    Sprawdź
+                  </a>
+
+                  <a
+                    routerLink="/admin/users"
+                    [state]="{ teamInfo: element.requestData }"
+                    class="btn btn-secondary"
+                    *ngIf="element.requestStatus === 'NOWE' && element.requestType === 'Trener zajęty'"
+                  >
+                    Sprawdź
+                  </a>
                 </mat-expansion-panel>
               </td>
             </ng-container>

@@ -1,11 +1,11 @@
 <div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
   <div class="team-container">
-    <div class="d-flex justify-content-center gap-4">
+    <div class="d-flex justify-content-center gap-4 logo">
       <div>
-        <h1 *ngIf="teamStats">{{ teamStats.teamRating.team }}</h1>
+        <h2 *ngIf="teamStats">{{ teamStats.teamForm.team }}</h2>
       </div>
       <div *ngIf="logoUrl && teamStats">
-        <img class="w-50" src="{{ logoUrl }}" alt="logo">
+        <img src="{{ logoUrl }}" alt="logo">
       </div>
     </div>
 

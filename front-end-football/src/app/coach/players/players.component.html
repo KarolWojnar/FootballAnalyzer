@@ -27,6 +27,14 @@
           <button class="toggle-button shadow" (click)="toggleForm()">
             {{ formVisible ? 'Ukryj formularz' : 'Pokaż formularz' }}
           </button>
+          <div class="d-flex justify-content-around gap-4 logo">
+            <div>
+              <h2 *ngIf="teamStats">{{ teamStats.teamForm.team }}</h2>
+            </div>
+            <div *ngIf="logoUrl && teamStats">
+              <img src="{{ logoUrl }}" alt="logo">
+            </div>
+          </div>
           <input class="shadow" (keyup)="applyFilter($event)" placeholder="Filtruj graczy">
         </div>
         <div *ngIf="dataSource.data && !isSubmitting && alertMessage === ''" class="example-table-container">
