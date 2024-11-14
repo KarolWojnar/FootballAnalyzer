@@ -23,6 +23,19 @@ export interface UserResponse {
   roleId: number;
 }
 
+export interface UserAdmin {
+  id: number;
+  login: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  roleId: number;
+  roleName: string;
+  teamName?: string;
+  teamId?: number;
+  hasPdf: boolean;
+}
+
 export class User {
   constructor(
     public email: string,

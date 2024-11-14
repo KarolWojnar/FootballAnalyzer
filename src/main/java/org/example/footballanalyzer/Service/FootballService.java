@@ -86,10 +86,10 @@ public class FootballService {
     }
 
     public ResponseEntity<?> saveFixtures(JSONArray fixtures) throws JSONException, ParseException, IOException, InterruptedException {
-        League league = getLeague(fixtures.getJSONObject(0).getJSONObject("league"));
         if (fixtures.isEmpty()) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(404).body(new AuthResponse(Code.C2));
         }
+        League league = getLeague(fixtures.getJSONObject(0).getJSONObject("league"));
         for (int i = 0; i < fixtures.length(); i++) {
             JSONObject jsonFixture = fixtures.getJSONObject(i);
             JSONObject teams = jsonFixture.getJSONObject("teams");
@@ -101,7 +101,7 @@ public class FootballService {
                 dataUtil.setFixtureAsCounted(fixture.getId());
             }
         }
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(200).body(new AuthResponse(Code.SUCCESS));
     }
 
     private Fixture getFixture(JSONObject fixture, Team homeTeam, Team awayTeam) throws JSONException, ParseException {
@@ -361,7 +361,7 @@ public class FootballService {
         List<Team> teams = teamRepository.findAll();
         if (teams.isEmpty()) return ResponseEntity.noContent().build();
         List<TeamSelectDto> teamSelectDtos = teams.stream()
-                .map(team -> new TeamSelectDto(team.getTeamId(), team.getName())).toList();
+                .map(team -> new TeamSelectDto(team.getId(), team.getName())).toList();
         return ResponseEntity.ok(teamSelectDtos);
     }
 

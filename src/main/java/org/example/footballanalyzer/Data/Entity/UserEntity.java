@@ -39,7 +39,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UserRequest> userRequest;
 
-    public UserEntity(Long id, String uuid, String login, String password, String firstName, String lastName, String email, boolean isLocked, boolean isEnabled, Role role, Team team, Set<UserRequest> userRequest) {
+    public UserEntity(Long id, String uuid, String login, String password, String firstName,
+                      String lastName, String email, boolean isLocked, boolean isEnabled,
+                      Role role, Team team, Set<UserRequest> userRequest, byte[] coachConfirmPdf) {
         this.id = id;
         this.uuid = uuid;
         this.login = login;
@@ -52,6 +54,7 @@ public class UserEntity {
         this.role = role;
         this.team = team;
         this.userRequest = userRequest;
+        this.coachConfirmPdf = coachConfirmPdf;
         generateUuid();
     }
 
@@ -60,4 +63,7 @@ public class UserEntity {
             setUuid(UUID.randomUUID().toString());
         }
     }
+
+    @Lob
+    private byte[] coachConfirmPdf;
 }

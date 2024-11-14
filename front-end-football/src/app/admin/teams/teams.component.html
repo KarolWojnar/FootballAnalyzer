@@ -1,18 +1,16 @@
 <div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
   <div class="container-fluid mt-3 p-4 main-container">
     <div class="row g-4">
-      <!-- Lewa kolumna z formularzem wyboru kraju i ligi -->
       <div class="col-12 col-md-6">
         <div class="rounded shadow check-container p-4">
-          <!-- Informacje o drużynie -->
           <h5 *ngIf="teamInfo" class="team-info-title">
             Sprawdzana drużyna:
             <div *ngFor="let key of objectKeys(teamInfo)">
               <span class="info-item">{{ key }}: <strong>{{ teamInfo[key] }}</strong></span>
             </div>
+            <span class="info-item">ID zgłoszenia: <strong>{{ requestId }}</strong></span>
           </h5>
 
-          <!-- Formularz wyboru kraju -->
           <div *ngIf="showCountryForm" class="form-section">
             <h3>Wprowadź nazwę kraju</h3>
             <form [formGroup]="countryForm" (ngSubmit)="submitCountryForm()" class="form-group">
@@ -22,12 +20,11 @@
             </form>
           </div>
 
-          <!-- Lista dostępnych lig -->
           <div *ngIf="showLeagueList" class="league-list-section">
             <div class="d-flex justify-content-between">
               <h3>Dostępne ligi</h3>
               <button class="btn" (click)="backToCountry(showCountryForm, showLeagueList)">
-                <h4>&lt;</h4>
+                <h5>&lt;</h5>
               </button>
             </div>
             <ul class="list-group">
@@ -40,7 +37,6 @@
             </ul>
           </div>
 
-          <!-- Lista dostępnych drużyn -->
           <div *ngIf="showTeamList" class="team-list-section">
             <div class="d-flex justify-content-between">
               <h3>Wybierz drużynę</h3>
@@ -57,12 +53,20 @@
             </ul>
           </div>
         </div>
+
+        <div *ngIf="showFeedback" class="feedback mt-3">
+          <p class="alert alert-info">{{ feedbackMessage }}</p>
+        </div>
       </div>
 
-      <!-- Prawa kolumna z formularzem tworzenia ligi -->
       <div class="col-12 col-md-6">
-        <div class="rounded shadow new-container p-4">
-          <form [formGroup]="newLeagueForm" (ngSubmit)="selectLeagueAndSubmit(selectedLeague)" class="form-group">
+        <div *ngIf="isSubmitting"
+             class="d-flex rounded bg-transparent bg-opacity-10 bg-gradient flex-column align-items-center my-3 py-5">
+          <mat-spinner diameter="50" color="accent"></mat-spinner>
+          <p class="mt-2">Trwa zbieranie danych. Może to potrwac kilka minut.</p>
+        </div>
+        <div *ngIf="!isSubmitting" class="rounded shadow new-container p-4">
+          <form [formGroup]="newLeagueForm" (ngSubmit)="submitNewLeague()" class="form-group">
             <h3>Tworzenie nowej ligi</h3>
             <label for="season">Sezon:</label>
             <input id="season" formControlName="season" type="number" class="form-control"/>
@@ -70,12 +74,10 @@
             <input id="leagueId" formControlName="leagueId" type="number" class="form-control"/>
             <button type="submit" [disabled]="newLeagueForm.invalid" class="btn btn-success mt-4">Utwórz ligę</button>
           </form>
+          <div *ngIf="showFeedbackLeague" class="feedback mt-3">
+            <p class="alert alert-info">{{ feedbackLeagueMessage }}</p>
+          </div>
         </div>
-      </div>
-
-      <!-- Wiadomość zwrotna -->
-      <div *ngIf="showFeedback" class="feedback mt-3">
-        <p class="alert alert-info">{{ feedbackMessage }}</p>
       </div>
     </div>
   </div>

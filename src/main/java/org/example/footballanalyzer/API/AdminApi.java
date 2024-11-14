@@ -16,8 +16,8 @@ import java.text.ParseException;
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/api/admin")
 public interface AdminApi {
-    @PostMapping("/fixtures/save-all-by-league-season")
-    ResponseEntity<?> saveAllByLeagueSeason(@RequestParam Long league, @RequestParam Long season) throws IOException, InterruptedException, JSONException, ParseException;
+    @GetMapping("/fixtures/save-all-by-league-season/{league}/{season}")
+    ResponseEntity<?> saveAllByLeagueSeason(@PathVariable Long league, @PathVariable Long season) throws IOException, InterruptedException, JSONException, ParseException;
 
     @GetMapping("/fixtures/collect")
     ResponseEntity<?> collectFixtures();
@@ -30,6 +30,8 @@ public interface AdminApi {
 
     @GetMapping("/users")
     ResponseEntity<?> getAllUsers();
+    @GetMapping("/roles")
+    ResponseEntity<?> getAllRoles();
 
     @PatchMapping("/users/{id}")
     ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserEntityEditData user);
@@ -51,4 +53,7 @@ public interface AdminApi {
 
     @PatchMapping("/requests/{id}")
     ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestBody String status);
+
+    @GetMapping("/requests/user/{userId}")
+    ResponseEntity<?> downloadConfirmationPdf(@PathVariable Long userId);
 }

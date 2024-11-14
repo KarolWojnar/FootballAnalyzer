@@ -57,6 +57,6 @@ public class CoachController implements CoachApi {
 
     @Override
     public ResponseEntity<?> getRoles() {
-        return userService.getRoles();
+        return userService.getRoles(false);
     }
 }

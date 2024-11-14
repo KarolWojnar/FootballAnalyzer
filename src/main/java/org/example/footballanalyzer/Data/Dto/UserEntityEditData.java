@@ -27,4 +27,6 @@ public class UserEntityEditData {
     private Long teamId;
     @Nullable
     private String password;
+    @Nullable
+    private boolean hasPdf;
 }

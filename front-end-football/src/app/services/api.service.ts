@@ -10,7 +10,7 @@ import {
   ChangePassword,
   IUser,
   LoggedIn,
-  ResetPassword,
+  ResetPassword, UserAdmin,
   UserLoginData,
 } from '../models/user.model';
 import { Role } from '../auth/components/register/register.component';
@@ -56,9 +56,29 @@ export class ApiService {
     return this.httpClient.get<Team[]>(requestUrl);
   }
 
+  getTeamsFromLeague(leagueId: number): Observable<Team[]> {
+    const requestUrl = `${this.apiUrl}/admin/clubsFromLeague/${leagueId}`;
+    return this.httpClient.get<Team[]>(requestUrl, {withCredentials: true});
+  }
+
+  getNewLeague(leagueId: number| undefined, season: number | undefined): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/admin/fixtures/save-all-by-league-season/${leagueId}/${season}`;
+    return this.httpClient.get<AuthResponse>(requestUrl, {withCredentials: true});
+  }
+
   getRoles(): Observable<Role[]> {
     const requestUrl = `${this.apiUrl}/coach/roles`;
     return this.httpClient.get<Role[]>(requestUrl);
+  }
+
+  getRolesAdmin(): Observable<Role[]> {
+    const requestUrl = `${this.apiUrl}/admin/roles`;
+    return this.httpClient.get<Role[]>(requestUrl, {withCredentials: true});
+  }
+
+  downloadPdf(userId: number): Observable<Blob> {
+    const requestUrl = `${this.apiUrl}/admin/requests/user/${userId}`;
+    return this.httpClient.get(requestUrl, { responseType: 'blob', withCredentials: true });
   }
 
   register(data: any): Observable<AuthResponse> {
@@ -66,6 +86,10 @@ export class ApiService {
     return this.httpClient.post<AuthResponse>(requestUrl, data);
   }
 
+  getUsers(): Observable<UserAdmin[]> {
+    const requestUrl = `${this.apiUrl}/admin/users`;
+    return this.httpClient.get<UserAdmin[]>(requestUrl, {withCredentials: true});
+  }
   addRequest(request: RequestProblem) {
     console.log(request);
     const requestUrl = `${this.apiUrl}/users/requests`;

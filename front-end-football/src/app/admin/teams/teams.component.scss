@@ -14,7 +14,8 @@
   }
 
   .list-group-item {
-    background-color: #fff;
+    background-color: #e1e8f0;
+    color: #2a2f3b;
   }
 
   .btn {
@@ -24,6 +25,10 @@
     &:hover {
       background-color: rgba(82, 82, 82, 0.22);
     }
+  }
+
+  .info-item {
+    color: #555;
   }
 }
 
@@ -53,6 +58,11 @@
 
   .list-group-item {
     background-color: #3a3a3a;
+    color: white;
+  }
+
+  .info-item {
+    color: white;
   }
 }
 
@@ -72,7 +82,6 @@
 .info-item {
   display: block;
   font-size: 0.9rem;
-  color: #555;
 }
 
 .feedback p {

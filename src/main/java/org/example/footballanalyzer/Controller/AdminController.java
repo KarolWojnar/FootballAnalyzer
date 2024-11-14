@@ -61,6 +61,11 @@ public class AdminController implements AdminApi {
     }
 
     @Override
+    public ResponseEntity<?> getAllRoles() {
+        return userService.getRoles(true);
+    }
+
+    @Override
     public ResponseEntity<?> updateUser(Long id, UserEntityEditData user) {
         try {
             return ResponseEntity.status(200).body(userService.updateUser(id, user));
@@ -125,6 +130,15 @@ public class AdminController implements AdminApi {
             return ResponseEntity.status(200).body(new AuthResponse(Code.SUCCESS));
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(404).body(new AuthResponse(Code.ERROR));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> downloadConfirmationPdf(Long userId) {
+        try {
+            return userService.downloadConfirmationPdf(userId);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.NF));
         }
     }
 }

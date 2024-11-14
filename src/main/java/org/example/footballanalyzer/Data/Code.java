@@ -20,7 +20,8 @@ public enum Code {
     T2("Brak danych w tym okresie."),
     T3("Dana drużyna już posiada trenera głównego."),
     C1("Brak danych o danym państwie."),
-    C2("Brak danych o danej lidze.");
+    C2("Brak danych o danej lidze."),
+    NF("Brak danego dokumentu.");
     public final String label;
 
     Code(String label) {

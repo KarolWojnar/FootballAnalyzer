@@ -51,7 +51,7 @@
                   </div>
                   <a
                     routerLink="/admin/teams"
-                    [state]="{ teamInfo: element.requestData }"
+                    [state]="{ teamInfo: element.requestData, id: element.id }"
                     class="btn btn-secondary"
                     *ngIf="element.requestStatus === 'NOWE' && element.requestType === 'Nowa drużyna'"
                   >
@@ -60,7 +60,7 @@
 
                   <a
                     routerLink="/admin/users"
-                    [state]="{ teamInfo: element.requestData }"
+                    [state]="{ requestInfo: element.requestData, login: element.login }"
                     class="btn btn-secondary"
                     *ngIf="element.requestStatus === 'NOWE' && element.requestType === 'Trener zajęty'"
                   >

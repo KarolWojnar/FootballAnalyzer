@@ -22,7 +22,8 @@ public class UserRequest {
         NOWE,
         ROZWIĄZANE,
         BRAK_ROZWIĄZANIA,
-        ZAMKNIĘTE
+        ZAMKNIĘTE,
+        ODRZUCONE
     }
 }
 

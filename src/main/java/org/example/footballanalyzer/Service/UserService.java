@@ -15,7 +15,9 @@ import org.example.footballanalyzer.Repository.*;
 import org.example.footballanalyzer.Service.Auth.JwtService;
 import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.Arrays;
@@ -64,7 +67,7 @@ public class UserService {
         if (userEntity.isPresent()) {
             return ResponseEntity.badRequest().body(new AuthResponse(Code.A4));
         }
-        Optional<Team> optionalTeam = teamRepository.findByTeamId(user.getTeamId());
+        Optional<Team> optionalTeam = teamRepository.findById(user.getTeamId());
 
         if (optionalTeam.isPresent()) {
             Optional<Role> role = roleRepository.findByRoleName(RoleName.TRENER);
@@ -92,11 +95,15 @@ public class UserService {
                 .roleName(user.getRole().getRoleName().name())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
+                .hasPdf(user.getCoachConfirmPdf() != null)
                 .build()).toList();
     }
 
-    public ResponseEntity<?> getRoles() {
+    public ResponseEntity<?> getRoles(boolean isAdmin) {
         RoleName role = RoleName.ADMIN;
+        if (isAdmin) {
+            return ResponseEntity.ok().body(roleRepository.findAll().stream().toList());
+        }
         return ResponseEntity.ok().body(roleRepository.findAllByRoleNameNot(role));
     }
 
@@ -374,5 +381,17 @@ public class UserService {
     @Scheduled(cron = "0 0 0 * * ?")
     public void deleteExpiredRequests() {
         userRequestRepository.deleteByRequestStatus(UserRequest.RequestStatus.ZAMKNIĘTE);
+    }
+
+    public ResponseEntity<?> downloadConfirmationPdf(Long id) {
+        UserEntity user = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found"));
+        try {
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=confirmation.pdf")
+                    .contentType(MediaType.APPLICATION_PDF)
+                    .body(new InputStreamResource(new ByteArrayInputStream(user.getCoachConfirmPdf())));
+        } catch (Exception e) {
+            throw new UsernameNotFoundException("Not found");
+        }
     }
 }

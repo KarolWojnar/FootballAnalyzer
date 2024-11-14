@@ -1,1 +1,60 @@
-<p>users works!</p>
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <div class="container my-3 rounded shadow">
+    <h2 class="text-center mb-4">Lista Użytkowników</h2>
+    <h5 *ngIf="requestInfo" class="team-info-title">
+      Sprawdzana drużyna:
+      <div *ngFor="let key of objectKeys(requestInfo)">
+        <span class="info-item">{{ key }}: <strong>{{ requestInfo[key] }}</strong></span>
+      </div>
+      <span class="info-item">login: <strong>{{ login }}</strong></span>
+    </h5>
+
+    <mat-accordion multi class="user-list">
+      <mat-expansion-panel *ngFor="let user of users" class="mb-2">
+        <mat-expansion-panel-header class="custom-arrow">
+          <mat-panel-title>
+            <div class="d-flex justify-content-between align-items-center w-100 col spans-color">
+              <span>{{ user.id }}. {{ user.login }}</span>
+              <span>{{ user.teamName ? user.teamName : 'Brak' }}</span>
+              <span class="badge bg-info text-dark">{{ user.roleName }}</span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="user-details">
+          <p><strong>Imię:</strong> {{ user.firstName }}</p>
+          <p><strong>Nazwisko:</strong> {{ user.lastName }}</p>
+          <p><strong>Email:</strong> {{ user.email }}</p>
+          <p *ngIf="user.teamName"><strong>Zespół:</strong> {{ user.teamName }}</p>
+
+          <div class="button-group d-flex justify-content-center my-3 gap-2">
+            <button mat-raised-button color="accent" (click)="changData(user)">Zmień dane</button>
+            <button mat-raised-button color="warn" (click)="deleteUser(user)">Usuń użytkownika</button>
+            <button mat-raised-button color="primary" (click)="sendQuery(user)">Wyślij zapytanie</button>
+            <button *ngIf="user.hasPdf" mat-raised-button color="accent" (click)="downloadPdf(user)">
+              Pobierz dokument
+            </button>
+          </div>
+
+          <div class="select-group d-flex justify-content-center gap-2">
+            <mat-form-field appearance="fill" color="warn">
+              <mat-label>Zmień rolę</mat-label>
+              <mat-select [(value)]="user.roleId" (selectionChange)="changeUserRole(user)">
+                <mat-option *ngFor="let role of roles" [value]="role.id">{{ role.roleName }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill" color="warn">
+              <mat-label>Zmień drużynę</mat-label>
+              <mat-select [(value)]="user.teamId" (selectionChange)="changeTeam(user)">
+                <mat-option *ngFor="let team of teams" [value]="team.id">{{ team.name }}</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <button mat-raised-button color="accent" (click)="changData(user)">Zapisz zmiany</button>
+          </div>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+</div>
