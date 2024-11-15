@@ -20,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -244,6 +245,7 @@ public class DataUtil {
         newUserRequest.setRequestStatus(userRequest.getRequestStatus());
         newUserRequest.setRequestType(userRequest.getRequestType());
         newUserRequest.setUser(user);
+        newUserRequest.setCreateDate(new Timestamp(System.currentTimeMillis()).toString());
         userRequestRepository.save(newUserRequest);
         log.info("Saved new request: {}", newUserRequest.getRequestType());
         return ResponseEntity.ok().build();

@@ -24,9 +24,11 @@ export interface UserResponse {
 }
 
 export interface UserAdmin {
+  isEditing?: boolean;
   id: number;
   login: string;
   firstName: string;
+  password: string;
   lastName: string;
   email: string;
   roleId: number;

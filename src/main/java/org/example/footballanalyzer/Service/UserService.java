@@ -280,6 +280,7 @@ public class UserService {
         return ResponseEntity.ok(roleName);
     }
 
+    @Transactional
     public UserEntityEditData updateUser(Long id, UserEntityEditData user) throws FileAlreadyExistsException {
         log.info("Updating user with id: {}", id);
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found"));
@@ -292,13 +293,13 @@ public class UserService {
             userEntity.setLastName(user.getLastName());
         }
         if (user.getEmail() != null) {
-            if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+            if (userRepository.findByEmail(user.getEmail()).isPresent() && !user.getEmail().equals(userEntity.getEmail())) {
                 throw new FileAlreadyExistsException("Email already exists");
             }
             userEntity.setEmail(user.getEmail());
         }
         if (user.getLogin() != null) {
-            if (userRepository.findByLogin(user.getLogin()).isPresent()) {
+            if (userRepository.findByLogin(user.getLogin()).isPresent() && !user.getLogin().equals(userEntity.getLogin())) {
                 throw new FileAlreadyExistsException("Login already exists");
             }
             userEntity.setLogin(user.getLogin());
@@ -307,12 +308,16 @@ public class UserService {
             roleRepository.findById(user.getRoleId()).ifPresent(userEntity::setRole);
         }
         if (user.getTeamId() != null) {
-            teamRepository.findByTeamId(user.getTeamId()).ifPresent(userEntity::setTeam);
+            if (user.getTeamId() == -2) {
+               userEntity.setTeam(null);
+            } else {
+                teamRepository.findById(user.getTeamId()).ifPresent(userEntity::setTeam);
+            }
         }
         if (user.getPassword() != null) {
             userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        userRepository.saveAndFlush(userEntity);
+        userRepository.save(userEntity);
         return getUserEntityEditData(userEntity);
     }
 

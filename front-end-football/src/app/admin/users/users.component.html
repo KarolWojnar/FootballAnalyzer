@@ -22,15 +22,33 @@
         </mat-expansion-panel-header>
 
         <div class="user-details">
-          <p><strong>Imię:</strong> {{ user.firstName }}</p>
-          <p><strong>Nazwisko:</strong> {{ user.lastName }}</p>
-          <p><strong>Email:</strong> {{ user.email }}</p>
-          <p *ngIf="user.teamName"><strong>Zespół:</strong> {{ user.teamName }}</p>
+          <div *ngIf="!user.isEditing; else editForm">
+            <p><strong>Imię:</strong> {{ user.firstName }}</p>
+            <p><strong>Nazwisko:</strong> {{ user.lastName }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Login:</strong> {{ user.login }}</p>
+            <p *ngIf="user.teamName"><strong>Zespół:</strong> {{ user.teamName }}</p>
+          </div>
+          <ng-template #editForm>
+            <form [formGroup]="userDataNew" (ngSubmit)="setDataForUser(user)" class="form-group w-25">
+              <label for="firstName">Imię:</label>
+              <input id="firstName" formControlName="firstName" class="form-control"/>
+              <label for="lastName">Nazwisko:</label>
+              <input id="lastName" formControlName="lastName" class="form-control"/>
+              <label for="email">Email:</label>
+              <input id="email" formControlName="email" class="form-control"/>
+              <label for="login">Login:</label>
+              <input id="login" formControlName="login" class="form-control"/>
+              <label for="password">Hasło:</label>
+              <input id="password" formControlName="password" class="form-control"/>
+              <button type="submit" class="btn btn-primary mt-3">Zapisz</button>
+            </form>
+          </ng-template>
 
           <div class="button-group d-flex justify-content-center my-3 gap-2">
             <button mat-raised-button color="accent" (click)="changData(user)">Zmień dane</button>
             <button mat-raised-button color="warn" (click)="deleteUser(user)">Usuń użytkownika</button>
-            <button mat-raised-button color="primary" (click)="sendQuery(user)">Wyślij zapytanie</button>
+            <button *ngIf="user.roleName === 'TRENER'" mat-raised-button color="primary" (click)="sendQuery(user)">Wyślij zapytanie</button>
             <button *ngIf="user.hasPdf" mat-raised-button color="accent" (click)="downloadPdf(user)">
               Pobierz dokument
             </button>
@@ -51,8 +69,11 @@
               </mat-select>
             </mat-form-field>
 
-            <button mat-raised-button color="accent" (click)="changData(user)">Zapisz zmiany</button>
+            <button mat-raised-button color="accent" (click)="saveData(user)">Zapisz zmiany</button>
           </div>
+        </div>
+        <div *ngIf="message && showMessage" class="alert alert-info text-center mt-3">
+          {{ message }}
         </div>
       </mat-expansion-panel>
     </mat-accordion>

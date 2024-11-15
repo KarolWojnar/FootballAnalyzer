@@ -17,6 +17,8 @@ public class UserRequest {
     @Enumerated(EnumType.STRING)
     private RequestStatus requestStatus;
     private String requestData;
+    @Column(name = "createdate")
+    private String createDate;
 
     public enum RequestStatus {
         NOWE,

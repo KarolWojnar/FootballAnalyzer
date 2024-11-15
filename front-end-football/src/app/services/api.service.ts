@@ -90,6 +90,16 @@ export class ApiService {
     const requestUrl = `${this.apiUrl}/admin/users`;
     return this.httpClient.get<UserAdmin[]>(requestUrl, {withCredentials: true});
   }
+
+  deleteUser(userId: number): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/admin/users/${userId}`;
+    return this.httpClient.delete<AuthResponse>(requestUrl, {withCredentials: true});
+  }
+
+  updateUser(user: UserAdmin): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/admin/users/${user.id}`;
+    return this.httpClient.patch<AuthResponse>(requestUrl, user, {withCredentials: true});
+  }
   addRequest(request: RequestProblem) {
     console.log(request);
     const requestUrl = `${this.apiUrl}/users/requests`;

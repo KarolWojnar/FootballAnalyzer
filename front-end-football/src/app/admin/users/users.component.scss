@@ -4,6 +4,11 @@
     height: 8px;
   }
 
+  .form-control {
+    background-color: #3a3a3a;
+    color: white;
+  }
+
   .container::-webkit-scrollbar-thumb {
     background-color: #007bff;
     border-radius: 10px;
@@ -94,6 +99,10 @@
 .user-details {
   padding: 0 16px;
   line-height: 1.4;
+}
+
+.form-control {
+  border: 2px solid gray;
 }
 
 button[mat-raised-button] {

@@ -10,7 +10,10 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { ReactiveFormsModule } from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {ConfirmDialogComponent} from "../shared/components/confirm-dialog/confirm-dialog.component";
+import {MatInputModule} from "@angular/material/input";
 
 @NgModule({
   declarations: [UsersComponent, RequestsComponent, TeamsComponent],
@@ -20,9 +23,12 @@ import { ReactiveFormsModule } from '@angular/forms';
     HomeModule,
     MatSelectModule,
     MatExpansionModule,
+    MatDialogModule,
     MatButtonModule,
     MatProgressSpinnerModule,
     ReactiveFormsModule,
+    FormsModule,
+    MatInputModule,
   ],
 })
 export class AdminModule {}
