@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { ApiService } from '../../services/api.service';
 import { RequestProblem } from '../../models/request/request';
+import {ConfirmDialogComponent} from "../../shared/components/confirm-dialog/confirm-dialog.component";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-requests',
@@ -21,6 +23,7 @@ export class RequestsComponent implements OnInit {
     'requestType',
     'requestStatus',
     'requestData',
+    'createdDate',
     'actions',
   ];
   isSubmitting = false;
@@ -31,6 +34,7 @@ export class RequestsComponent implements OnInit {
   constructor(
     private themeService: ThemeService,
     private apiService: ApiService,
+    private dialog: MatDialog,
   ) {
     this.themeService.darkMode$.subscribe((isDarkMode) => {
       this.isDarkMode = isDarkMode;
@@ -73,9 +77,9 @@ export class RequestsComponent implements OnInit {
   parseRequestData(requestData: string): { [key: string]: string } {
     const formattedString = requestData
       .replace(/[{}]/g, '"')
-      .replace(/\s+/g, '')
       .replace(/,/g, '","')
       .replace(/=/g, '":"');
+    console.log(formattedString)
     try {
       return JSON.parse(`{${formattedString}}`);
     } catch (e) {
@@ -146,5 +150,47 @@ export class RequestsComponent implements OnInit {
   onlyNewRequest() {
     this.onlyNew = !this.onlyNew;
     this.updateFilteredDataSource();
+  }
+
+  deleteRequest(id: number) {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      width: '300px',
+      data: {
+        "title": 'Potwierdzenie',
+        "button": 'Usuń',
+        "message": `Czy na pewno chcesz usunąć zgłoszenie?`,
+      },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.isSubmitting = true;
+        this.apiService.deleteRequest(id).subscribe({
+          next: () => {
+            this.isSubmitting = false;
+            this.showAlert = true;
+            this.alertMessage = 'Zgłoszenie zostało usunięte pomyślnie!';
+            this.getRequestes();
+            setTimeout(() => {
+              this.showAlert = false;
+            }, 5000);
+          },
+          error: (error) => {
+            this.isSubmitting = false;
+            this.showAlert = true;
+            this.alertMessage = error.error.message;
+          },
+        });
+      }
+    });
+  }
+
+  rollbackStatus(id: number) {
+    const request = this.dataSource.find((r) => r.id === id);
+    if (request) {
+      request.requestStatus = this.originalDataSource.find(
+        (original) => original.id === id,
+      )!.requestStatus;
+    }
   }
 }

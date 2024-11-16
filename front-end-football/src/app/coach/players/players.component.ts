@@ -100,6 +100,8 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
           this.alertMessage = '';
           this.dataSource = new MatTableDataSource(this.playerStats);
           localStorage.setItem('dataSource', JSON.stringify(this.playerStats));
+          localStorage.setItem('startDatePlayer', JSON.stringify(this.form.value.startDate));
+          localStorage.setItem('endDatePlayer', JSON.stringify(this.form.value.endDate));
           setTimeout(() => {
             this.dataSource.sort = this.sort;
             this.sub.unsubscribe();

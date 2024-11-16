@@ -11,24 +11,25 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import {MatDialog, MatDialogModule} from "@angular/material/dialog";
-import {ConfirmDialogComponent} from "../shared/components/confirm-dialog/confirm-dialog.component";
+import { MatDialogModule} from "@angular/material/dialog";
 import {MatInputModule} from "@angular/material/input";
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [UsersComponent, RequestsComponent, TeamsComponent],
-  imports: [
-    CommonModule,
-    AdminRoutingModule,
-    HomeModule,
-    MatSelectModule,
-    MatExpansionModule,
-    MatDialogModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    ReactiveFormsModule,
-    FormsModule,
-    MatInputModule,
-  ],
+    imports: [
+        CommonModule,
+        AdminRoutingModule,
+        HomeModule,
+        MatSelectModule,
+        MatExpansionModule,
+        MatDialogModule,
+        MatButtonModule,
+        MatProgressSpinnerModule,
+        ReactiveFormsModule,
+        FormsModule,
+        MatInputModule,
+        MatIconModule,
+    ],
 })
 export class AdminModule {}

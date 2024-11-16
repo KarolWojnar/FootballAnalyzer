@@ -261,6 +261,7 @@ public class DataUtil {
                 .uuid(UUID.randomUUID().toString())
                 .team(optionalTeam.orElse(null))
                 .role(role.get())
+                .coachConfirmPdf(user.getCoachConfirmPdf())
                 .password(passwordEncoder.encode(user.getPassword()))
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())

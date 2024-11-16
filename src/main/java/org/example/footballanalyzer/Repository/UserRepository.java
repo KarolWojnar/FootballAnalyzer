@@ -37,5 +37,10 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("update UserEntity u set u.team.id = ?2 where u.id = ?1")
     void updateTeam(Long id, Long teamId);
 
+    @Modifying
+    @Transactional
+    @Query("update UserEntity u set u.coachConfirmPdf = ?2 where u.id = ?1")
+    void uploadFile(long id, byte[] teamId);
+
     Optional<UserEntity> findByTeamAndRole_RoleName(Team team, RoleName roleName);
 }

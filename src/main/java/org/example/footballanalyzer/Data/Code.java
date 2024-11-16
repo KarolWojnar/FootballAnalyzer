@@ -21,7 +21,9 @@ public enum Code {
     T3("Dana drużyna już posiada trenera głównego."),
     C1("Brak danych o danym państwie."),
     C2("Brak danych o danej lidze."),
-    NF("Brak danego dokumentu.");
+    NF("Brak danego dokumentu."),
+    F1("Tylko pliki PDF są akceptowane."),
+    F2("Plik jest za duży. (Max 5MB)");
     public final String label;
 
     Code(String label) {

@@ -42,6 +42,8 @@ export class TeamComponent implements OnInit {
       next: (teamStats) => {
         this.teamStats = teamStats;
         localStorage.setItem('teamStats', JSON.stringify(teamStats));
+        localStorage.setItem('startDateTeam', JSON.stringify(this.form.value.startDate));
+        localStorage.setItem('endDateTeam', JSON.stringify(this.form.value.endDate));
         this.selectedChart = 'line';
       },
       error: (err) => {

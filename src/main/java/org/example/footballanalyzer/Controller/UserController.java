@@ -12,10 +12,12 @@ import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Data.ResetPasswordMail;
 import org.example.footballanalyzer.Data.ValidationMessage;
 import org.example.footballanalyzer.Service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +33,15 @@ public class UserController implements UserApi {
     @Override
     public ResponseEntity<?> createUser(UserDTO user) {
         return userService.createUser(user);
+    }
+
+    @Override
+    public ResponseEntity<?> uploadConfirm(String login, MultipartFile file) {
+        try {
+            return userService.uploadConfirm(login, file);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new AuthResponse(Code.ERROR));
+        }
     }
 
     @Override

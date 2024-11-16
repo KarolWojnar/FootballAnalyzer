@@ -121,6 +121,7 @@ export class TeamsComponent {
     '.    ID ligi: ' + league?.leagueId.toString();
     this.showFeedback = true;
     this.showTeamList = false;
+    this.showCountryForm = true;
   }
 
   submitNewLeague() {

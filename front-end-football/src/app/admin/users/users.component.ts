@@ -131,9 +131,10 @@ export class UsersComponent implements OnInit{
           requestStatus: 'NOWE',
           requestType: 'POTWIERDZENIE TOŻSAMOŚCI',
           requestData: {
-            "message": "Proszę potweirdzić  swoją tożsamość w profilu użytkownika, inaczej twoja rola się zmieni.",
+            "message": "Proszę potwierdzić swoją tożsamość w profilu użytkownika.",
             "teamName": user.teamName
           },
+          createdDate: null,
 
         };
         this.apiService.addRequest(this.request).subscribe({

@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -67,7 +69,7 @@ public class UserService {
         if (userEntity.isPresent()) {
             return ResponseEntity.badRequest().body(new AuthResponse(Code.A4));
         }
-        Optional<Team> optionalTeam = teamRepository.findById(user.getTeamId());
+        Optional<Team> optionalTeam = teamRepository.findById(user.getTeamId() == null ? -2 : user.getTeamId());
 
         if (optionalTeam.isPresent()) {
             Optional<Role> role = roleRepository.findByRoleName(RoleName.TRENER);
@@ -369,6 +371,7 @@ public class UserService {
                 .id(userRequest.getId())
                 .userId(userRequest.getUser().getId())
                 .login(userRequest.getUser().getLogin())
+                .createDate(userRequest.getCreateDate())
                 .requestType(userRequest.getRequestType())
                 .requestData(userRequest.getRequestData())
                 .requestStatus(userRequest.getRequestStatus())
@@ -397,6 +400,28 @@ public class UserService {
                     .body(new InputStreamResource(new ByteArrayInputStream(user.getCoachConfirmPdf())));
         } catch (Exception e) {
             throw new UsernameNotFoundException("Not found");
+        }
+    }
+
+    public void deleteRequest(Long id) {
+        userRequestRepository.deleteById(id);
+    }
+
+    public ResponseEntity<?> uploadConfirm(String userLogin, MultipartFile file) throws IOException {
+        if (!Objects.equals(file.getContentType(), "application/pdf")) {
+            return ResponseEntity.status(400).body(new AuthResponse(Code.F1));
+        }
+
+        if (file.getSize() > 5 * 1024 * 1024) {
+            return ResponseEntity.status(400).body(new AuthResponse(Code.F2));
+        }
+        UserEntity user = userRepository.findByLogin(userLogin).orElseThrow(() -> new UsernameNotFoundException("Not found"));
+        try {
+            user.setCoachConfirmPdf(file.getBytes());
+            userRepository.uploadFile(user.getId(), file.getBytes());
+            return ResponseEntity.ok().build();
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().build();
         }
     }
 }

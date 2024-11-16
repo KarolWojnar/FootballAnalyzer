@@ -99,6 +99,18 @@
             jestes głównym trenerem, zaznacz.</h6></mat-checkbox>
         </p>
       </div>
+      <div *ngIf="coachTaken" class="d-flex justify-content-center">
+        <button type="button" mat-raised-button (click)="fileInput.click()">Dodaj dokument</button>
+        <input
+          #fileInput
+          hidden
+          type="file"
+          [formControl]="fileControl"
+          (change)="onFileChange($event)"
+          accept=".pdf,.doc,.docx">
+        <span *ngIf="fileControl.value" class="ms-2">
+          {{ getFileName() }}</span>
+      </div>
       <div class="d-flex justify-content-end">
         <button class="bg-primary m-2" type="submit" mat-raised-button [disabled]="isSubmitting">
           Załóż konto

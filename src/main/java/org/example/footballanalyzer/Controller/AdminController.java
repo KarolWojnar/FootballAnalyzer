@@ -134,6 +134,16 @@ public class AdminController implements AdminApi {
     }
 
     @Override
+    public ResponseEntity<?> deleteRequest(Long id) {
+        try {
+            userService.deleteRequest(id);
+            return ResponseEntity.status(200).body(new AuthResponse(Code.SUCCESS));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.ERROR));
+        }
+    }
+
+    @Override
     public ResponseEntity<?> downloadConfirmationPdf(Long userId) {
         try {
             return userService.downloadConfirmationPdf(userId);

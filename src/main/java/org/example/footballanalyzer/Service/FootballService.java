@@ -47,7 +47,7 @@ public class FootballService {
     private final HttpServletRequest request;
     private final UserRepository userRepository;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(fixedDelay = 3600000)
     public void scheduleStatsFromApi() throws IOException, InterruptedException, JSONException {
 
         List<Fixture> fixtures = fixtureRepository.findAllByDateBeforeAndIsCountedOrderByDate(new Date(), false);

@@ -4,8 +4,6 @@ import lombok.Builder;
 import lombok.Data;
 import org.example.footballanalyzer.Data.Entity.UserRequest;
 
-import javax.persistence.Column;
-
 @Builder
 @Data
 public class UserRequestDto {
@@ -15,4 +13,5 @@ public class UserRequestDto {
     private String requestType;
     private UserRequest.RequestStatus requestStatus;
     private Object requestData;
+    private String createDate;
 }

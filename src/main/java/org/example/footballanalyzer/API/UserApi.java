@@ -9,20 +9,24 @@ import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Data.ResetPasswordMail;
 import org.example.footballanalyzer.Data.ValidationMessage;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 
 @RequestMapping("/api/users")
 @CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true", allowedHeaders = "*")
 @Description("API for managing users")
 public interface UserApi {
-    @PostMapping("/register")
-    ResponseEntity<?> createUser(@Valid @RequestBody UserDTO user);
+    @PostMapping(value = "/register")
+    ResponseEntity<?> createUser(@RequestBody UserDTO user);
+
+    @PatchMapping(value = "/uploadConfirmFile/{login}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<?> uploadConfirm(@PathVariable String login, @RequestParam("file") MultipartFile file);
 
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody UserLoginData user, HttpServletResponse response);

@@ -24,6 +24,7 @@ export interface RegisterForm {
   roleId: FormControl<number>;
   teamId: FormControl<number>;
   checkBox: FormControl<boolean>;
+  coachConfirmPdf: FormControl<File | null>;
 }
 
 export interface PlayerStatsForm {

@@ -64,6 +64,7 @@ export class FormService {
           nonNullable: true,
         }),
         checkBox: new FormControl(),
+        coachConfirmPdf: new FormControl(),
       },
       { validators: [equivalentValidator('password', 'confirmPassword')] },
     );
@@ -109,27 +110,50 @@ export class FormService {
     );
   }
 
-  today = new Date();
+  startDatePlayer = new Date();
+  endDatePlayer = new Date();
+
+  startDateTeam = new Date();
+  endDateTeam = new Date();
+
+  setDates(){
+    let startDatePlayersLocal = localStorage.getItem("startDatePlayer");
+    let endDatePlayersLocal = localStorage.getItem("endDatePlayer");
+    if (startDatePlayersLocal && endDatePlayersLocal) {
+      this.startDatePlayer = new Date(startDatePlayersLocal);
+      this.startDatePlayer.setMonth(this.startDatePlayer.getMonth() + 1)
+      this.endDatePlayer = new Date(endDatePlayersLocal);
+    }
+    let startDateTeamLocal = localStorage.getItem("startDateTeam");
+    let endDateTeamLocal = localStorage.getItem("endDateTeam");
+    if (startDateTeamLocal && endDateTeamLocal) {
+      this.startDateTeam = new Date(startDateTeamLocal);
+      this.startDateTeam.setMonth(this.startDateTeam.getMonth() + 1)
+      this.endDateTeam = new Date(endDateTeamLocal);
+    }
+
+  }
 
   initPlayerStatsForm(): FormGroup<PlayerStatsForm> {
+    this.setDates();
     return new FormGroup({
       startDate: new FormControl(
-        this.today.getFullYear() +
-          (this.today.getMonth() > 9 ? '-' : '-0') +
-          this.today.getMonth() +
-          (this.today.getDate() > 9 ? '-' : '-0') +
-          this.today.getDate(),
+        this.startDatePlayer.getFullYear() +
+        (this.startDatePlayer.getMonth() > 9 ? '-' : '-0') +
+        this.startDatePlayer.getMonth() +
+        (this.startDatePlayer.getDate() > 9 ? '-' : '-0') +
+        this.startDatePlayer.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,
         },
       ),
       endDate: new FormControl(
-        this.today.getFullYear() +
-          (this.today.getMonth() + 1 > 9 ? '-' : '-0') +
-          (this.today.getMonth() + 1) +
-          (this.today.getDate() > 9 ? '-' : '-0') +
-          this.today.getDate(),
+        this.endDatePlayer.getFullYear() +
+        (this.endDatePlayer.getMonth() + 1 > 9 ? '-' : '-0') +
+        (this.endDatePlayer.getMonth() + 1) +
+        (this.endDatePlayer.getDate() > 9 ? '-' : '-0') +
+        this.endDatePlayer.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -139,24 +163,25 @@ export class FormService {
   }
 
   initTeamStatsForm(): FormGroup<TeamStatsForm> {
+    this.setDates();
     return new FormGroup({
       startDate: new FormControl(
-        this.today.getFullYear() +
-          (this.today.getMonth() > 9 ? '-' : '-0') +
-          this.today.getMonth() +
-          (this.today.getDate() > 9 ? '-' : '-0') +
-          this.today.getDate(),
+        this.startDateTeam.getFullYear() +
+          (this.startDateTeam.getMonth() > 9 ? '-' : '-0') +
+          this.startDateTeam.getMonth() +
+          (this.startDateTeam.getDate() > 9 ? '-' : '-0') +
+          this.startDateTeam.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,
         },
       ),
       endDate: new FormControl(
-        this.today.getFullYear() +
-          (this.today.getMonth() + 1 > 9 ? '-' : '-0') +
-          (this.today.getMonth() + 1) +
-          (this.today.getDate() > 9 ? '-' : '-0') +
-          this.today.getDate(),
+        this.endDateTeam.getFullYear() +
+          (this.endDateTeam.getMonth() + 1 > 9 ? '-' : '-0') +
+          (this.endDateTeam.getMonth() + 1) +
+          (this.endDateTeam.getDate() > 9 ? '-' : '-0') +
+          this.endDateTeam.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,

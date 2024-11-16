@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { ApiService } from '../../../services/api.service';
-import { Team } from '../../../models/team/team';
-import { Router } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog.component';
-import { FormService } from '../../../services/form/form.service';
-import { RegisterForm } from '../../../models/forms/forms.model';
-import { RequestProblem } from '../../../models/request/request';
-import { ThemeService } from '../../../services/theme.service';
+import {Component, OnInit} from '@angular/core';
+import {FormControl, FormGroup} from '@angular/forms';
+import {ApiService} from '../../../services/api.service';
+import {Team} from '../../../models/team/team';
+import {Router} from '@angular/router';
+import {MatDialog} from '@angular/material/dialog';
+import {TeamDialogComponent} from '../../../coach/team/team-dialog/team-dialog.component';
+import {FormService} from '../../../services/form/form.service';
+import {RegisterForm} from '../../../models/forms/forms.model';
+import {RequestProblem} from '../../../models/request/request';
+import {ThemeService} from '../../../services/theme.service';
 
 @Component({
   selector: 'app-register',
@@ -25,6 +25,7 @@ export class RegisterComponent implements OnInit {
   alertMessage = '';
   isSubmitting = false;
   isDarkMode = true;
+  document!: File;
 
   constructor(
     private apiService: ApiService,
@@ -36,6 +37,37 @@ export class RegisterComponent implements OnInit {
     this.themeService.darkMode$.subscribe((isDark) => {
       this.isDarkMode = isDark;
     });
+  }
+
+  fileControl = new FormControl(null);
+
+  onFileChange(event: any): void {
+    const file = event.target.files[0];
+
+    if (file) {
+      if (file.type !== 'application/pdf') {
+        this.alertMessage = 'Tylko pliki PDF są akceptowane.';
+        this.showAlert = true;
+        this.fileControl.setValue(null);
+        return;
+      }
+
+      if (file.size > 5242880) {
+        this.alertMessage = 'Plik jest za duży. Maksymalny rozmiar to 5MB.';
+        this.showAlert = true;
+        this.fileControl.setValue(null);
+        return;
+      }
+
+      this.alertMessage = '';
+      this.showAlert = false;
+      this.document = file;
+    }
+  }
+
+  getFileName(): string {
+    const file = this.document;
+    return file ? file.name : '';
   }
 
   registerForm: FormGroup<RegisterForm> = this.formService.initRegisterForm();
@@ -71,6 +103,7 @@ export class RegisterComponent implements OnInit {
       if (this.request?.requestType === 'Nowa drużyna') {
         this.registerForm.value.teamId = undefined;
       }
+
       this.apiService.register(this.registerForm.value).subscribe({
         next: () => {
           this.isSubmitting = false;
@@ -80,6 +113,20 @@ export class RegisterComponent implements OnInit {
           if (this.request) {
             this.request.login = this.registerForm.value.login;
             this.handleNewRequest(this.request);
+            if (this.document) {
+              if (this.registerForm.value.login) {
+                const login =  this.registerForm.value.login;
+                this.apiService.uploadFile(login, this.document).subscribe({
+                  next: (next) => {
+                    console.log(next);
+                  },
+                  error: (error) => {
+                    console.error(error);
+                  },
+                });
+              }
+
+            }
           }
 
           setTimeout(() => {
@@ -122,6 +169,7 @@ export class RegisterComponent implements OnInit {
           requestType: 'Nowa drużyna',
           requestStatus: 'NOWE',
           login: '',
+          createdDate: null,
         };
       }
     });
@@ -142,6 +190,7 @@ export class RegisterComponent implements OnInit {
       requestType: 'Trener zajęty',
       requestStatus: 'NOWE',
       login: '',
+      createdDate: null,
     };
     this.registerForm.value.roleId = this.roles.find(
       (role) => role.roleName === 'ANALITYK',

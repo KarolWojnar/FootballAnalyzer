@@ -91,6 +91,12 @@ export class ApiService {
     return this.httpClient.get<UserAdmin[]>(requestUrl, {withCredentials: true});
   }
 
+  uploadFile(login: string, file: File): Observable<any> {
+    const requestUrl = `${this.apiUrl}/users/uploadConfirmFile/${login}`;
+    let formData = new FormData();
+    formData.append('file', file);
+    return this.httpClient.patch<any>(requestUrl, formData);
+  }
   deleteUser(userId: number): Observable<AuthResponse> {
     const requestUrl = `${this.apiUrl}/admin/users/${userId}`;
     return this.httpClient.delete<AuthResponse>(requestUrl, {withCredentials: true});
@@ -101,7 +107,6 @@ export class ApiService {
     return this.httpClient.patch<AuthResponse>(requestUrl, user, {withCredentials: true});
   }
   addRequest(request: RequestProblem) {
-    console.log(request);
     const requestUrl = `${this.apiUrl}/users/requests`;
     return this.httpClient.post(requestUrl, request);
   }
@@ -111,6 +116,11 @@ export class ApiService {
     return this.httpClient.get<RequestProblem[]>(requestUrl, {
       withCredentials: true,
     });
+  }
+
+  deleteRequest(requestId: number) {
+    const requestUrl = `${this.apiUrl}/admin/requests/${requestId}`;
+    return this.httpClient.delete(requestUrl, { withCredentials: true });
   }
 
   updateRequest(request: RequestProblem) {

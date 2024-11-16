@@ -54,6 +54,9 @@ public interface AdminApi {
     @PatchMapping("/requests/{id}")
     ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestBody String status);
 
+    @DeleteMapping("/requests/{id}")
+    ResponseEntity<?> deleteRequest(@PathVariable Long id);
+
     @GetMapping("/requests/user/{userId}")
     ResponseEntity<?> downloadConfirmationPdf(@PathVariable Long userId);
 }

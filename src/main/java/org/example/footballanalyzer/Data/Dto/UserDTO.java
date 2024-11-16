@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.lang.Nullable;
 
 import javax.validation.constraints.Email;
 
@@ -26,4 +27,6 @@ public class UserDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private long roleId;
     private String roleName;
+    @Nullable
+    private byte[] coachConfirmPdf;
 }

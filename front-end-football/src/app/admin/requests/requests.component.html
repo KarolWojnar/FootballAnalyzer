@@ -37,6 +37,11 @@
               <td mat-cell *matCellDef="let element">{{ element.requestStatus }}</td>
             </ng-container>
 
+            <ng-container matColumnDef="createdDate">
+              <th mat-header-cell *matHeaderCellDef>Data utworzenia</th>
+              <td mat-cell *matCellDef="let element">{{ element.createDate.split(' ')[0] }}</td>
+            </ng-container>
+
             <ng-container matColumnDef="requestData">
               <th mat-header-cell *matHeaderCellDef>Dane zgłoszenia</th>
               <td mat-cell *matCellDef="let element">
@@ -73,11 +78,17 @@
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Zmień status</th>
               <td mat-cell *matCellDef="let element">
-                <div class="d-flex justify-content-around">
-                  <button mat-raised-button color="accent" (click)="changeStatus(element.id, 'ROZWIĄZANE')">Rozwiązane
+                <div class="d-flex justify-content-center">
+                  <button mat-raised-button class="button-handle" color="accent" (click)="changeStatus(element.id, 'ROZWIĄZANE')">Rozwiązane
                   </button>
-                  <button mat-raised-button color="warn" (click)="changeStatus(element.id, 'BRAK_ROZWIĄZANIA')">Brak
+                  <button mat-raised-button class="button-handle" color="primary" (click)="changeStatus(element.id, 'BRAK_ROZWIĄZANIA')">Brak
                     rozwiązania
+                  </button>
+                  <button mat-button class="button-handle" color="warn" (click)="deleteRequest(element.id)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                  <button mat-button class="button-handle" color="warn" (click)="rollbackStatus(element.id)">
+                    <mat-icon>refresh</mat-icon>
                   </button>
                 </div>
               </td>
