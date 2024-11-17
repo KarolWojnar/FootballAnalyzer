@@ -1,20 +1,20 @@
-import {Component, OnInit} from '@angular/core';
-import {UserAdmin} from "../../models/user.model";
-import {ThemeService} from "../../services/theme.service";
-import {ApiService} from "../../services/api.service";
-import {Role} from "../../auth/components/register/register.component";
-import {Team} from "../../models/team/team";
-import {MatDialog} from "@angular/material/dialog";
-import {ConfirmDialogComponent} from "../../shared/components/confirm-dialog/confirm-dialog.component";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {RequestProblem} from "../../models/request/request";
+import { Component, OnInit } from '@angular/core';
+import { UserAdmin } from '../../models/user.model';
+import { ThemeService } from '../../services/theme.service';
+import { ApiService } from '../../services/api.service';
+import { Role } from '../../auth/components/register/register.component';
+import { Team } from '../../models/team/team';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { RequestProblem } from '../../models/request/request';
 
 @Component({
   selector: 'app-users',
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent implements OnInit{
+export class UsersComponent implements OnInit {
   users: UserAdmin[] = [];
   isLoading: boolean = true;
   showMessage: boolean = false;
@@ -46,9 +46,12 @@ export class UsersComponent implements OnInit{
       nonNullable: true,
     }),
   });
-  constructor(private themeService: ThemeService,
-              private apiService: ApiService,
-              private dialog: MatDialog,) {
+
+  constructor(
+    private themeService: ThemeService,
+    private apiService: ApiService,
+    private dialog: MatDialog,
+  ) {
     this.themeService.darkMode$.subscribe((isDarkMode) => {
       this.isDarkMode = isDarkMode;
     });
@@ -84,7 +87,7 @@ export class UsersComponent implements OnInit{
         this.isLoading = false;
         this.showMessage = true;
         this.message = 'Problem z pobraniem użytkowników.';
-      }
+      },
     });
   }
 
@@ -92,9 +95,9 @@ export class UsersComponent implements OnInit{
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: {
-        "title": 'Potwierdzenie',
-        "button": 'Usuń',
-        "message": `Czy na pewno chcesz usunąć użytkownika ${user.login}?`,
+        title: 'Potwierdzenie',
+        button: 'Usuń',
+        message: `Czy na pewno chcesz usunąć użytkownika ${user.login}?`,
       },
     });
 
@@ -117,9 +120,9 @@ export class UsersComponent implements OnInit{
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: {
-        "title": 'Potwierdzenie',
-        "button": 'Wyślij',
-        "message": `Czy na pewno chcesz wysłać zapytanie o potwierdzenie?`,
+        title: 'Potwierdzenie',
+        button: 'Wyślij',
+        message: `Czy na pewno chcesz wysłać zapytanie o potwierdzenie?`,
       },
     });
 
@@ -131,11 +134,11 @@ export class UsersComponent implements OnInit{
           requestStatus: 'NOWE',
           requestType: 'POTWIERDZENIE TOŻSAMOŚCI',
           requestData: {
-            "message": "Proszę potwierdzić swoją tożsamość w profilu użytkownika.",
-            "teamName": user.teamName
+            wiadomość:
+              'Proszę potwierdzić swoją tożsamość w profilu użytkownika.',
+            drużyna: user.teamName,
           },
           createdDate: null,
-
         };
         this.apiService.addRequest(this.request).subscribe({
           next: () => {
@@ -150,17 +153,14 @@ export class UsersComponent implements OnInit{
     });
   }
 
-  changeUserRole(user: UserAdmin) {
+  changeUserRole(user: UserAdmin) {}
 
-  }
-
-  changeTeam(user: UserAdmin) {
-  }
+  changeTeam(user: UserAdmin) {}
 
   private getTeams() {
     this.apiService.getTeams().subscribe((teams: Team[]) => {
       this.teams = teams;
-      this.teams.push({id: -1, name: 'Brak'} as Team)
+      this.teams.push({ id: -1, name: 'Brak' } as Team);
     });
   }
 
@@ -196,11 +196,11 @@ export class UsersComponent implements OnInit{
   setDataForUser(user: UserAdmin) {
     if (this.userDataNew.valid) {
       const data = this.userDataNew.value;
-      user.login = data.login? data.login : user.login;
-      user.firstName = data.firstName? data.firstName : user.firstName;
-      user.lastName = data.lastName? data.lastName : user.lastName;
-      user.email = data.email? data.email : user.email;
-      user.password = data.password? data.password : user.password;
+      user.login = data.login ? data.login : user.login;
+      user.firstName = data.firstName ? data.firstName : user.firstName;
+      user.lastName = data.lastName ? data.lastName : user.lastName;
+      user.email = data.email ? data.email : user.email;
+      user.password = data.password ? data.password : user.password;
       this.changData(user);
     }
   }
@@ -209,9 +209,9 @@ export class UsersComponent implements OnInit{
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '300px',
       data: {
-        "title": 'Potwierdzenie',
-        "button": 'Zapisz',
-        "message": `Czy na pewno chcesz zapisać zmiany?`,
+        title: 'Potwierdzenie',
+        button: 'Zapisz',
+        message: `Czy na pewno chcesz zapisać zmiany?`,
       },
     });
 

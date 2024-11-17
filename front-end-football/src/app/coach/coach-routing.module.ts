@@ -6,6 +6,9 @@ import { ProfileComponent } from './profile/profile.component';
 import { OponentComponent } from './oponent/oponent.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { CoachGuard } from '../guards/coach.guard';
+import { StaffComponent } from './profile/staff/staff.component';
+import { UserComponent } from './profile/user/user.component';
+import { RequestsComponent } from './profile/requests/requests.component';
 
 const routes: Routes = [
   {
@@ -25,6 +28,17 @@ const routes: Routes = [
     component: ProfileComponent,
     title: 'Profile',
     canActivate: [AuthGuard],
+    children: [
+      { path: 'user', component: UserComponent, title: 'Profile' },
+      { path: 'requests', component: RequestsComponent, title: 'Requestes' },
+      {
+        path: 'staff',
+        component: StaffComponent,
+        title: 'Staff',
+        canActivate: [CoachGuard],
+      },
+      { path: '', redirectTo: 'users', pathMatch: 'full' },
+    ],
   },
   {
     path: 'opponent',

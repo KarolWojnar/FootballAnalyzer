@@ -42,3 +42,21 @@ export interface NewLeagueForm {
   leagueId: FormControl<number>;
   season: FormControl<number>;
 }
+
+export interface UserEditForm {
+  id: FormControl<number>;
+  firstName: FormControl<string>;
+  lastName: FormControl<string>;
+  login: FormControl<string>;
+  email: FormControl<string>;
+  roleId: FormControl<number>;
+  teamId: FormControl<number>;
+  password: FormControl<string | null>;
+}
+
+export interface RequestProblemForm {
+  id: FormControl<number>;
+  requestType: FormControl<string>;
+  requestStatus: FormControl<string>;
+  requestData: FormControl<string>;
+}

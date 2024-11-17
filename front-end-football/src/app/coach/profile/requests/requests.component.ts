@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ThemeService } from '../../services/theme.service';
-import { ApiService } from '../../services/api.service';
-import { RequestProblem } from '../../models/request/request';
-import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
+import { ThemeService } from '../../../services/theme.service';
+import { ApiService } from '../../../services/api.service';
 import { MatDialog } from '@angular/material/dialog';
+import { RequestProblem } from '../../../models/request/request';
+import { RequestProblemDialogComponent } from '../../../shared/request-problem-dialog/request-problem-dialog.component';
 
 @Component({
   selector: 'app-requests',
@@ -11,11 +11,11 @@ import { MatDialog } from '@angular/material/dialog';
   styleUrls: ['./requests.component.scss'],
 })
 export class RequestsComponent implements OnInit {
-  dataSource!: RequestProblem[];
+  isDarkMode = false;
+  alertMessage: string = '';
   filteredDataSource!: RequestProblem[];
   originalDataSource!: RequestProblem[];
   objectKeys = Object.keys;
-  isDarkMode = false;
   onlyNew = false;
   displayedColumns: string[] = [
     'id',
@@ -28,7 +28,7 @@ export class RequestsComponent implements OnInit {
   ];
   isSubmitting = false;
   showAlert = false;
-  alertMessage = '';
+  dataSource!: RequestProblem[];
   buttonFilter = 'Nowe';
 
   constructor(
@@ -41,36 +41,45 @@ export class RequestsComponent implements OnInit {
     });
   }
 
-  getRequestes(): void {
-    this.isSubmitting = true;
-    this.apiService.getRequests().subscribe({
-      next: (dataSource) => {
-        dataSource.forEach((request: RequestProblem) => {
-          request.requestData = this.parseRequestData(
-            request.requestData.toString(),
-          );
-        });
-        this.dataSource = dataSource;
-        this.originalDataSource = JSON.parse(JSON.stringify(dataSource));
-        this.updateFilteredDataSource();
-        this.isSubmitting = false;
-      },
-      error: (error) => {
-        this.isSubmitting = false;
-        this.showAlert = true;
-        this.alertMessage = error.error.message;
-      },
-    });
-  }
-
   ngOnInit(): void {
-    this.getRequestes();
+    this.fetchRequests();
   }
 
   changeStatus(id: number, newStatus: string): void {
     const request = this.dataSource.find((r) => r.id === id);
     if (request) {
       request.requestStatus = newStatus;
+    }
+  }
+
+  private fetchRequests() {
+    this.apiService.getUserRequests().subscribe({
+      next: (requests) => {
+        requests.forEach((request) => {
+          request.requestData = this.parseRequestData(
+            request.requestData.toString(),
+          );
+        });
+        this.dataSource = requests;
+        this.originalDataSource = JSON.parse(JSON.stringify(requests));
+        this.updateFilteredDataSource();
+      },
+      error: (error) => {
+        this.showAlert = true;
+        this.alertMessage = error.error.message;
+      },
+    });
+  }
+
+  updateFilteredDataSource() {
+    if (this.onlyNew) {
+      this.filteredDataSource = this.dataSource.filter(
+        (request) => request.requestStatus === 'NOWE',
+      );
+      this.buttonFilter = 'Wszystkie';
+    } else {
+      this.filteredDataSource = this.dataSource;
+      this.buttonFilter = 'Nowe';
     }
   }
 
@@ -84,6 +93,11 @@ export class RequestsComponent implements OnInit {
     } catch (e) {
       return {};
     }
+  }
+
+  onlyNewRequest() {
+    this.onlyNew = !this.onlyNew;
+    this.updateFilteredDataSource();
   }
 
   getChangedRequests(): RequestProblem[] {
@@ -112,7 +126,7 @@ export class RequestsComponent implements OnInit {
             this.originalDataSource = JSON.parse(
               JSON.stringify(this.dataSource),
             );
-            this.getRequestes();
+            this.fetchRequests();
             setTimeout(() => {
               this.showAlert = false;
             }, 5000);
@@ -134,56 +148,6 @@ export class RequestsComponent implements OnInit {
     }
   }
 
-  updateFilteredDataSource() {
-    if (this.onlyNew) {
-      this.filteredDataSource = this.dataSource.filter(
-        (request) => request.requestStatus === 'NOWE',
-      );
-      this.buttonFilter = 'Wszystkie';
-    } else {
-      this.filteredDataSource = this.dataSource;
-      this.buttonFilter = 'Nowe';
-    }
-  }
-
-  onlyNewRequest() {
-    this.onlyNew = !this.onlyNew;
-    this.updateFilteredDataSource();
-  }
-
-  deleteRequest(id: number) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '300px',
-      data: {
-        title: 'Potwierdzenie',
-        button: 'Usuń',
-        message: `Czy na pewno chcesz usunąć zgłoszenie?`,
-      },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.isSubmitting = true;
-        this.apiService.deleteRequest(id).subscribe({
-          next: () => {
-            this.isSubmitting = false;
-            this.showAlert = true;
-            this.alertMessage = 'Zgłoszenie zostało usunięte pomyślnie!';
-            this.getRequestes();
-            setTimeout(() => {
-              this.showAlert = false;
-            }, 5000);
-          },
-          error: (error) => {
-            this.isSubmitting = false;
-            this.showAlert = true;
-            this.alertMessage = error.error.message;
-          },
-        });
-      }
-    });
-  }
-
   rollbackStatus(id: number) {
     const request = this.dataSource.find((r) => r.id === id);
     if (request) {
@@ -191,5 +155,21 @@ export class RequestsComponent implements OnInit {
         (original) => original.id === id,
       )!.requestStatus;
     }
+  }
+
+  sendRequest() {
+    const dialogRef = this.dialog.open(RequestProblemDialogComponent, {
+      width: '500px',
+      data: { isDarkMode: this.isDarkMode },
+    });
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.showAlert = true;
+        this.alertMessage = result;
+        setTimeout(() => {
+          this.showAlert = false;
+        }, 5000);
+      }
+    });
   }
 }

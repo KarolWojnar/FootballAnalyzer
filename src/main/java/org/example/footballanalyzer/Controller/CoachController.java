@@ -51,6 +51,57 @@ public class CoachController implements CoachApi {
     }
 
     @Override
+    public ResponseEntity<?> getUser() {
+        try {
+            return userService.getUser();
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.ERROR));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getStaff() {
+        try {
+            return userService.getStaff();
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.S1));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> changeStatus(Long id, String status) {
+        try {
+            userService.setAsResolved(id, status);
+            return ResponseEntity.status(200).body(new AuthResponse(Code.SUCCESS));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.ERROR));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getRequests() {
+        try {
+            return userService.getRequests();
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.R3));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> setAsCoach(Long id) {
+        return userService.setAsCoach(id);
+    }
+
+    @Override
+    public ResponseEntity<?> removeFromTeam(Long id) {
+        try {
+            return userService.removeFromTeam(id);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.S1));
+        }
+    }
+
+    @Override
     public ResponseEntity<?> getAllLeagues() {
         return footballService.getAllLeagues();
     }

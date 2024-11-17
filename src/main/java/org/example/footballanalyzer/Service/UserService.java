@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Code;
-import org.example.footballanalyzer.Data.Dto.UserDTO;
-import org.example.footballanalyzer.Data.Dto.UserEntityEditData;
-import org.example.footballanalyzer.Data.Dto.UserLoginData;
-import org.example.footballanalyzer.Data.Dto.UserRequestDto;
+import org.example.footballanalyzer.Data.Dto.*;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Data.RoleName;
 import org.example.footballanalyzer.Repository.*;
@@ -112,7 +109,8 @@ public class UserService {
     public ResponseEntity<?> request(UserRequestDto userRequest) {
         log.info("Saving new request: {}", userRequest.getRequestType());
         String requestData = userRequest.getRequestData().toString();
-        return dataUtil.saveNewRequest(userRequest, requestData);
+        UserEntity user = findUser();
+        return dataUtil.saveNewRequest(userRequest, requestData, user.getLogin());
     }
 
     public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) throws AuthenticationException {
@@ -269,14 +267,8 @@ public class UserService {
 
 
     public ResponseEntity<?> getRole() {
-        String username = request.getUserPrincipal().getName();
-        if (username == null) {
-            return ResponseEntity.badRequest().body(new AuthResponse(Code.R1));
-        }
-        UserEntity user = userRepository.findByLogin(username).orElse(null);
-        if (user == null) {
-            return ResponseEntity.badRequest().body(new AuthResponse(Code.R1));
-        }
+        UserEntity user = findUser();
+
         RoleName roleName = user.getRole().getRoleName();
 
         return ResponseEntity.ok(roleName);
@@ -310,13 +302,20 @@ public class UserService {
             roleRepository.findById(user.getRoleId()).ifPresent(userEntity::setRole);
         }
         if (user.getTeamId() != null) {
-            if (user.getTeamId() == -2) {
+            if (user.getTeamId() == -1) {
                userEntity.setTeam(null);
             } else {
-                teamRepository.findById(user.getTeamId()).ifPresent(userEntity::setTeam);
+                Team team = teamRepository.findById(user.getTeamId()).orElse(null);
+                if (team != null) {
+                    Optional<UserEntity> otherCoach = userRepository.findFirstByTeamAndRole_RoleName(team, RoleName.TRENER);
+                    if (otherCoach.isPresent() && userEntity.getRole().getRoleName().name().equals("TRENER") && !Objects.equals(otherCoach.get().getId(), userEntity.getId())) {
+                        throw new ExceptionInInitializerError("Team already has a coach");
+                    }
+                    userEntity.setTeam(team);
+                }
             }
         }
-        if (user.getPassword() != null) {
+        if (user.getPassword() != "" && user.getPassword() != null) {
             userEntity.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         userRepository.save(userEntity);
@@ -332,7 +331,7 @@ public class UserService {
     public UserEntityEditData updateUserTeam(Long id, Long teamId) throws FileAlreadyExistsException {
         UserEntity userEntity = userRepository.findById(id).orElseThrow(() -> new UsernameNotFoundException("Not found"));
         Team team = teamRepository.findById(teamId).orElseThrow(() -> new FileAlreadyExistsException("Not found"));
-        Optional<UserEntity> otherCoach = userRepository.findByTeamAndRole_RoleName(team, RoleName.TRENER);
+        Optional<UserEntity> otherCoach = userRepository.findFirstByTeamAndRole_RoleName(team, RoleName.TRENER);
         if (otherCoach.isPresent() && userEntity.getRole().getRoleName().name().equals("TRENER")) {
             throw new ExceptionInInitializerError("Team already has a coach");
         }
@@ -423,5 +422,97 @@ public class UserService {
         } catch (IOException e) {
             return ResponseEntity.badRequest().build();
         }
+    }
+
+    public ResponseEntity<?> getStaff() {
+        UserEntity user = findUser();
+        List<UserEntity> users = userRepository.findAllByTeam(user.getTeam());
+        if (users.isEmpty()) {
+            throw new UsernameNotFoundException("Not found");
+        }
+        users = users.stream().filter(u -> !Objects.equals(u.getId(), user.getId())).toList();
+        List<UserStaff> userEntityDtos = users.stream().map(u -> UserStaff.builder()
+                .id(u.getId())
+                .login(u.getLogin())
+                .roleName(u.getRole().getRoleName().name())
+                .firstName(u.getFirstName())
+                .lastName(u.getLastName())
+                .build()).toList();
+        return ResponseEntity.ok(userEntityDtos);
+    }
+
+    @Transactional
+    public ResponseEntity<?> setAsCoach(Long id) {
+        UserEntity user = findUser();
+        UserEntity newCoach = userRepository.findById(id).orElse(null);
+        if (newCoach == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.ERROR));
+        }
+        Role coachRole = roleRepository.findByRoleName(RoleName.TRENER).orElse(null);
+        Role analitykRole = roleRepository.findByRoleName(RoleName.ANALITYK).orElse(null);
+
+        if (coachRole == null || analitykRole == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.ERROR));
+        }
+
+        userRepository.updateRole(user.getId(), analitykRole.getId());
+        userRepository.updateRole(id, coachRole.getId());
+        return ResponseEntity.status(200).body(new AuthResponse(Code.SUCCESS));
+    }
+
+    public ResponseEntity<?> removeFromTeam(Long id) {
+        UserEntity deleteCoach = userRepository.findById(id).orElse(null);
+        if (deleteCoach == null) {
+            return ResponseEntity.badRequest().body(new AuthResponse(Code.ERROR));
+        }
+        userRepository.updateTeam(id, null);
+        return ResponseEntity.status(200).body(new AuthResponse(Code.SUCCESS));
+    }
+
+    public ResponseEntity<?> getRequests() {
+        UserEntity user = findUser();
+        List<UserRequest> userRequests = userRequestRepository.findAllByUser(user);
+        if (userRequests.isEmpty()) {
+            throw new UsernameNotFoundException("Not found");
+        }
+        List<UserRequestDto> userRequestDtos = userRequests.stream().map(userRequest -> UserRequestDto.builder()
+                .id(userRequest.getId())
+                .userId(userRequest.getUser().getId())
+                .login(userRequest.getUser().getLogin())
+                .createDate(userRequest.getCreateDate())
+                .requestType(userRequest.getRequestType())
+                .requestData(userRequest.getRequestData())
+                .requestStatus(userRequest.getRequestStatus())
+                .build()).toList();
+        return ResponseEntity.ok(userRequestDtos);
+    }
+
+    private UserEntity findUser() {
+        String username = request.getUserPrincipal().getName();
+        if (username == null) {
+            throw new UsernameNotFoundException("Not found");
+        }
+        UserEntity user = userRepository.findByLogin(username).orElse(null);
+        if (user == null) {
+            throw new UsernameNotFoundException("Not found");
+        }
+        return user;
+    }
+
+    public ResponseEntity<?> getUser() {
+        UserEntity user = findUser();
+        UserEntityEditData userEntityDto = UserEntityEditData.builder()
+                .id(user.getId())
+                .login(user.getLogin())
+                .email(user.getEmail())
+                .roleId(user.getRole().getId())
+                .teamName(user.getTeam() == null ? null : user.getTeam().getName())
+                .teamId(user.getTeam() == null ? null : user.getTeam().getId())
+                .roleName(user.getRole().getRoleName().name())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .hasPdf(user.getCoachConfirmPdf() != null)
+                .build();
+        return ResponseEntity.ok(userEntityDto);
     }
 }

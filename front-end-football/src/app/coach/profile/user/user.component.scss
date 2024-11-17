@@ -1,0 +1,34 @@
+.dark-theme {
+  .main-content {
+    background-color: #1e1e1e;
+  }
+}
+
+.light-theme {
+  .main-content {
+    background-color: #ffffff;
+  }
+}
+
+.profile-logo {
+  width: 60px;
+  height: auto;
+  border-radius: 20%;
+}
+
+.main-content {
+  padding: 20px;
+  border-radius: 8px;
+}
+
+h3 {
+  margin-bottom: 0;
+}
+
+p {
+  margin: 0;
+}
+
+button {
+  margin-left: 10px;
+}

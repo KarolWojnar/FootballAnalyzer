@@ -23,7 +23,9 @@ public enum Code {
     C2("Brak danych o danej lidze."),
     NF("Brak danego dokumentu."),
     F1("Tylko pliki PDF są akceptowane."),
-    F2("Plik jest za duży. (Max 5MB)");
+    F2("Plik jest za duży. (Max 5MB)"),
+    S1("Brak sztabu szkoleniowego."),
+    AUTH("Problem z autoryzacją.");
     public final String label;
 
     Code(String label) {

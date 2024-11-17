@@ -1,0 +1,22 @@
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <h3 class="p-1">Zgłoszenie problemu</h3>
+  <mat-dialog-content>
+    <form [formGroup]="requestForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="w-100 p-1">
+        <mat-label>Typ zgłoszenia</mat-label>
+        <textarea matInput formControlName="requestType" required></textarea>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Wiadomość</mat-label>
+        <textarea matInput formControlName="requestData" required rows="5"></textarea>
+      </mat-form-field>
+
+      <div class="d-flex justify-content-end gap-2">
+        <button mat-raised-button color="warn" (click)="onCancel()">Anuluj</button>
+        <button mat-raised-button color="primary" type="submit" [disabled]="requestForm.invalid">Wyślij</button>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+</div>

@@ -1,1 +1,27 @@
-<p>profile works!</p>
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <mat-sidenav-container class="sidenav-container">
+    <mat-sidenav #sidenav mode="side" class="sidenav" opened>
+      <mat-toolbar class="sidenav-header">
+        <span>Panel uzytkownika</span>
+      </mat-toolbar>
+      <mat-nav-list *ngIf="userRoles$ | async as role">
+        <a mat-list-item routerLink="/profile/user" routerLinkActive="shadow radius active"><h6>Profil</h6></a>
+        <a mat-list-item routerLink="/profile/requests" routerLinkActive="active shadow radius"><h6>Twoje
+          zgłoszenia</h6></a>
+        <a mat-list-item *ngIf="role === 'TRENER' || role === 'ADMIN'" routerLink="/profile/staff"
+           routerLinkActive="active shadow radius"><h6>Twój zespół</h6></a>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="mat-side">
+      <mat-toolbar class="custom-toolbar">
+        <button mat-icon-button (click)="sidenav.toggle()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </mat-toolbar>
+      <div class="content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

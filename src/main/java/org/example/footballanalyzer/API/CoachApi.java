@@ -26,6 +26,30 @@ public interface CoachApi {
     @GetMapping("/all-teams")
     ResponseEntity<?> getAllTeams();
 
+    @GetMapping("/user")
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<?> getUser();
+
+    @GetMapping("/staff")
+    @PreAuthorize("hasAnyAuthority('TRENER', 'ADMIN')")
+    ResponseEntity<?> getStaff();
+
+    @GetMapping("/requests")
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<?> getRequests();
+
+    @PatchMapping("/requests/{id}")
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestBody String status);
+
+    @PatchMapping("/staff/{id}")
+    @PreAuthorize("hasAnyAuthority('TRENER', 'ADMIN')")
+    ResponseEntity<?> setAsCoach(@PathVariable Long id);
+
+    @DeleteMapping("/staff/{id}")
+    @PreAuthorize("hasAnyAuthority('TRENER', 'ADMIN')")
+    ResponseEntity<?> removeFromTeam(@PathVariable Long id);
+
     @GetMapping("/all-leagues")
     ResponseEntity<?> getAllLeagues();
 

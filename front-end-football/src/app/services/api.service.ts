@@ -10,8 +10,10 @@ import {
   ChangePassword,
   IUser,
   LoggedIn,
-  ResetPassword, UserAdmin,
+  ResetPassword,
+  UserAdmin,
   UserLoginData,
+  UserStaff,
 } from '../models/user.model';
 import { Role } from '../auth/components/register/register.component';
 import { League } from '../models/league';
@@ -58,12 +60,17 @@ export class ApiService {
 
   getTeamsFromLeague(leagueId: number): Observable<Team[]> {
     const requestUrl = `${this.apiUrl}/admin/clubsFromLeague/${leagueId}`;
-    return this.httpClient.get<Team[]>(requestUrl, {withCredentials: true});
+    return this.httpClient.get<Team[]>(requestUrl, { withCredentials: true });
   }
 
-  getNewLeague(leagueId: number| undefined, season: number | undefined): Observable<AuthResponse> {
+  getNewLeague(
+    leagueId: number | undefined,
+    season: number | undefined,
+  ): Observable<AuthResponse> {
     const requestUrl = `${this.apiUrl}/admin/fixtures/save-all-by-league-season/${leagueId}/${season}`;
-    return this.httpClient.get<AuthResponse>(requestUrl, {withCredentials: true});
+    return this.httpClient.get<AuthResponse>(requestUrl, {
+      withCredentials: true,
+    });
   }
 
   getRoles(): Observable<Role[]> {
@@ -72,13 +79,16 @@ export class ApiService {
   }
 
   getRolesAdmin(): Observable<Role[]> {
-    const requestUrl = `${this.apiUrl}/admin/roles`;
-    return this.httpClient.get<Role[]>(requestUrl, {withCredentials: true});
+    const requestUrl = `${this.apiUrl}/users/roles`;
+    return this.httpClient.get<Role[]>(requestUrl, { withCredentials: true });
   }
 
   downloadPdf(userId: number): Observable<Blob> {
     const requestUrl = `${this.apiUrl}/admin/requests/user/${userId}`;
-    return this.httpClient.get(requestUrl, { responseType: 'blob', withCredentials: true });
+    return this.httpClient.get(requestUrl, {
+      responseType: 'blob',
+      withCredentials: true,
+    });
   }
 
   register(data: any): Observable<AuthResponse> {
@@ -88,7 +98,9 @@ export class ApiService {
 
   getUsers(): Observable<UserAdmin[]> {
     const requestUrl = `${this.apiUrl}/admin/users`;
-    return this.httpClient.get<UserAdmin[]>(requestUrl, {withCredentials: true});
+    return this.httpClient.get<UserAdmin[]>(requestUrl, {
+      withCredentials: true,
+    });
   }
 
   uploadFile(login: string, file: File): Observable<any> {
@@ -99,20 +111,32 @@ export class ApiService {
   }
   deleteUser(userId: number): Observable<AuthResponse> {
     const requestUrl = `${this.apiUrl}/admin/users/${userId}`;
-    return this.httpClient.delete<AuthResponse>(requestUrl, {withCredentials: true});
+    return this.httpClient.delete<AuthResponse>(requestUrl, {
+      withCredentials: true,
+    });
   }
 
-  updateUser(user: UserAdmin): Observable<AuthResponse> {
-    const requestUrl = `${this.apiUrl}/admin/users/${user.id}`;
-    return this.httpClient.patch<AuthResponse>(requestUrl, user, {withCredentials: true});
+  updateUser(user: any): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/users/users/${user.id}`;
+    return this.httpClient.patch<AuthResponse>(requestUrl, user, {
+      withCredentials: true,
+    });
   }
-  addRequest(request: RequestProblem) {
+
+  addRequest(request: any) {
     const requestUrl = `${this.apiUrl}/users/requests`;
-    return this.httpClient.post(requestUrl, request);
+    return this.httpClient.post(requestUrl, request, { withCredentials: true });
   }
 
   getRequests(): Observable<RequestProblem[]> {
     const requestUrl = `${this.apiUrl}/admin/requests`;
+    return this.httpClient.get<RequestProblem[]>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
+  getUserRequests(): Observable<RequestProblem[]> {
+    const requestUrl = `${this.apiUrl}/coach/requests`;
     return this.httpClient.get<RequestProblem[]>(requestUrl, {
       withCredentials: true,
     });
@@ -124,7 +148,7 @@ export class ApiService {
   }
 
   updateRequest(request: RequestProblem) {
-    const requestUrl = `${this.apiUrl}/admin/requests/${request.id}`;
+    const requestUrl = `${this.apiUrl}/coach/requests/${request.id}`;
     return this.httpClient.patch(requestUrl, request.requestStatus, {
       withCredentials: true,
     });
@@ -191,5 +215,37 @@ export class ApiService {
   getLeaguesByCountry(countryName: string): Observable<League[]> {
     const requestUrl = `${this.apiUrl}/admin/leaguesFromCountry/${countryName}`;
     return this.httpClient.get<League[]>(requestUrl, { withCredentials: true });
+  }
+
+  getStaff(): Observable<UserStaff[]> {
+    const requestUrl = `${this.apiUrl}/coach/staff`;
+    return this.httpClient.get<UserStaff[]>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
+  removeFromTeam(id: number): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/coach/staff/${id}`;
+    return this.httpClient.delete<AuthResponse>(requestUrl, {
+      withCredentials: true,
+    });
+  }
+
+  setAsCoach(id: number): Observable<AuthResponse> {
+    const requestUrl = `${this.apiUrl}/coach/staff/${id}`;
+    return this.httpClient.patch<AuthResponse>(
+      requestUrl,
+      {},
+      {
+        withCredentials: true,
+      },
+    );
+  }
+
+  getUserData(): Observable<UserAdmin> {
+    const requestUrl = `${this.apiUrl}/coach/user`;
+    return this.httpClient.get<UserAdmin>(requestUrl, {
+      withCredentials: true,
+    });
   }
 }

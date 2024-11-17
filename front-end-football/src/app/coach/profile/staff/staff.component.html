@@ -1,0 +1,37 @@
+<div [ngClass]="{ 'dark-theme': isDarkMode, 'light-theme': !isDarkMode }">
+  <div class="container my-3 rounded shadow">
+    <h2 class="text-center mb-4">Lista Użytkowników</h2>
+
+    <mat-accordion multi class="user-list">
+      <mat-expansion-panel *ngFor="let user of users" class="mb-2">
+        <mat-expansion-panel-header class="custom-arrow">
+          <mat-panel-title>
+            <div class="d-flex justify-content-between align-items-center w-100 col spans-color">
+              <span>{{ user.id }}. {{ user.login }}</span>
+              <span>{{ user.login ? user.login : 'Brak' }}</span>
+              <span class="badge bg-info text-dark">{{ user.roleName }}</span>
+            </div>
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <div class="user-details">
+          <div>
+            <p><strong>Imię:</strong> {{ user.firstName }}</p>
+            <p><strong>Nazwisko:</strong> {{ user.lastName }}</p>
+            <p><strong>Login:</strong> {{ user.login }}</p>
+          </div>
+
+
+          <div class="select-group d-flex justify-content-center gap-2">
+
+            <button mat-raised-button color="warn" (click)="removeFromTeam(user)">Usuń ze sztabu</button>
+            <button mat-raised-button color="primary" (click)="setAsCoach(user)">Mianuj trenerem</button>
+          </div>
+        </div>
+      </mat-expansion-panel>
+      <div *ngIf="message && showMessage" class="alert alert-info text-center mt-3">
+        {{ message }}
+      </div>
+    </mat-accordion>
+  </div>
+</div>

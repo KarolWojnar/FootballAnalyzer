@@ -3,7 +3,6 @@ package org.example.footballanalyzer.Controller;
 import lombok.RequiredArgsConstructor;
 import org.example.footballanalyzer.API.AdminApi;
 import org.example.footballanalyzer.Data.Code;
-import org.example.footballanalyzer.Data.Dto.UserEntityEditData;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
 import org.example.footballanalyzer.Service.FootballService;
 import org.example.footballanalyzer.Service.UserService;
@@ -61,22 +60,6 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<?> getAllRoles() {
-        return userService.getRoles(true);
-    }
-
-    @Override
-    public ResponseEntity<?> updateUser(Long id, UserEntityEditData user) {
-        try {
-            return ResponseEntity.status(200).body(userService.updateUser(id, user));
-        } catch (UsernameNotFoundException e) {
-            return ResponseEntity.status(404).body(new AuthResponse(Code.A2));
-        } catch (FileAlreadyExistsException e) {
-            return ResponseEntity.status(400).body(new AuthResponse(Code.A4));
-        }
-    }
-
-    @Override
     public ResponseEntity<?> deleteUser(Long id) {
         try {
             userService.deleteUser(id);
@@ -120,16 +103,6 @@ public class AdminController implements AdminApi {
             return ResponseEntity.status(200).body(userService.getAllRequests());
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(404).body(new AuthResponse(Code.R3));
-        }
-    }
-
-    @Override
-    public ResponseEntity<?> changeStatus(Long id, String status) {
-        try {
-            userService.setAsResolved(id, status);
-            return ResponseEntity.status(200).body(new AuthResponse(Code.SUCCESS));
-        } catch (UsernameNotFoundException e) {
-            return ResponseEntity.status(404).body(new AuthResponse(Code.ERROR));
         }
     }
 

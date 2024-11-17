@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -42,5 +43,12 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("update UserEntity u set u.coachConfirmPdf = ?2 where u.id = ?1")
     void uploadFile(long id, byte[] teamId);
 
-    Optional<UserEntity> findByTeamAndRole_RoleName(Team team, RoleName roleName);
+    Optional<UserEntity> findFirstByTeamAndRole_RoleName(Team team, RoleName roleName);
+
+    List<UserEntity> findAllByTeam(Team team);
+
+    @Modifying
+    @Transactional
+    @Query("update UserEntity u set u.role.id = ?2 where u.id = ?1")
+    void updateRole(Long id, Long roleId);
 }

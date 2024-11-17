@@ -2,7 +2,6 @@ package org.example.footballanalyzer.API;
 
 
 import jdk.jfr.Description;
-import org.example.footballanalyzer.Data.Dto.UserEntityEditData;
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,11 +29,7 @@ public interface AdminApi {
 
     @GetMapping("/users")
     ResponseEntity<?> getAllUsers();
-    @GetMapping("/roles")
-    ResponseEntity<?> getAllRoles();
 
-    @PatchMapping("/users/{id}")
-    ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserEntityEditData user);
 
     @DeleteMapping("/users/{id}")
     ResponseEntity<?> deleteUser(@PathVariable Long id);
@@ -50,9 +45,6 @@ public interface AdminApi {
 
     @GetMapping("/requests")
     ResponseEntity<?> getAllRequests();
-
-    @PatchMapping("/requests/{id}")
-    ResponseEntity<?> changeStatus(@PathVariable Long id, @RequestBody String status);
 
     @DeleteMapping("/requests/{id}")
     ResponseEntity<?> deleteRequest(@PathVariable Long id);

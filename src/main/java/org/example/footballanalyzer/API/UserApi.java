@@ -3,6 +3,7 @@ package org.example.footballanalyzer.API;
 import jdk.jfr.Description;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserEntityEditData;
 import org.example.footballanalyzer.Data.Dto.UserLoginData;
 import org.example.footballanalyzer.Data.Dto.UserRequestDto;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
@@ -11,6 +12,7 @@ import org.example.footballanalyzer.Data.ValidationMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -27,6 +29,14 @@ public interface UserApi {
 
     @PatchMapping(value = "/uploadConfirmFile/{login}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     ResponseEntity<?> uploadConfirm(@PathVariable String login, @RequestParam("file") MultipartFile file);
+
+    @GetMapping("/roles")
+    ResponseEntity<?> getAllRoles();
+
+    @PatchMapping("/users/{id}")
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserEntityEditData user);
+
 
     @PostMapping("/login")
     ResponseEntity<?> login(@RequestBody UserLoginData user, HttpServletResponse response);
@@ -45,7 +55,9 @@ public interface UserApi {
 
     @GetMapping("/logout")
     ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response);
+
     @PostMapping("/requests")
+    @PreAuthorize("isAuthenticated()")
     ResponseEntity<?> request(@RequestBody UserRequestDto userRequest);
 
     @GetMapping("/activate")

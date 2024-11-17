@@ -7,9 +7,12 @@ import {
   PlayerStatsForm,
   RecoveryPasswdForm,
   RegisterForm,
+  RequestProblemForm,
   TeamStatsForm,
+  UserEditForm,
 } from '../../models/forms/forms.model';
 import { equivalentValidator } from '../../models/validatoros/equivalent.validator';
+import { UserAdmin } from '../../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -116,22 +119,21 @@ export class FormService {
   startDateTeam = new Date();
   endDateTeam = new Date();
 
-  setDates(){
-    let startDatePlayersLocal = localStorage.getItem("startDatePlayer");
-    let endDatePlayersLocal = localStorage.getItem("endDatePlayer");
+  setDates() {
+    let startDatePlayersLocal = localStorage.getItem('startDatePlayer');
+    let endDatePlayersLocal = localStorage.getItem('endDatePlayer');
     if (startDatePlayersLocal && endDatePlayersLocal) {
       this.startDatePlayer = new Date(startDatePlayersLocal);
-      this.startDatePlayer.setMonth(this.startDatePlayer.getMonth() + 1)
+      this.startDatePlayer.setMonth(this.startDatePlayer.getMonth() + 1);
       this.endDatePlayer = new Date(endDatePlayersLocal);
     }
-    let startDateTeamLocal = localStorage.getItem("startDateTeam");
-    let endDateTeamLocal = localStorage.getItem("endDateTeam");
+    let startDateTeamLocal = localStorage.getItem('startDateTeam');
+    let endDateTeamLocal = localStorage.getItem('endDateTeam');
     if (startDateTeamLocal && endDateTeamLocal) {
       this.startDateTeam = new Date(startDateTeamLocal);
-      this.startDateTeam.setMonth(this.startDateTeam.getMonth() + 1)
+      this.startDateTeam.setMonth(this.startDateTeam.getMonth() + 1);
       this.endDateTeam = new Date(endDateTeamLocal);
     }
-
   }
 
   initPlayerStatsForm(): FormGroup<PlayerStatsForm> {
@@ -139,10 +141,10 @@ export class FormService {
     return new FormGroup({
       startDate: new FormControl(
         this.startDatePlayer.getFullYear() +
-        (this.startDatePlayer.getMonth() > 9 ? '-' : '-0') +
-        this.startDatePlayer.getMonth() +
-        (this.startDatePlayer.getDate() > 9 ? '-' : '-0') +
-        this.startDatePlayer.getDate(),
+          (this.startDatePlayer.getMonth() > 9 ? '-' : '-0') +
+          this.startDatePlayer.getMonth() +
+          (this.startDatePlayer.getDate() > 9 ? '-' : '-0') +
+          this.startDatePlayer.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -150,10 +152,10 @@ export class FormService {
       ),
       endDate: new FormControl(
         this.endDatePlayer.getFullYear() +
-        (this.endDatePlayer.getMonth() + 1 > 9 ? '-' : '-0') +
-        (this.endDatePlayer.getMonth() + 1) +
-        (this.endDatePlayer.getDate() > 9 ? '-' : '-0') +
-        this.endDatePlayer.getDate(),
+          (this.endDatePlayer.getMonth() + 1 > 9 ? '-' : '-0') +
+          (this.endDatePlayer.getMonth() + 1) +
+          (this.endDatePlayer.getDate() > 9 ? '-' : '-0') +
+          this.endDatePlayer.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -201,6 +203,63 @@ export class FormService {
         nonNullable: true,
       }),
       leagueId: new FormControl(0, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+    });
+  }
+
+  initNewUserDataForm(user: UserAdmin): FormGroup<UserEditForm> {
+    return new FormGroup({
+      id: new FormControl(user.id, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      firstName: new FormControl(user.firstName, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      lastName: new FormControl(user.lastName, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      email: new FormControl(user.email, {
+        validators: [Validators.required, Validators.email],
+        nonNullable: true,
+      }),
+      login: new FormControl(user.login, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      roleId: new FormControl(user.roleId ? user.roleId : 0, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      teamId: new FormControl(user.teamId ? user.teamId : -1, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      password: new FormControl('', {
+        validators: [Validators.minLength(8)],
+      }),
+    });
+  }
+
+  initNewRequestForm(): FormGroup<RequestProblemForm> {
+    return new FormGroup({
+      id: new FormControl(0, {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      requestType: new FormControl('', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      requestStatus: new FormControl('NOWE', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+      requestData: new FormControl('', {
         validators: [Validators.required],
         nonNullable: true,
       }),

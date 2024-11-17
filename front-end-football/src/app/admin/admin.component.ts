@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { Subject } from 'rxjs';
 import { ThemeService } from '../services/theme.service';
 
 @Component({
@@ -9,27 +8,16 @@ import { ThemeService } from '../services/theme.service';
   styleUrls: ['./admin.component.scss'],
 })
 export class AdminComponent implements OnInit, OnDestroy {
-  isMobile: boolean = false;
   private unsubscribe$ = new Subject<void>();
   isDarkMode = true;
 
-  constructor(
-    private breakpointObserver: BreakpointObserver,
-    private themeService: ThemeService,
-  ) {
+  constructor(private themeService: ThemeService) {
     this.themeService.darkMode$.subscribe((isDarkMode) => {
       this.isDarkMode = isDarkMode;
     });
   }
 
-  ngOnInit(): void {
-    this.breakpointObserver
-      .observe([Breakpoints.Handset])
-      .pipe(takeUntil(this.unsubscribe$))
-      .subscribe((result) => {
-        this.isMobile = result.matches;
-      });
-  }
+  ngOnInit(): void {}
 
   ngOnDestroy(): void {
     this.unsubscribe$.next();

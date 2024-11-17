@@ -1,0 +1,96 @@
+.dark-theme {
+  background-color: #1e1e1e;
+  color: white;
+
+  mat-dialog-title {
+    color: #90caf9;
+    font-weight: bold;
+  }
+
+  mat-form-field {
+    margin-bottom: 16px;
+
+    mat-label {
+      color: #cfd8dc;
+    }
+
+    .mat-form-field-outline {
+      border-color: #90caf9;
+    }
+
+    textarea,
+    mat-select {
+      color: white;
+    }
+  }
+
+  .cancel-btn {
+    background-color: #ef5350;
+    color: white;
+
+    &:hover {
+      background-color: #d32f2f;
+    }
+  }
+
+  .submit-btn {
+    background-color: #66bb6a;
+    color: white;
+
+    &:hover {
+      background-color: #388e3c;
+    }
+  }
+}
+
+.light-theme {
+  background-color: #e1e8f0;
+  color: #2a2f3b;
+  border: 2px solid #b0bec5;
+
+  mat-dialog-title {
+    color: #1976d2;
+    font-weight: bold;
+  }
+
+  mat-form-field {
+    margin-bottom: 16px;
+
+    mat-label {
+      color: #607d8b;
+    }
+
+    .mat-form-field-outline {
+      border-color: #42a5f5;
+    }
+
+    textarea,
+    mat-select {
+      color: #1e1e1e;
+    }
+  }
+
+  .cancel-btn {
+    background-color: #e57373;
+    color: white;
+
+    &:hover {
+      background-color: #c62828;
+    }
+  }
+
+  .submit-btn {
+    background-color: #4caf50;
+    color: white;
+
+    &:hover {
+      background-color: #388e3c;
+    }
+  }
+}
+
+button {
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 8px 16px;
+}

@@ -234,9 +234,10 @@ public class DataUtil {
         }
     }
 
-    public ResponseEntity<?> saveNewRequest(UserRequestDto userRequest, String requestData) {
+    public ResponseEntity<?> saveNewRequest(UserRequestDto userRequest, String requestData, String login) {
         UserRequest newUserRequest = new UserRequest();
-        Optional<UserEntity> optionalUser = userRepository.findByLogin(userRequest.getLogin());
+        log.info("Saving new request: {}", login);
+        Optional<UserEntity> optionalUser = userRepository.findByLogin(login);
         if (optionalUser.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

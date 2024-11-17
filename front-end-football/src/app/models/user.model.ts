@@ -38,6 +38,14 @@ export interface UserAdmin {
   hasPdf: boolean;
 }
 
+export interface UserStaff {
+  id: number;
+  login: string;
+  firstName: string;
+  lastName: string;
+  roleName: string;
+}
+
 export class User {
   constructor(
     public email: string,

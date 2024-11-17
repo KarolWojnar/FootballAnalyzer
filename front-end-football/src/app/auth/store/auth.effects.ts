@@ -25,7 +25,6 @@ export class AuthEffects {
             return AuthActions.loginSuccess({ user: { ...user } });
           }),
           catchError((error: HttpErrorResponse) => {
-            console.log(error);
             let errorMessage;
             if (
               error.status >= 400 &&

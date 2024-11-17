@@ -6,6 +6,7 @@ import org.example.footballanalyzer.API.UserApi;
 import org.example.footballanalyzer.Data.ChangePasswordData;
 import org.example.footballanalyzer.Data.Code;
 import org.example.footballanalyzer.Data.Dto.UserDTO;
+import org.example.footballanalyzer.Data.Dto.UserEntityEditData;
 import org.example.footballanalyzer.Data.Dto.UserLoginData;
 import org.example.footballanalyzer.Data.Dto.UserRequestDto;
 import org.example.footballanalyzer.Data.Entity.AuthResponse;
@@ -15,6 +16,7 @@ import org.example.footballanalyzer.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-
+import java.nio.file.FileAlreadyExistsException;
 
 
 @RestController
@@ -45,11 +47,29 @@ public class UserController implements UserApi {
     }
 
     @Override
+    public ResponseEntity<?> getAllRoles() {
+        return userService.getRoles(true);
+    }
+
+    @Override
     public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) {
         try {
             return userService.login(user, response);
         } catch (AuthenticationException e) {
             return ResponseEntity.status(401).body(new AuthResponse(Code.A1));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> updateUser(Long id, UserEntityEditData user) {
+        try {
+            return ResponseEntity.status(200).body(userService.updateUser(id, user));
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.A2));
+        } catch (FileAlreadyExistsException e) {
+            return ResponseEntity.status(400).body(new AuthResponse(Code.A4));
+        } catch (ExceptionInInitializerError e) {
+            return ResponseEntity.status(400).body(new AuthResponse(Code.R2));
         }
     }
 

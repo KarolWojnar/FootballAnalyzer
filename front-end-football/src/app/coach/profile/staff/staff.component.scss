@@ -1,0 +1,149 @@
+.dark-theme {
+  .container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  .form-control {
+    background-color: #3a3a3a;
+    color: white;
+  }
+
+  .container::-webkit-scrollbar-thumb {
+    background-color: #007bff;
+    border-radius: 10px;
+    border: 0 solid #2e2e2e;
+  }
+
+  .container::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(67, 162, 250);
+  }
+
+  .container::-webkit-scrollbar-track {
+    background: #202020;
+  }
+
+  .container::-webkit-scrollbar-corner {
+    background: rgba(46, 46, 46, 0);
+  }
+}
+
+.light-theme {
+  background-color: #e1e8f0;
+  color: #2a2f3b;
+
+  .mat-expansion-panel {
+    background-color: #ffffff;
+
+    .spans-color {
+      color: #2a2f3b;
+    }
+  }
+
+  ::ng-deep .custom-arrow > .mat-expansion-indicator:after {
+    color: #2a2f3b;
+  }
+
+  .user-details {
+    color: #2a2f3b;
+  }
+
+  .container::-webkit-scrollbar {
+    width: 13px;
+    height: 8px;
+  }
+
+  .container::-webkit-scrollbar-thumb {
+    background-color: #aaa;
+    border-radius: 10px;
+    border: 2px solid #ffffff;
+  }
+
+  .container::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    border-radius: 10px;
+  }
+
+  .container::-webkit-scrollbar-thumb:hover {
+    background-color: rgb(44, 149, 246);
+  }
+
+  .container::-webkit-scrollbar-corner {
+    background: rgba(3, 3, 5, 0);
+  }
+}
+
+.container {
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.user-list {
+  .mat-expansion-panel-header {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    min-height: 56px;
+
+    .col {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      margin-left: 8px;
+    }
+  }
+}
+
+.user-details {
+  padding: 0 16px;
+  line-height: 1.4;
+}
+
+.form-control {
+  border: 2px solid gray;
+}
+
+button[mat-raised-button] {
+  margin-top: 1rem;
+}
+
+@media (max-width: 768px) {
+  .user-list {
+    .mat-expansion-panel-header {
+      .col {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+
+      .d-flex {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    .user-details {
+      font-size: 0.9rem;
+    }
+  }
+
+  .info-item {
+    padding: 4px 0;
+  }
+
+  .mat-expansion-panel-header {
+    min-height: 80px !important;
+  }
+
+  .button-group, .select-group {
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+}

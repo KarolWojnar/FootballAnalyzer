@@ -1,14 +1,14 @@
-import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup} from '@angular/forms';
-import {ApiService} from '../../../services/api.service';
-import {Team} from '../../../models/team/team';
-import {Router} from '@angular/router';
-import {MatDialog} from '@angular/material/dialog';
-import {TeamDialogComponent} from '../../../coach/team/team-dialog/team-dialog.component';
-import {FormService} from '../../../services/form/form.service';
-import {RegisterForm} from '../../../models/forms/forms.model';
-import {RequestProblem} from '../../../models/request/request';
-import {ThemeService} from '../../../services/theme.service';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { ApiService } from '../../../services/api.service';
+import { Team } from '../../../models/team/team';
+import { Router } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog.component';
+import { FormService } from '../../../services/form/form.service';
+import { RegisterForm } from '../../../models/forms/forms.model';
+import { RequestProblem } from '../../../models/request/request';
+import { ThemeService } from '../../../services/theme.service';
 
 @Component({
   selector: 'app-register',
@@ -115,17 +115,12 @@ export class RegisterComponent implements OnInit {
             this.handleNewRequest(this.request);
             if (this.document) {
               if (this.registerForm.value.login) {
-                const login =  this.registerForm.value.login;
+                const login = this.registerForm.value.login;
                 this.apiService.uploadFile(login, this.document).subscribe({
-                  next: (next) => {
-                    console.log(next);
-                  },
-                  error: (error) => {
-                    console.error(error);
-                  },
+                  next: () => {},
+                  error: () => {},
                 });
               }
-
             }
           }
 

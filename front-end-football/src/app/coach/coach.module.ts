@@ -6,7 +6,7 @@ import { TeamComponent } from './team/team.component';
 import { ProfileComponent } from './profile/profile.component';
 import { TeamRadarChartComponent } from './team/team-radar-chart/team-radar-chart.component';
 import { TeamChartComponent } from './team/team-chart/team-chart.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeModule } from '../home/home.module';
 import { MatSortModule } from '@angular/material/sort';
 import { NgApexchartsModule } from 'ng-apexcharts';
@@ -16,6 +16,17 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { OponentComponent } from './oponent/oponent.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { StaffComponent } from './profile/staff/staff.component';
+import { RequestsComponent } from './profile/requests/requests.component';
+import { UserComponent } from './profile/user/user.component';
+import { MatSelectModule } from '@angular/material/select';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
@@ -28,6 +39,9 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     TeamRadarChartComponent,
     TeamDialogComponent,
     OponentComponent,
+    StaffComponent,
+    RequestsComponent,
+    UserComponent,
   ],
   imports: [
     CommonModule,
@@ -42,7 +56,22 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
+    MatListModule,
+    FormsModule,
+    MatIconModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatSelectModule,
+    MatExpansionModule,
+    MatCheckboxModule,
+    SharedModule,
   ],
-  exports: [PlayersComponent, TeamComponent, ProfileComponent],
+  exports: [
+    PlayersComponent,
+    TeamComponent,
+    ProfileComponent,
+    TeamChartComponent,
+    TeamRadarChartComponent,
+  ],
 })
 export class CoachModule {}
