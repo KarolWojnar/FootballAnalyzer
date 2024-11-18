@@ -271,60 +271,105 @@ public class FootballService {
         dataUtil.collectStatsAndSave(fixture, teamStats);
     }
 
-    public ResponseEntity<?> getStatsTeamCoach(LocalDate startDate, LocalDate endDate, String rounding) {
-        String username = request.getUserPrincipal().getName();
+    public ResponseEntity<?> getStatsPlayer(LocalDate startDate, LocalDate endDate, Long playerId) {
+        String UserTeam = request.getUserPrincipal().getName();
 
-        Team team = findTeam(username);
+        Team team = findTeam(UserTeam);
 
-        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(startDate, endDate, rounding, team.getName()));
-
-        if (ratings.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
+        HashMap<String, Object> ratings = new HashMap<>(populatePlayerAndTeam(startDate, endDate, team, playerId));
 
         return ResponseEntity.ok(ratings);
     }
 
-    public ResponseEntity<?> getStatsOpponentCoach(LocalDate startDate, LocalDate endDate, String rounding) {
-        String username = request.getUserPrincipal().getName();
+    private List<GroupRecord> groupRatingsPlayers(List<FixturesStats> playersStats, List<Fixture> teamStats) {
+        Map<String, Double> maxValues = ratingService.initializeMaxValues();
+        Map<String, Double> sumValues = ratingService.initializeSumValues();
+        int fixturesCount = teamStats.size();
 
-        Team team = findTeam(username);
-
-        var today = new Date();
-        log.info(today.toString());
-
-        Fixture nextFixture = fixtureRepository.findNextFixture(team.getId(), today).orElse(null);
-        if (nextFixture == null) {
-            return ResponseEntity.notFound().build();
+        for (FixturesStats player : playersStats) {
+            ratingService.updateMaxValuesPlayers(maxValues, player);
+            ratingService.updateSumValuesPlayers(sumValues, player);
         }
 
-        log.info("Next fixture: {}, date: {}", nextFixture.getFixtureId(), nextFixture.getDate());
-        log.info("{} : {}", nextFixture.getHomeTeam().getName(), nextFixture.getAwayTeam().getName());
+        ratingService.normalizeSums(sumValues, fixturesCount);
 
-        Team opponent;
-        if (nextFixture.getHomeTeam().getName().equals(team.getName())) {
-            opponent = nextFixture.getAwayTeam();
-        } else {
-            opponent = nextFixture.getHomeTeam();
-        }
+        double[] weights = ratingService.calculateWeights(sumValues.values().stream().mapToDouble(Double::doubleValue).toArray());
 
-        if (opponent == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        String[] teams = {team.getName(), opponent.getName()};
-
-        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(startDate, endDate, rounding, teams));
-        if (ratings.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(ratings);
+        return calculateStatsPlayers(weights, playersStats, maxValues);
     }
 
-    private Map<String, Object> populateRatingsAndPlayers(LocalDate startDate, LocalDate endDate, String rounding, String... teamNames) {
+    private List<GroupRecord> calculateStatsPlayers(double[] weights, List<FixturesStats> playersStats, Map<String, Double> maxValues) {
+        List<GroupRecord> records = new ArrayList<>();
+
+        for (FixturesStats teamStats : playersStats) {
+            GroupRecord record = new GroupRecord(
+                    teamStats.getPlayer().getId(),
+                    teamStats.getTeam().getName(),
+                    teamStats.getFixture().getDate(),
+                    ratingService.setAttackingPlayers(teamStats, maxValues, weights),
+                    ratingService.setDefendingPlayers(teamStats, maxValues, weights),
+                    ratingService.setAgressionPlayers(teamStats, maxValues, weights),
+                    ratingService.setCreativityPlayers(teamStats, maxValues, weights)
+            );
+            records.add(record);
+        }
+        return records;
+    }
+
+    private List<GroupRecord> calculateStats(double[] weights, List<FixtureStatsTeam> teamStatsList, Map<String, Double> maxValues) {
+        List<GroupRecord> records = new ArrayList<>();
+
+        for (FixtureStatsTeam teamStats : teamStatsList) {
+            GroupRecord record = new GroupRecord(
+                    0,
+                    teamStats.getTeam().getName(),
+                    teamStats.getFixture().getDate(),
+                    ratingService.setAttacking(teamStats, maxValues, weights),
+                    ratingService.setDefending(teamStats, maxValues, weights),
+                    ratingService.setAgression(teamStats, maxValues, weights),
+                    ratingService.setCreativity(teamStats, maxValues, weights)
+            );
+            records.add(record);
+        }
+        return records;
+    }
+
+    private Map<String, Object> populatePlayerAndTeam(LocalDate startDate, LocalDate endDate, Team team, long playerId) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         List<Fixture> teamStats = fixtureRepository.findAllByDateBetweenAndIsCollectedAndIsCounted(dateStart, endStart, true, true);
+
+        List<FixturesStats> playersStats = fixturesStatsRepository.findAllByTeamAndFixtureIn(team, teamStats);
+
+        List<GroupRecord> groupedStats = groupRatingsPlayers(playersStats, teamStats);
+        List<GroupRecord> player = groupedStats.stream().filter(record -> record.playerId() == playerId).toList();
+
+        Player player2 = playerRepository.findByPlayerId(playerId).orElse(null);
+
+        Map<String, Object> ratings = new HashMap<>();
+
+        ratings.putAll(ratingService.getAvgOfList("allTeamsRating", groupedStats, team.getName()));
+        ratings.putAll(ratingService.getAvgOfList("teamRating", player, player2 != null ? player2.getName() : null));
+
+        return ratings;
+
+    }
+
+    private Map<String, Object> populateRatingsAndPlayers(LocalDate startDate, LocalDate endDate, String rounding, boolean compareToAll, String... teamNames) {
+        Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+        List<Fixture> teamStats;
+        if (compareToAll) {
+            teamStats = fixtureRepository.findAllByDateBetweenAndIsCollectedAndIsCounted(dateStart, endStart, true, true);
+        } else {
+            Team teamLeague = teamRepository.findByName(teamNames[0]).orElse(null);
+            if (teamLeague == null) {
+                throw new IllegalArgumentException("Team not found");
+            }
+            League league = leagueRepository.findFirstByTeams_Id(teamLeague.getId()).orElse(null);
+
+            teamStats = fixtureRepository.findAllByDateBetweenAndIsCollectedAndIsCountedAndLeague(dateStart, endStart, true, true, league);
+        }
         List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureInAndMinutesGreaterThan(teamStats, 0);
         List<GroupRecord> groupedStats = groupRatings(teamStatsList);
 
@@ -352,6 +397,53 @@ public class FootballService {
         return ratings;
     }
 
+    public ResponseEntity<?> getStatsTeamCoach(LocalDate startDate, LocalDate endDate, String rounding, boolean compareToAll) {
+        String username = request.getUserPrincipal().getName();
+
+        Team team = findTeam(username);
+
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(startDate, endDate, rounding, compareToAll, team.getName()));
+
+        if (ratings.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(ratings);
+    }
+
+    public ResponseEntity<?> getStatsOpponentCoach(LocalDate startDate, LocalDate endDate, String rounding) {
+        String username = request.getUserPrincipal().getName();
+
+        Team team = findTeam(username);
+
+        var today = new Date();
+        log.info(today.toString());
+
+        Fixture nextFixture = fixtureRepository.findNextFixture(team.getId(), today).orElse(null);
+        if (nextFixture == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Team opponent;
+        if (nextFixture.getHomeTeam().getName().equals(team.getName())) {
+            opponent = nextFixture.getAwayTeam();
+        } else {
+            opponent = nextFixture.getHomeTeam();
+        }
+
+        if (opponent == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String[] teams = {team.getName(), opponent.getName()};
+
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(startDate, endDate, rounding, true, teams));
+        if (ratings.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ratings);
+    }
+
     private List<GroupRecord> groupRatings(List<FixtureStatsTeam> teamStatsList) {
         Map<String, Double> maxValues = ratingService.initializeMaxValues();
         Map<String, Double> sumValues = ratingService.initializeSumValues();
@@ -367,23 +459,6 @@ public class FootballService {
         double[] weights = ratingService.calculateWeights(sumValues.values().stream().mapToDouble(Double::doubleValue).toArray());
 
         return calculateStats(weights, teamStatsList, maxValues);
-    }
-
-    private List<GroupRecord> calculateStats(double[] weights, List<FixtureStatsTeam> teamStatsList, Map<String, Double> maxValues) {
-        List<GroupRecord> records = new ArrayList<>();
-
-        for (FixtureStatsTeam teamStats : teamStatsList) {
-            GroupRecord record = new GroupRecord(
-                    teamStats.getTeam().getName(),
-                    teamStats.getFixture().getDate(),
-                    ratingService.setAttacking(teamStats, maxValues, weights),
-                    ratingService.setDefending(teamStats, maxValues, weights),
-                    ratingService.setAgression(teamStats, maxValues, weights),
-                    ratingService.setCreativity(teamStats, maxValues, weights)
-            );
-            records.add(record);
-        }
-        return records;
     }
 
 

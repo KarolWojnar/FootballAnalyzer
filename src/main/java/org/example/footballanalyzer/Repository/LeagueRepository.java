@@ -10,5 +10,7 @@ import java.util.Optional;
 public interface LeagueRepository extends JpaRepository<League, Long> {
     Optional<League> findByName(String name);
 
+    Optional<League> findFirstByTeams_Id(Long leagueId);
+
     Optional<League> findByLeagueId(Long leagueId);
 }

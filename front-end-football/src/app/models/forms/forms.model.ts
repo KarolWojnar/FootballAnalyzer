@@ -36,6 +36,7 @@ export interface TeamStatsForm {
   startDate: FormControl<string>;
   endDate: FormControl<string>;
   rounding: FormControl<string>;
+  compareToAll: FormControl<boolean | null>;
 }
 
 export interface NewLeagueForm {

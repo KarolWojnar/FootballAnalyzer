@@ -204,6 +204,7 @@ export class FormService {
         validators: [Validators.required],
         nonNullable: true,
       }),
+      compareToAll: new FormControl(true),
     });
   }
 
@@ -236,6 +237,7 @@ export class FormService {
         validators: [Validators.required],
         nonNullable: true,
       }),
+      compareToAll: new FormControl(),
     });
   }
 

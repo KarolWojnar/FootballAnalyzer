@@ -42,7 +42,10 @@
 
             <ng-container matColumnDef="player">
               <th mat-header-cell mat-sort-header class="sticky-column playerCorner" *matHeaderCellDef>Gracz</th>
-              <td mat-cell *matCellDef="let player" class="sticky-column">{{ player.player }}</td>
+              <td mat-cell *matCellDef="let player" class="sticky-column">
+                <button (click)="schowChartRadar(player)" mat-stroked-button class="w-100 h-100">{{ player.player }}
+                </button>
+              </td>
             </ng-container>
 
             <ng-container matColumnDef="position">

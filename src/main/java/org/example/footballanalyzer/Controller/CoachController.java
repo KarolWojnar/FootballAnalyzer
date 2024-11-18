@@ -25,7 +25,7 @@ public class CoachController implements CoachApi {
     @Override
     public ResponseEntity<?> getStatsTeamCoach(DateReturnRounding date) {
         try {
-            return footballService.getStatsTeamCoach(date.getStartDate(), date.getEndDate(), date.getRounding());
+            return footballService.getStatsTeamCoach(date.getStartDate(), date.getEndDate(), date.getRounding(), date.isCompareToAll());
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(401).body(Code.T1);
         }
@@ -37,6 +37,15 @@ public class CoachController implements CoachApi {
             return footballService.getStatsOpponentCoach(date.getStartDate(), date.getEndDate(), date.getRounding());
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(401).body(Code.T1);
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getStatsPlayer(DateReturn date, Long playerId) {
+        try {
+            return footballService.getStatsPlayer(date.getStartDate(), date.getEndDate(), playerId);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(401).body(new AuthResponse(Code.ERROR));
         }
     }
 

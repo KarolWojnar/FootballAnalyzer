@@ -15,6 +15,7 @@ import java.text.ParseException;
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/api/admin")
 public interface AdminApi {
+
     @GetMapping("/fixtures/save-all-by-league-season/{league}/{season}")
     ResponseEntity<?> saveAllByLeagueSeason(@PathVariable Long league, @PathVariable Long season) throws IOException, InterruptedException, JSONException, ParseException;
 

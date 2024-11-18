@@ -16,6 +16,7 @@ import { ThemeService } from '../../services/theme.service';
 import { PlayerStatsForm } from '../../models/forms/forms.model';
 import { FormService } from '../../services/form/form.service';
 import { Stats } from '../../models/stats';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-players',
@@ -73,6 +74,7 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
     private playerService: PlayerService,
     private formService: FormService,
     private themeService: ThemeService,
+    private dialog: MatDialog,
   ) {
     this.themeService.darkMode$.subscribe((theme) => {
       this.isDarkMode = theme;
@@ -100,8 +102,14 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
           this.alertMessage = '';
           this.dataSource = new MatTableDataSource(this.playerStats);
           localStorage.setItem('dataSource', JSON.stringify(this.playerStats));
-          localStorage.setItem('startDatePlayer', JSON.stringify(this.form.value.startDate));
-          localStorage.setItem('endDatePlayer', JSON.stringify(this.form.value.endDate));
+          localStorage.setItem(
+            'startDatePlayer',
+            JSON.stringify(this.form.value.startDate),
+          );
+          localStorage.setItem(
+            'endDatePlayer',
+            JSON.stringify(this.form.value.endDate),
+          );
           setTimeout(() => {
             this.dataSource.sort = this.sort;
             this.sub.unsubscribe();
@@ -139,4 +147,6 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
   toggleForm() {
     this.formVisible = !this.formVisible;
   }
+
+  schowChartRadar(player: any): void {}
 }

@@ -31,6 +31,14 @@
             <option value="month">Miesiąc</option>
           </select>
 
+          <ng-container *ngIf="compareToAll">
+            <label for="compareToAll">Porównaj z:</label>
+            <select id="compareToAll" formControlName="compareToAll">
+              <option [selected]="true" value="true">Wszystkimi</option>
+              <option value="false">Twoją ligą</option>
+            </select>
+          </ng-container>
+
           <button class="toggle-button" type="submit">Pobierz statystyki</button>
         </form>
       </div>

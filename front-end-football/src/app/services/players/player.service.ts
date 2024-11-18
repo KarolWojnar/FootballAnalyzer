@@ -35,6 +35,7 @@ export class PlayerService {
       (acc, curr) => ({
         date: undefined,
         player: curr.player,
+        playerId: curr.playerId,
         position:
           curr.position === 'G'
             ? 'Bramkarz'
@@ -80,6 +81,7 @@ export class PlayerService {
 
   private createEmptyPlayerStats(playerName: string): PlayerStats {
     return {
+      playerId: 0,
       date: undefined,
       position: '',
       player: playerName,

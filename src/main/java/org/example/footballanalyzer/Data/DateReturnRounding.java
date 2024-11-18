@@ -9,4 +9,5 @@ public class DateReturnRounding {
     LocalDate startDate;
     LocalDate endDate;
     String rounding;
+    boolean compareToAll;
 }

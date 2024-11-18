@@ -1,5 +1,6 @@
 export class PlayerStats {
   date!: Date | undefined;
+  playerId: number;
   player: string;
   position: string;
   minutes: number;
@@ -18,6 +19,7 @@ export class PlayerStats {
   tacklesBlocks: number;
 
   constructor(
+    playerId: number,
     date: Date,
     position: string,
     player: string,
@@ -47,6 +49,7 @@ export class PlayerStats {
     penaltyWon: number,
     penaltyCommitted: number,
   ) {
+    this.playerId = playerId;
     this.date = date;
     this.position = position;
     this.player = player;

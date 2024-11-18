@@ -1,9 +1,11 @@
 package org.example.footballanalyzer.Service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.footballanalyzer.Data.Dto.GroupRecord;
 import org.example.footballanalyzer.Data.Dto.RatingRecord;
 import org.example.footballanalyzer.Data.Entity.FixtureStatsTeam;
+import org.example.footballanalyzer.Data.Entity.FixturesStats;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class RatingService {
 
@@ -87,6 +90,65 @@ public class RatingService {
         maxValues.put("maxPenaltySaved", Math.max(maxValues.get("maxPenaltySaved"), fixture.getPenaltySaved()));
         maxValues.put("maxPenaltyMissed", Math.max(maxValues.get("maxPenaltyMissed"), fixture.getPenaltyMissed()));
     }
+
+    public void updateSumValuesPlayers(Map<String, Double> sumValues, FixturesStats fixture) {
+        sumValues.put("sumOffsides", sumValues.get("sumOffsides") + fixture.getOffsides());
+        sumValues.put("sumShotsTotal", sumValues.get("sumShotsTotal") + fixture.getShotsTotal());
+        sumValues.put("sumShootsOnGoal", sumValues.get("sumShootsOnGoal") + fixture.getShotsOnGoal());
+        sumValues.put("sumGoals", sumValues.get("sumGoals") + fixture.getGoalsTotal());
+        sumValues.put("sumGoalsConceded", sumValues.get("sumGoalsConceded") + fixture.getGoalsConceded());
+        sumValues.put("sumAssists", sumValues.get("sumAssists") + fixture.getAssists());
+        sumValues.put("sumSaves", sumValues.get("sumSaves") + fixture.getSaves());
+        sumValues.put("sumPasses", sumValues.get("sumPasses") + fixture.getPassesTotal());
+        sumValues.put("sumKeyPasses", sumValues.get("sumKeyPasses") + fixture.getPassesKey());
+        sumValues.put("sumAccuratePasses", sumValues.get("sumAccuratePasses") + fixture.getPassesAccuracy());
+        sumValues.put("sumTackles", sumValues.get("sumTackles") + fixture.getTacklesTotal());
+        sumValues.put("sumTacklesBlocks", sumValues.get("sumTacklesBlocks") + fixture.getTacklesBlocks());
+        sumValues.put("sumTacklesInterceptions", sumValues.get("sumTacklesInterceptions") + fixture.getTacklesInterceptions());
+        sumValues.put("sumDuelsTotal", sumValues.get("sumDuelsTotal") + fixture.getDuelsTotal());
+        sumValues.put("sumDuelsWon", sumValues.get("sumDuelsWon") + fixture.getDuelsWon());
+        sumValues.put("sumDribblesAttempts", sumValues.get("sumDribblesAttempts") + fixture.getDribblesAttempts());
+        sumValues.put("sumDribblesSuccess", sumValues.get("sumDribblesSuccess") + fixture.getDribblesSuccess());
+        sumValues.put("sumFoulsDrawn", sumValues.get("sumFoulsDrawn") + fixture.getFoulsDrawn());
+        sumValues.put("sumFoulsCommited", sumValues.get("sumFoulsCommited") + fixture.getFoulsCommitted());
+        sumValues.put("sumCardYellow", sumValues.get("sumCardYellow") + fixture.getCardsYellow());
+        sumValues.put("sumCardRed", sumValues.get("sumCardRed") + fixture.getCardsRed());
+        sumValues.put("sumPenaltyWon", sumValues.get("sumPenaltyWon") + fixture.getPenaltyWon());
+        sumValues.put("sumPenaltyCommitted", sumValues.get("sumPenaltyCommitted") + fixture.getPenaltyCommitted());
+        sumValues.put("sumPenaltyScored", sumValues.get("sumPenaltyScored") + fixture.getPenaltyScored());
+        sumValues.put("sumPenaltySaved", sumValues.get("sumPenaltySaved") + fixture.getPenaltySaved());
+        sumValues.put("sumPenaltyMissed", sumValues.get("sumPenaltyMissed") + fixture.getPenaltyMissed());
+    }
+
+    public void updateMaxValuesPlayers(Map<String, Double> maxValues, FixturesStats fixture) {
+        maxValues.put("maxOffsides", Math.max(maxValues.get("maxOffsides"), fixture.getOffsides()));
+        maxValues.put("maxShotsTotal", Math.max(maxValues.get("maxShotsTotal"), fixture.getShotsTotal()));
+        maxValues.put("maxShootsOnGoal", Math.max(maxValues.get("maxShootsOnGoal"), fixture.getShotsOnGoal()));
+        maxValues.put("maxGoals", Math.max(maxValues.get("maxGoals"), fixture.getGoalsTotal()));
+        maxValues.put("maxGoalsConceded", Math.max(maxValues.get("maxGoalsConceded"), fixture.getGoalsConceded()));
+        maxValues.put("maxAssists", Math.max(maxValues.get("maxAssists"), fixture.getAssists()));
+        maxValues.put("maxSaves", Math.max(maxValues.get("maxSaves"), fixture.getSaves()));
+        maxValues.put("maxPasses", Math.max(maxValues.get("maxPasses"), fixture.getPassesTotal()));
+        maxValues.put("maxKeyPasses", Math.max(maxValues.get("maxKeyPasses"), fixture.getPassesKey()));
+        maxValues.put("maxAccuratePasses", Math.max(maxValues.get("maxAccuratePasses"), fixture.getPassesAccuracy()));
+        maxValues.put("maxTackles", Math.max(maxValues.get("maxTackles"), fixture.getTacklesTotal()));
+        maxValues.put("maxTacklesBlocks", Math.max(maxValues.get("maxTacklesBlocks"), fixture.getTacklesBlocks()));
+        maxValues.put("maxTacklesInterceptions", Math.max(maxValues.get("maxTacklesInterceptions"), fixture.getTacklesInterceptions()));
+        maxValues.put("maxDuelsTotal", Math.max(maxValues.get("maxDuelsTotal"), fixture.getDuelsTotal()));
+        maxValues.put("maxDuelsWon", Math.max(maxValues.get("maxDuelsWon"), fixture.getDuelsWon()));
+        maxValues.put("maxDribblesAttempts", Math.max(maxValues.get("maxDribblesAttempts"), fixture.getDribblesAttempts()));
+        maxValues.put("maxDribblesSuccess", Math.max(maxValues.get("maxDribblesSuccess"), fixture.getDribblesSuccess()));
+        maxValues.put("maxFoulsDrawn", Math.max(maxValues.get("maxFoulsDrawn"), fixture.getFoulsDrawn()));
+        maxValues.put("maxFoulsCommited", Math.max(maxValues.get("maxFoulsCommited"), fixture.getFoulsCommitted()));
+        maxValues.put("maxCardYellow", Math.max(maxValues.get("maxCardYellow"), fixture.getCardsYellow()));
+        maxValues.put("maxCardRed", Math.max(maxValues.get("maxCardRed"), fixture.getCardsRed()));
+        maxValues.put("maxPenaltyWon", Math.max(maxValues.get("maxPenaltyWon"), fixture.getPenaltyWon()));
+        maxValues.put("maxPenaltyCommitted", Math.max(maxValues.get("maxPenaltyCommitted"), fixture.getPenaltyCommitted()));
+        maxValues.put("maxPenaltyScored", Math.max(maxValues.get("maxPenaltyScored"), fixture.getPenaltyScored()));
+        maxValues.put("maxPenaltySaved", Math.max(maxValues.get("maxPenaltySaved"), fixture.getPenaltySaved()));
+        maxValues.put("maxPenaltyMissed", Math.max(maxValues.get("maxPenaltyMissed"), fixture.getPenaltyMissed()));
+    }
+
 
     public Map<String, Double> initializeSumValues() {
         Map<String, Double> sumValues = new HashMap<>();
@@ -188,6 +250,44 @@ public class RatingService {
                 / (weights[9] + weights[5] + weights[8]);
     }
 
+    public double setAttackingPlayers(FixturesStats teamStats, Map<String, Double> maxValues, double[] weights) {
+        double shootsEffective = teamStats.getShotsOnGoal() / (maxValues.get("maxShootsOnGoal"));
+        double dribblesEffective = teamStats.getDribblesSuccess() / (maxValues.get("maxDribblesSuccess"));
+        double goals = teamStats.getGoalsTotal() / maxValues.get("maxGoals");
+
+        return (shootsEffective * weights[2] + dribblesEffective * weights[16] + goals * weights[3])
+                / (weights[2] + weights[16] + weights[3]);
+    }
+
+    public double setDefendingPlayers(FixturesStats teamStats, Map<String, Double> maxValues, double[] weights) {
+        double duelsWon = teamStats.getDuelsWon() / maxValues.get("maxDuelsWon");
+        double tacklesInterp = teamStats.getTacklesInterceptions() / maxValues.get("maxTacklesInterceptions");
+        double tacklesBlocks = teamStats.getTacklesBlocks() / maxValues.get("maxTacklesBlocks");
+        double foulsDrawn = teamStats.getFoulsDrawn() / maxValues.get("maxFoulsDrawn");
+
+        return (duelsWon * weights[14] + tacklesInterp * weights[12] + tacklesBlocks * weights[11] + foulsDrawn * weights[17])
+                / (weights[14] + weights[12] + weights[11] + weights[17]);
+
+    }
+
+    public double setAgressionPlayers(FixturesStats teamStats, Map<String, Double> maxValues, double[] weights) {
+        double foulsCommitted = (teamStats.getFoulsCommitted() / maxValues.get("maxFoulsCommited"));
+        double normRedCards = teamStats.getCardsRed() / maxValues.get("maxCardRed");
+        double normYellowCards = teamStats.getCardsYellow() / maxValues.get("maxCardYellow");
+
+        return (foulsCommitted * weights[18] + normRedCards * weights[20] + normYellowCards * weights[19])
+                / (weights[18] + weights[20] + weights[19]);
+    }
+
+    public double setCreativityPlayers(FixturesStats teamStats, Map<String, Double> maxValues, double[] weights) {
+        double pass = teamStats.getPassesAccuracy() / maxValues.get("maxAccuratePasses");
+        double assists = teamStats.getAssists() / maxValues.get("maxAssists");
+        double keyPass = teamStats.getPassesKey() / maxValues.get("maxKeyPasses");
+
+        return (pass * weights[9] + assists * weights[5] + keyPass * weights[8])
+                / (weights[9] + weights[5] + weights[8]);
+    }
+
     public Map<String, ?> getAvgOfList(String responseName, List<GroupRecord> groupedStats, String name) {
         int i = 0;
         double aggression = 0.0, attacking = 0.0, defending = 0.0, creativity = 0.0;
@@ -200,7 +300,7 @@ public class RatingService {
         }
 
         GroupRecord record = new GroupRecord(
-                name, null, aggression / i, attacking / i, defending / i, creativity / i
+                0, name, null, attacking / i, defending / i, aggression / i, creativity / i
         );
 
         return Map.of(responseName, record);

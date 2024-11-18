@@ -24,6 +24,7 @@ export class TeamStatsComponent {
   }
 
   logoUrl = localStorage.getItem('logoUrl');
+  @Input() compareToAll!: boolean;
 
   toggleForm(): void {
     this.formVisible = !this.formVisible;
