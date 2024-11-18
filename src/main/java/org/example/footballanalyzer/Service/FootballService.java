@@ -60,7 +60,7 @@ public class FootballService {
         log.info("{} stats counted for {}", fixtures.size(), new Date());
     }
 
-    @Scheduled(cron = "5 0 * * * *")
+    @Scheduled(cron = "0 5 * * * *")
     public void scheduleCollectStats() {
         List<Fixture> fixtures = fixtureRepository.findAllCompleted();
         log.info("Collected fixtures: {}", fixtures.size());
