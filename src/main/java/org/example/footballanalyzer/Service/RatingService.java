@@ -188,7 +188,7 @@ public class RatingService {
                 / (weights[9] + weights[5] + weights[8]);
     }
 
-    public Map<String, ?> getAvgOfList(String responseName, List<GroupRecord> groupedStats) {
+    public Map<String, ?> getAvgOfList(String responseName, List<GroupRecord> groupedStats, String name) {
         int i = 0;
         double aggression = 0.0, attacking = 0.0, defending = 0.0, creativity = 0.0;
         for (GroupRecord record : groupedStats) {
@@ -200,19 +200,17 @@ public class RatingService {
         }
 
         GroupRecord record = new GroupRecord(
-                (responseName.equals("allTeamsRating") ? null : groupedStats.get(0).team()),
-                null, aggression / i, attacking / i, defending / i, creativity / i
+                name, null, aggression / i, attacking / i, defending / i, creativity / i
         );
 
         return Map.of(responseName, record);
 
     }
 
-    public Map<String, RatingRecord> getAvgByDates(String label, List<GroupRecord> groupedStats, String rounding, LocalDate startDate, LocalDate endDate) {
+    public Map<String, RatingRecord> getAvgByDates(String label, List<GroupRecord> groupedStats, String rounding, LocalDate startDate, LocalDate endDate, String name) {
         Map<String, RatingRecord> result = new HashMap<>();
         Map<String, Double> periodRatings = new HashMap<>();
 
-        var teamName = groupedStats.isEmpty() ? "Unknown" : (label.equals("allTeamsForm")? null : groupedStats.get(0).team());
         int intervalDays = 0;
         if ("week".equals(rounding)) {
             intervalDays = 7;
@@ -235,7 +233,7 @@ public class RatingService {
             }
         }
 
-        RatingRecord ratingRecord = new RatingRecord(teamName, periodRatings);
+        RatingRecord ratingRecord = new RatingRecord(name, periodRatings);
         result.put(label, ratingRecord);
         return result;
     }

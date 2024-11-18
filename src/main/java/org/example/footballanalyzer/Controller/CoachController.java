@@ -32,6 +32,15 @@ public class CoachController implements CoachApi {
     }
 
     @Override
+    public ResponseEntity<?> getStatsTeamOpponent(DateReturnRounding date) {
+        try {
+            return footballService.getStatsOpponentCoach(date.getStartDate(), date.getEndDate(), date.getRounding());
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(401).body(Code.T1);
+        }
+    }
+
+    @Override
     public ResponseEntity<?> getStatsPlayers(DateReturn dataReturn) {
         try {
             return footballService.getPlayerStatsByTeam(dataReturn.getStartDate(), dataReturn.getEndDate());

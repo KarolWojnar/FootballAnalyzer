@@ -119,6 +119,9 @@ export class FormService {
   startDateTeam = new Date();
   endDateTeam = new Date();
 
+  startDateOpponent = new Date();
+  endDateOpponent = new Date();
+
   setDates() {
     let startDatePlayersLocal = localStorage.getItem('startDatePlayer');
     let endDatePlayersLocal = localStorage.getItem('endDatePlayer');
@@ -133,6 +136,14 @@ export class FormService {
       this.startDateTeam = new Date(startDateTeamLocal);
       this.startDateTeam.setMonth(this.startDateTeam.getMonth() + 1);
       this.endDateTeam = new Date(endDateTeamLocal);
+    }
+
+    let startDateOpponentLocal = localStorage.getItem('startDateOpponent');
+    let endDateOpponentLocal = localStorage.getItem('endDateOpponent');
+    if (startDateOpponentLocal && endDateOpponentLocal) {
+      this.startDateOpponent = new Date(startDateOpponentLocal);
+      this.startDateOpponent.setMonth(this.startDateOpponent.getMonth() + 1);
+      this.endDateOpponent = new Date(endDateOpponentLocal);
     }
   }
 
@@ -184,6 +195,38 @@ export class FormService {
           (this.endDateTeam.getMonth() + 1) +
           (this.endDateTeam.getDate() > 9 ? '-' : '-0') +
           this.endDateTeam.getDate(),
+        {
+          validators: [Validators.required],
+          nonNullable: true,
+        },
+      ),
+      rounding: new FormControl('week', {
+        validators: [Validators.required],
+        nonNullable: true,
+      }),
+    });
+  }
+
+  initOpponentStatsForm(): FormGroup<TeamStatsForm> {
+    this.setDates();
+    return new FormGroup({
+      startDate: new FormControl(
+        this.startDateOpponent.getFullYear() +
+          (this.startDateOpponent.getMonth() > 9 ? '-' : '-0') +
+          this.startDateOpponent.getMonth() +
+          (this.startDateOpponent.getDate() > 9 ? '-' : '-0') +
+          this.startDateOpponent.getDate(),
+        {
+          validators: [Validators.required],
+          nonNullable: true,
+        },
+      ),
+      endDate: new FormControl(
+        this.endDateOpponent.getFullYear() +
+          (this.endDateOpponent.getMonth() + 1 > 9 ? '-' : '-0') +
+          (this.endDateOpponent.getMonth() + 1) +
+          (this.endDateOpponent.getDate() > 9 ? '-' : '-0') +
+          this.endDateOpponent.getDate(),
         {
           validators: [Validators.required],
           nonNullable: true,

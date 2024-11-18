@@ -4,11 +4,11 @@ import { ApiService } from '../../../services/api.service';
 import { Team } from '../../../models/team/team';
 import { Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { TeamDialogComponent } from '../../../coach/team/team-dialog/team-dialog.component';
 import { FormService } from '../../../services/form/form.service';
 import { RegisterForm } from '../../../models/forms/forms.model';
 import { RequestProblem } from '../../../models/request/request';
 import { ThemeService } from '../../../services/theme.service';
+import { TeamDialogComponent } from '../../../shared/components/team-stats/team-dialog/team-dialog.component';
 
 @Component({
   selector: 'app-register',

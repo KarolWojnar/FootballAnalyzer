@@ -1,0 +1,188 @@
+.dark-theme {
+
+  .team-container {
+    background-color: #121212;
+    color: #ffffff;
+  }
+
+  .toggle-button {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .toggle-button:hover {
+    background-color: #0056b3;
+  }
+
+  .team-form {
+    background-color: #1e1e1e;
+  }
+
+  .team-form input, .team-form select {
+    border: 1px solid #333;
+    background-color: #1e1e1e;
+    color: #ffffff;
+  }
+
+  .team-form button {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .team-form button:hover {
+    background-color: #0056b3;
+  }
+
+  .active {
+    background-color: #1e1e1e;
+    color: white;
+  }
+
+  .nav-link {
+    color: white;
+  }
+}
+
+
+.light-theme {
+  .team-container {
+    background-color: #e1e8f0;
+    color: #2a2f3b;
+  }
+
+  .toggle-button {
+    background-color: rgba(0, 123, 255, 0.45);
+
+    &:hover {
+      background-color: rgba(0, 123, 255, 0.67);
+    }
+  }
+
+  .team-form {
+    background-color: #ffffff;
+  }
+
+  .team-form input, .team-form select {
+    border: 1px solid #333;
+    background-color: #ffffff;
+    color: #2a2f3b;
+  }
+
+  .nav-link {
+    color: #2a2f3b;
+  }
+
+  .active {
+    background-color: rgba(0, 123, 255, 0.45);
+    color: white;
+  }
+}
+
+.team-container {
+  padding: 20px;
+  border-radius: 10px;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.main-content {
+  display: flex;
+  gap: 20px;
+}
+
+.form-toggle {
+  margin-bottom: 10px;
+  display: flex;
+  justify-content: left;
+}
+
+.toggle-button {
+  border: none;
+  border-radius: 5px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.form-container {
+  width: 20%;
+  margin-top: 20px;
+}
+
+.chart-container-with-form {
+  width: 80%;
+}
+
+.chart-container-no-form {
+  width: 100%;
+}
+
+.team-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.team-form label {
+  margin: 5px 0;
+}
+
+.team-form input, .team-form select {
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.team-form button {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+h2 {
+  margin-top: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+
+p {
+  font-size: 1.1em;
+}
+
+.logo {
+  height: 50px;
+  margin-top: 0;
+
+  img {
+    height: 140%;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    flex-direction: column;
+  }
+
+  .logo {
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+
+  .chart-container-with-form {
+    width: 100%;
+  }
+
+  .form-container {
+    width: 100%;
+  }
+}

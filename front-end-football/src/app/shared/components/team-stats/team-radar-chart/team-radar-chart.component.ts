@@ -11,7 +11,7 @@ import {
   ApexXAxis,
   ChartComponent,
 } from 'ng-apexcharts';
-import { Stats } from '../../../models/stats';
+import { Stats } from '../../../../models/stats';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -52,7 +52,9 @@ export class TeamRadarChartComponent implements OnChanges {
           ],
         },
         {
-          name: 'Średnia wszystkich drużyn',
+          name: this.teamStats.allTeamsRating.team
+            ? this.teamStats.allTeamsRating.team
+            : 'Średnia wszystkich drużyn',
           data: [
             Math.round(this.teamStats.allTeamsRating.aggression * 100000) /
               1000,

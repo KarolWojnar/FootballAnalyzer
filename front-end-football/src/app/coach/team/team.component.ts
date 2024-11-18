@@ -5,7 +5,6 @@ import { ApiService } from '../../services/api.service';
 import { TeamStatsForm } from '../../models/forms/forms.model';
 import { FormService } from '../../services/form/form.service';
 import { FormGroup } from '@angular/forms';
-import { ThemeService } from '../../services/theme.service';
 
 @Component({
   selector: 'app-team',
@@ -15,26 +14,16 @@ import { ThemeService } from '../../services/theme.service';
 export class TeamComponent implements OnInit {
   teamStats: Stats = JSON.parse(localStorage.getItem('teamStats')!);
   form: FormGroup<TeamStatsForm> = this.formService.initTeamStatsForm();
-  formVisible: boolean = true;
-  sub!: Subscription;
-  selectedChart = 'line';
   isDarkMode = true;
-  logoUrl = localStorage.getItem('logoUrl')!;
   alertMessage = '';
+  sub!: Subscription;
   constructor(
-    private apiService: ApiService,
     private formService: FormService,
-    private themeService: ThemeService,
-  ) {
-    this.themeService.darkMode$.subscribe((theme) => {
-      this.isDarkMode = theme;
-    });
-  }
+    private apiService: ApiService,
+  ) {}
 
   ngOnInit(): void {
-    if (localStorage.getItem('teamStats') == null) {
-      this.fetchTeamData();
-    }
+    this.fetchTeamData();
   }
 
   fetchTeamData() {
@@ -42,9 +31,14 @@ export class TeamComponent implements OnInit {
       next: (teamStats) => {
         this.teamStats = teamStats;
         localStorage.setItem('teamStats', JSON.stringify(teamStats));
-        localStorage.setItem('startDateTeam', JSON.stringify(this.form.value.startDate));
-        localStorage.setItem('endDateTeam', JSON.stringify(this.form.value.endDate));
-        this.selectedChart = 'line';
+        localStorage.setItem(
+          'startDateTeam',
+          JSON.stringify(this.form.value.startDate),
+        );
+        localStorage.setItem(
+          'endDateTeam',
+          JSON.stringify(this.form.value.endDate),
+        );
       },
       error: (err) => {
         if (err.error.status === 403) {
@@ -57,16 +51,8 @@ export class TeamComponent implements OnInit {
     });
   }
 
-  onSubmit(): void {
+  handleSubmit() {
+    this.form.setValue(this.form.getRawValue());
     this.fetchTeamData();
-  }
-
-  selectChart(chartType: string) {
-    this.selectedChart = chartType;
-  }
-
-  toggleForm() {
-    this.formVisible = !this.formVisible;
-    this.teamStats = JSON.parse(localStorage.getItem('teamStats')!);
   }
 }

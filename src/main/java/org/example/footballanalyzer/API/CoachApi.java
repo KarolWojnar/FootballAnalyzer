@@ -16,6 +16,10 @@ public interface CoachApi {
     @PreAuthorize("hasAnyAuthority('TRENER', 'ANALITYK', 'ADMIN')")
     ResponseEntity<?> getStatsTeamCoach(@RequestBody DateReturnRounding date);
 
+    @PostMapping("/stats/opponent")
+    @PreAuthorize("hasAnyAuthority('TRENER', 'ANALITYK', 'ADMIN')")
+    ResponseEntity<?> getStatsTeamOpponent(@RequestBody DateReturnRounding date);
+
     @PostMapping("/stats/players")
     @PreAuthorize("hasAnyAuthority('TRENER', 'ANALITYK', 'ADMIN')")
     ResponseEntity<?> getStatsPlayers(@RequestBody DateReturn datesReturn);

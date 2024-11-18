@@ -4,13 +4,10 @@ import { CoachRoutingModule } from './coach-routing.module';
 import { PlayersComponent } from './players/players.component';
 import { TeamComponent } from './team/team.component';
 import { ProfileComponent } from './profile/profile.component';
-import { TeamRadarChartComponent } from './team/team-radar-chart/team-radar-chart.component';
-import { TeamChartComponent } from './team/team-chart/team-chart.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HomeModule } from '../home/home.module';
 import { MatSortModule } from '@angular/material/sort';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { TeamDialogComponent } from './team/team-dialog/team-dialog.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -30,14 +27,9 @@ import { SharedModule } from '../shared/shared.module';
 
 @NgModule({
   declarations: [
-    TeamChartComponent,
-    TeamRadarChartComponent,
     PlayersComponent,
     TeamComponent,
     ProfileComponent,
-    TeamChartComponent,
-    TeamRadarChartComponent,
-    TeamDialogComponent,
     OponentComponent,
     StaffComponent,
     RequestsComponent,
@@ -66,12 +58,6 @@ import { SharedModule } from '../shared/shared.module';
     MatCheckboxModule,
     SharedModule,
   ],
-  exports: [
-    PlayersComponent,
-    TeamComponent,
-    ProfileComponent,
-    TeamChartComponent,
-    TeamRadarChartComponent,
-  ],
+  exports: [PlayersComponent, TeamComponent, ProfileComponent],
 })
 export class CoachModule {}

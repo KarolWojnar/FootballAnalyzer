@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
-import { ThemeService } from '../../../services/theme.service';
+import { ThemeService } from '../../../../services/theme.service';
 
 @Component({
   selector: 'app-team-dialog',

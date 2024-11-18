@@ -10,7 +10,7 @@ import {
   ApexXAxis,
   ChartComponent,
 } from 'ng-apexcharts';
-import { Stats } from '../../../models/stats';
+import { Stats } from '../../../../models/stats';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -62,7 +62,9 @@ export class TeamChartComponent implements OnChanges {
           data: this.myTeamForm.length > 0 ? this.myTeamForm : [],
         },
         {
-          name: 'Średnia wszystkich drużyn',
+          name: this.teamStats.allTeamsForm.team
+            ? this.teamStats.allTeamsForm.team
+            : 'Średnia wszystkich drużyn',
           data: this.allTeamForm.length > 0 ? this.allTeamForm : [],
         },
       ],

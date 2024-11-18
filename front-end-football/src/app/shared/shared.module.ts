@@ -12,6 +12,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TeamStatsComponent } from './components/team-stats/team-stats.component';
+import { TeamChartComponent } from './components/team-stats/team-chart/team-chart.component';
+import { TeamRadarChartComponent } from './components/team-stats/team-radar-chart/team-radar-chart.component';
+import { NgApexchartsModule } from 'ng-apexcharts';
+import { TeamDialogComponent } from './components/team-stats/team-dialog/team-dialog.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +24,10 @@ import { ReactiveFormsModule } from '@angular/forms';
     HeaderComponent,
     ConfirmDialogComponent,
     RequestProblemDialogComponent,
+    TeamStatsComponent,
+    TeamChartComponent,
+    TeamRadarChartComponent,
+    TeamDialogComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +40,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     MatOptionModule,
     MatSelectModule,
     ReactiveFormsModule,
+    NgApexchartsModule,
   ],
-  exports: [AlertComponent, HeaderComponent],
+  exports: [AlertComponent, HeaderComponent, TeamStatsComponent],
 })
 export class SharedModule {}

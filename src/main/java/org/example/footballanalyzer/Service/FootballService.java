@@ -47,7 +47,7 @@ public class FootballService {
     private final HttpServletRequest request;
     private final UserRepository userRepository;
 
-    @Scheduled(fixedDelay = 3600000)
+    @Scheduled(cron = "0 0 * * * *")
     public void scheduleStatsFromApi() throws IOException, InterruptedException, JSONException {
 
         List<Fixture> fixtures = fixtureRepository.findAllByDateBeforeAndIsCountedOrderByDate(new Date(), false);
@@ -58,6 +58,23 @@ public class FootballService {
             dataUtil.setFixtureAsCounted(fixture.getId());
         }
         log.info("{} stats counted for {}", fixtures.size(), new Date());
+    }
+
+    @Scheduled(cron = "5 0 * * * *")
+    public void scheduleCollectStats() {
+        List<Fixture> fixtures = fixtureRepository.findAllCompleted();
+        log.info("Collected fixtures: {}", fixtures.size());
+        fixtures.forEach(
+                this::saveCollectedFixture
+        );
+    }
+
+    public ResponseEntity<?> collectFixtures() {
+        List<Fixture> fixtures = fixtureRepository.findAllCompleted();
+        fixtures.forEach(
+                this::saveCollectedFixture
+        );
+        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
     }
 
     public ResponseEntity<?> saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
@@ -198,15 +215,6 @@ public class FootballService {
         dataUtil.savePlayerStats(player, fixture, team, offsides, games, shots, goals, passes, tackles, duels, dribbles, fouls, cards, penalty);
     }
 
-    public ResponseEntity<?> collectFixtures() {
-        List<Fixture> fixtures = fixtureRepository.findAllCompleted();
-        log.info("Collected fixtures: {}", fixtures.size());
-        fixtures.forEach(
-                this::saveCollectedFixture
-        );
-        return ResponseEntity.ok(new AuthResponse(Code.SUCCESS));
-    }
-
     public void saveCollectedFixture(Fixture fixture) {
         List<FixturesStats> playersStatsFixture = fixturesStatsRepository.getFixturesStatsByFixture(fixture);
         if (playersStatsFixture.isEmpty()) {
@@ -268,7 +276,7 @@ public class FootballService {
 
         Team team = findTeam(username);
 
-        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(team.getName(), startDate, endDate, rounding));
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(startDate, endDate, rounding, team.getName()));
 
         if (ratings.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -277,24 +285,69 @@ public class FootballService {
         return ResponseEntity.ok(ratings);
     }
 
-    private Map<String, Object> populateRatingsAndPlayers(String teamName, LocalDate startDate, LocalDate endDate, String rounding) {
+    public ResponseEntity<?> getStatsOpponentCoach(LocalDate startDate, LocalDate endDate, String rounding) {
+        String username = request.getUserPrincipal().getName();
+
+        Team team = findTeam(username);
+
+        var today = new Date();
+        log.info(today.toString());
+
+        Fixture nextFixture = fixtureRepository.findNextFixture(team.getId(), today).orElse(null);
+        if (nextFixture == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        log.info("Next fixture: {}, date: {}", nextFixture.getFixtureId(), nextFixture.getDate());
+        log.info("{} : {}", nextFixture.getHomeTeam().getName(), nextFixture.getAwayTeam().getName());
+
+        Team opponent;
+        if (nextFixture.getHomeTeam().getName().equals(team.getName())) {
+            opponent = nextFixture.getAwayTeam();
+        } else {
+            opponent = nextFixture.getHomeTeam();
+        }
+
+        if (opponent == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        String[] teams = {team.getName(), opponent.getName()};
+
+        HashMap<String, Object> ratings = new HashMap<>(populateRatingsAndPlayers(startDate, endDate, rounding, teams));
+        if (ratings.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(ratings);
+    }
+
+    private Map<String, Object> populateRatingsAndPlayers(LocalDate startDate, LocalDate endDate, String rounding, String... teamNames) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date endStart = Date.from(endDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         List<Fixture> teamStats = fixtureRepository.findAllByDateBetweenAndIsCollectedAndIsCounted(dateStart, endStart, true, true);
         List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureInAndMinutesGreaterThan(teamStats, 0);
         List<GroupRecord> groupedStats = groupRatings(teamStatsList);
-        List<GroupRecord> coachTeam = groupedStats.stream().filter(record -> record.team().equals(teamName)).toList();
+
+        boolean isOpponent = teamNames.length > 1;
+
+        List<GroupRecord> coachTeam = groupedStats.stream().filter(record -> record.team().equals(teamNames[0])).toList();
         if (coachTeam.isEmpty()) {
             return new HashMap<>();
         }
 
+        List<GroupRecord> opponentTeam = null;
+
+        if (isOpponent) {
+            opponentTeam = groupedStats.stream().filter(record -> record.team().equals(teamNames[1])).toList();
+        }
+
         Map<String, Object> ratings = new HashMap<>();
 
-        ratings.putAll(ratingService.getAvgOfList("allTeamsRating", groupedStats));
-        ratings.putAll(ratingService.getAvgOfList("teamRating", coachTeam));
+        ratings.putAll(ratingService.getAvgOfList("allTeamsRating", isOpponent ? opponentTeam : groupedStats, isOpponent ? opponentTeam.get(0).team() : null));
+        ratings.putAll(ratingService.getAvgOfList("teamRating", coachTeam, coachTeam.get(0).team()));
 
-        ratings.putAll(ratingService.getAvgByDates("allTeamsForm", groupedStats, rounding, startDate, endDate));
-        ratings.putAll(ratingService.getAvgByDates("teamForm", coachTeam, rounding, startDate, endDate));
+        ratings.putAll(ratingService.getAvgByDates("allTeamsForm", isOpponent ? opponentTeam : groupedStats, rounding, startDate, endDate, isOpponent ? opponentTeam.get(0).team() : null));
+        ratings.putAll(ratingService.getAvgByDates("teamForm", coachTeam, rounding, startDate, endDate, coachTeam.get(0).team()));
 
         return ratings;
     }

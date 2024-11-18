@@ -248,4 +248,11 @@ export class ApiService {
       withCredentials: true,
     });
   }
+
+  fetchTeamOpponent(object: any): Observable<Stats> {
+    const apiUrl = `${this.apiUrl}/coach/stats/opponent`;
+    return this.httpClient.post<Stats>(apiUrl, object, {
+      withCredentials: true,
+    });
+  }
 }
