@@ -31,7 +31,6 @@ public interface AdminApi {
     @GetMapping("/users")
     ResponseEntity<?> getAllUsers();
 
-
     @DeleteMapping("/users/{id}")
     ResponseEntity<?> deleteUser(@PathVariable Long id);
 
@@ -49,7 +48,4 @@ public interface AdminApi {
 
     @DeleteMapping("/requests/{id}")
     ResponseEntity<?> deleteRequest(@PathVariable Long id);
-
-    @GetMapping("/requests/user/{userId}")
-    ResponseEntity<?> downloadConfirmationPdf(@PathVariable Long userId);
 }

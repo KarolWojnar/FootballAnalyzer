@@ -23,7 +23,7 @@ public class RatingService {
     public double[] calculateWeights(double[] normalizedSums) {
         double[] weights = new double[normalizedSums.length + 1];
         for (int i = 0; i < normalizedSums.length; i++) {
-            weights[i] = 90 / ((normalizedSums[i]));
+            weights[i] = 90 / ((normalizedSums[i] < 0.000001 ? 0.0001 : normalizedSums[i]));
         }
 
         return weights;

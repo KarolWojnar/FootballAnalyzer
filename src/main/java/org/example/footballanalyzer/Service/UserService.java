@@ -109,8 +109,12 @@ public class UserService {
     public ResponseEntity<?> request(UserRequestDto userRequest) {
         log.info("Saving new request: {}", userRequest.getRequestType());
         String requestData = userRequest.getRequestData().toString();
-        UserEntity user = findUser();
-        return dataUtil.saveNewRequest(userRequest, requestData, user.getLogin());
+        String login = userRequest.getLogin();
+        if (login == null) {
+            UserEntity user = findUser();
+            login = user.getLogin();
+        }
+        return dataUtil.saveNewRequest(userRequest, requestData, login);
     }
 
     public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) throws AuthenticationException {

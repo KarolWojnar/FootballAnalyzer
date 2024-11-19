@@ -115,13 +115,4 @@ public class AdminController implements AdminApi {
             return ResponseEntity.status(404).body(new AuthResponse(Code.ERROR));
         }
     }
-
-    @Override
-    public ResponseEntity<?> downloadConfirmationPdf(Long userId) {
-        try {
-            return userService.downloadConfirmationPdf(userId);
-        } catch (UsernameNotFoundException e) {
-            return ResponseEntity.status(404).body(new AuthResponse(Code.NF));
-        }
-    }
 }

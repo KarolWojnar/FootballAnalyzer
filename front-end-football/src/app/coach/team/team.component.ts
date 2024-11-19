@@ -30,6 +30,7 @@ export class TeamComponent implements OnInit {
     this.sub = this.apiService.fetchTeamData(this.form.value).subscribe({
       next: (teamStats) => {
         this.teamStats = teamStats;
+        this.alertMessage = '';
         localStorage.setItem('teamStats', JSON.stringify(teamStats));
         localStorage.setItem(
           'startDateTeam',
@@ -41,12 +42,12 @@ export class TeamComponent implements OnInit {
         );
       },
       error: (err) => {
-        if (err.error.status === 403) {
+        if (err.error === 403) {
           this.alertMessage = 'Brak uprawnień do przeglądania zawodników.';
           return;
         }
 
-        this.alertMessage = 'Brak danych o drużynie.';
+        this.alertMessage = 'Brak danych o drużynie z tego okresu.';
       },
     });
   }

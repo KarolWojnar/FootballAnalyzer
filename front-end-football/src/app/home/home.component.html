@@ -41,7 +41,7 @@
             <ng-container matColumnDef="matchDate">
               <th mat-header-cell *matHeaderCellDef>Data meczu</th>
               <td mat-cell *matCellDef="let row">
-                {{ row.date | date: isExtraSmallScreen ? 'dd-MM-yyyy, HH:mm' : 'd MMMM, y, H:mm': 'UTC+2': 'pl' }}
+                {{ row.date | date: isExtraSmallScreen ? 'dd-MM-yyyy, HH:mm' : 'd MMMM y, H:mm': 'UTC+2': 'pl' }}
               </td>
             </ng-container>
 

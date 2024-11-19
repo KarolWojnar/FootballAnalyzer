@@ -104,6 +104,15 @@ public class UserController implements UserApi {
     }
 
     @Override
+    public ResponseEntity<?> downloadConfirmationPdf(Long userId) {
+        try {
+            return userService.downloadConfirmationPdf(userId);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(404).body(new AuthResponse(Code.NF));
+        }
+    }
+
+    @Override
     public ResponseEntity<AuthResponse> activeUser(String uuid) {
         try {
             return userService.activateUser(uuid);

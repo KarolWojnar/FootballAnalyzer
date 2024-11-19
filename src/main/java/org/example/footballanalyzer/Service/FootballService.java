@@ -272,9 +272,8 @@ public class FootballService {
     }
 
     public ResponseEntity<?> getStatsPlayer(LocalDate startDate, LocalDate endDate, Long playerId) {
-        String UserTeam = request.getUserPrincipal().getName();
-
-        Team team = findTeam(UserTeam);
+        String userTeam = request.getUserPrincipal().getName();
+        Team team = findTeam(userTeam);
 
         HashMap<String, Object> ratings = new HashMap<>(populatePlayerAndTeam(startDate, endDate, team, playerId));
 
@@ -303,7 +302,7 @@ public class FootballService {
 
         for (FixturesStats teamStats : playersStats) {
             GroupRecord record = new GroupRecord(
-                    teamStats.getPlayer().getId(),
+                    teamStats.getPlayer().getPlayerId(),
                     teamStats.getTeam().getName(),
                     teamStats.getFixture().getDate(),
                     ratingService.setAttackingPlayers(teamStats, maxValues, weights),
@@ -342,6 +341,7 @@ public class FootballService {
         List<FixturesStats> playersStats = fixturesStatsRepository.findAllByTeamAndFixtureIn(team, teamStats);
 
         List<GroupRecord> groupedStats = groupRatingsPlayers(playersStats, teamStats);
+
         List<GroupRecord> player = groupedStats.stream().filter(record -> record.playerId() == playerId).toList();
 
         Player player2 = playerRepository.findByPlayerId(playerId).orElse(null);
@@ -417,7 +417,6 @@ public class FootballService {
         Team team = findTeam(username);
 
         var today = new Date();
-        log.info(today.toString());
 
         Fixture nextFixture = fixtureRepository.findNextFixture(team.getId(), today).orElse(null);
         if (nextFixture == null) {
@@ -456,6 +455,7 @@ public class FootballService {
         }
 
         ratingService.normalizeSums(sumValues, fixturesCount);
+
         double[] weights = ratingService.calculateWeights(sumValues.values().stream().mapToDouble(Double::doubleValue).toArray());
 
         return calculateStats(weights, teamStatsList, maxValues);

@@ -16,6 +16,16 @@ export class Stats {
   allTeamsForm: TeamForm;
 }
 
+export class StatsPlayer {
+  constructor(teamRating: TeamRating, allTeamsRating: TeamRating) {
+    this.teamRating = teamRating;
+    this.allTeamsRating = allTeamsRating;
+  }
+
+  teamRating: TeamRating;
+  allTeamsRating: TeamRating;
+}
+
 interface TeamForm {
   team: string | null;
   rating: Record<string, number>;

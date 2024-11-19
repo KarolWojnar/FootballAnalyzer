@@ -24,6 +24,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { SharedModule } from '../shared/shared.module';
+import { PlayerRadarModalComponent } from './players/player-radar-modal/player-radar-modal.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import { SharedModule } from '../shared/shared.module';
     StaffComponent,
     RequestsComponent,
     UserComponent,
+    PlayerRadarModalComponent,
   ],
   imports: [
     CommonModule,

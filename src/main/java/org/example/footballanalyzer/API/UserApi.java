@@ -57,11 +57,14 @@ public interface UserApi {
     ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response);
 
     @PostMapping("/requests")
-    @PreAuthorize("isAuthenticated()")
     ResponseEntity<?> request(@RequestBody UserRequestDto userRequest);
 
     @GetMapping("/activate")
     ResponseEntity<AuthResponse> activeUser(@RequestParam String uuid);
+
+    @GetMapping("/requests/user/{userId}")
+    @PreAuthorize("isAuthenticated()")
+    ResponseEntity<?> downloadConfirmationPdf(@PathVariable Long userId);
 
     @PostMapping("/reset-password")
     ResponseEntity<AuthResponse> resetPassword(@RequestBody ResetPasswordMail email);

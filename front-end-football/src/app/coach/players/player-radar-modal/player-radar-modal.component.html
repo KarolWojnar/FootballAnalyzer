@@ -1,0 +1,12 @@
+<div *ngIf="chartOptions?.series" class="bg-primary {{isDarkMode ? 'bg-opacity-50' : ''}}">
+  <apx-chart
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [xaxis]="chartOptions.xaxis"
+    [theme]="chartOptions.theme"
+    [stroke]="chartOptions.stroke"
+    [markers]="chartOptions.markers"
+    [fill]="chartOptions.fill"
+    [title]="chartOptions.title"
+  ></apx-chart>
+</div>

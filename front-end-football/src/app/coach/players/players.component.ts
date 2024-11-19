@@ -15,8 +15,10 @@ import { PlayerService } from '../../services/players/player.service';
 import { ThemeService } from '../../services/theme.service';
 import { PlayerStatsForm } from '../../models/forms/forms.model';
 import { FormService } from '../../services/form/form.service';
-import { Stats } from '../../models/stats';
+import { Stats, StatsPlayer } from '../../models/stats';
 import { MatDialog } from '@angular/material/dialog';
+import { ChartOptions } from '../../shared/components/team-stats/team-radar-chart/team-radar-chart.component';
+import { PlayerRadarModalComponent } from './player-radar-modal/player-radar-modal.component';
 
 @Component({
   selector: 'app-players',
@@ -26,6 +28,7 @@ import { MatDialog } from '@angular/material/dialog';
 export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
   form: FormGroup<PlayerStatsForm> = this.formService.initPlayerStatsForm();
   playerStats!: PlayerStats[];
+  playerData!: StatsPlayer;
   dataSource: MatTableDataSource<PlayerStats> =
     new MatTableDataSource<PlayerStats>(
       JSON.parse(localStorage.getItem('dataSource')!) as PlayerStats[],
@@ -64,6 +67,7 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
   isDarkMode = true;
   formVisible: boolean = true;
   showAlert = false;
+  chartOptions!: ChartOptions;
   alertMessage = '';
   isSubmitting = false;
   logoUrl = localStorage.getItem('logoUrl')!;
@@ -148,5 +152,85 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
     this.formVisible = !this.formVisible;
   }
 
-  schowChartRadar(player: any): void {}
+  showChartRadar(player: any): void {
+    this.apiService
+      .getPlayerFromTeam(player.playerId, this.form.value)
+      .subscribe({
+        next: (result) => {
+          this.playerData = result;
+          this.initializeRadarChart();
+        },
+        error: (error) => {
+          console.log(error);
+        },
+      });
+  }
+
+  initializeRadarChart() {
+    this.chartOptions = {
+      series: [
+        {
+          name: this.playerData.teamRating.team,
+          data: [
+            Math.round(this.playerData.teamRating.aggression * 100000) / 1000,
+            Math.round(this.playerData.teamRating.attacking * 100000) / 1000,
+            Math.round(this.playerData.teamRating.creativity * 100000) / 1000,
+            Math.round(this.playerData.teamRating.defending * 100000) / 1000,
+          ],
+        },
+        {
+          name: this.playerData.allTeamsRating.team
+            ? this.playerData.allTeamsRating.team
+            : 'Średnia drużyny',
+          data: [
+            Math.round(this.playerData.allTeamsRating.aggression * 100000) /
+              1000,
+            Math.round(this.playerData.allTeamsRating.attacking * 100000) /
+              1000,
+            Math.round(this.playerData.allTeamsRating.creativity * 100000) /
+              1000,
+            Math.round(this.playerData.allTeamsRating.defending * 100000) /
+              1000,
+          ],
+        },
+      ],
+      chart: {
+        height: 500,
+        type: 'radar',
+        foreColor: this.isDarkMode ? '#f1f1f1' : '#2a2f3b',
+        background: this.isDarkMode ? '#1e1e1e' : '#fff',
+      },
+      theme: {
+        mode: this.isDarkMode ? 'dark' : 'light',
+        palette: 'palette5',
+      },
+      stroke: {
+        width: 1,
+      },
+      fill: {
+        opacity: 0.6,
+      },
+      markers: {
+        size: 3,
+      },
+      xaxis: {
+        categories: ['Agresja', 'Atak', 'Kreatywność', 'Obrona'],
+      },
+      title: {
+        text: 'Radar statystyk',
+        style: {
+          color: this.isDarkMode ? '#f1f1f1' : '#2a2f3b',
+          fontSize: '20px',
+        },
+      },
+    };
+    console.log(this.chartOptions);
+    this.dialog.open(PlayerRadarModalComponent, {
+      width: '900px',
+      data: {
+        chartOptions: this.chartOptions as ChartOptions,
+        isDarkMode: this.isDarkMode,
+      },
+    });
+  }
 }

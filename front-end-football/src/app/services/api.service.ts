@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Stats } from '../models/stats';
+import { Stats, StatsPlayer } from '../models/stats';
 import { PlayerStats } from '../models/players/player-stats';
 import { environment } from '../../environments/environment.development';
 import { ApiMatches, Team } from '../models/team/team';
@@ -30,6 +30,13 @@ export class ApiService {
   fetchTeamData(object: any): Observable<Stats> {
     const apiUrl = `${this.apiUrl}/coach/stats/team`;
     return this.httpClient.post<Stats>(apiUrl, object, {
+      withCredentials: true,
+    });
+  }
+
+  getPlayerFromTeam(playerId: number, object: any): Observable<StatsPlayer> {
+    const requestUrl = `${this.apiUrl}/coach/stats/${playerId}`;
+    return this.httpClient.post<StatsPlayer>(requestUrl, object, {
       withCredentials: true,
     });
   }
@@ -84,7 +91,7 @@ export class ApiService {
   }
 
   downloadPdf(userId: number): Observable<Blob> {
-    const requestUrl = `${this.apiUrl}/admin/requests/user/${userId}`;
+    const requestUrl = `${this.apiUrl}/users/requests/user/${userId}`;
     return this.httpClient.get(requestUrl, {
       responseType: 'blob',
       withCredentials: true,
