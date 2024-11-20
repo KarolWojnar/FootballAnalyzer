@@ -1,22 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ThemeService } from '../../services/theme.service';
 import { ApiService } from '../../services/api.service';
 import { RequestProblem } from '../../models/request/request';
 import { ConfirmDialogComponent } from '../../shared/components/confirm-dialog/confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { MatSort, Sort } from '@angular/material/sort';
 
 @Component({
   selector: 'app-requests',
   templateUrl: './requests.component.html',
   styleUrls: ['./requests.component.scss'],
 })
-export class RequestsComponent implements OnInit {
+export class RequestsComponent implements OnInit, AfterViewInit {
   dataSource!: RequestProblem[];
   filteredDataSource!: RequestProblem[];
   originalDataSource!: RequestProblem[];
   objectKeys = Object.keys;
   isDarkMode = false;
+  sortBy!: string;
+  sortDirection!: string;
+
   onlyNew = false;
+  @ViewChild(MatSort) sort!: MatSort;
+
   displayedColumns: string[] = [
     'id',
     'login',
@@ -41,9 +47,17 @@ export class RequestsComponent implements OnInit {
     });
   }
 
-  getRequestes(): void {
+  ngAfterViewInit(): void {
+    if (this.sort) {
+      this.sort.sortChange.subscribe((sort: Sort) => {
+        this.getRequestes(sort.active, sort.direction);
+      });
+    }
+  }
+
+  getRequestes(sortBy?: string, sortDirection?: string): void {
     this.isSubmitting = true;
-    this.apiService.getRequests().subscribe({
+    this.apiService.getRequests(sortBy, sortDirection).subscribe({
       next: (dataSource) => {
         dataSource.forEach((request: RequestProblem) => {
           request.requestData = this.parseRequestData(
@@ -65,6 +79,17 @@ export class RequestsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getRequestes();
+  }
+
+  onSortChange(sort: Sort): void {
+    if (this.sortBy == sort.active && this.sortDirection == sort.direction) {
+      this.sortDirection = sort.direction == 'asc' ? 'desc' : 'asc';
+    } else {
+      this.sortBy = sort.active;
+      this.sortDirection = sort.direction;
+      this.sort.direction = sort.direction == 'asc' ? 'desc' : 'asc';
+    }
+    this.getRequestes(this.sortBy, this.sortDirection);
   }
 
   changeStatus(id: number, newStatus: string): void {

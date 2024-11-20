@@ -480,9 +480,9 @@ public class FootballService {
         return team.get();
     }
 
-    public ResponseEntity<?> closestMatches(LocalDate startDate, int page, Long leagueId) {
+    public ResponseEntity<?> closestMatches(LocalDate startDate, int page, Long leagueId, String teamName) {
         Date dateStart = Date.from(startDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        return dataUtil.closestMatches(dateStart, page, leagueId);
+        return dataUtil.closestMatches(dateStart, page, leagueId, teamName);
     }
 
     public ResponseEntity<?> getAllTeams() {

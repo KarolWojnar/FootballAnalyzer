@@ -13,6 +13,7 @@ import org.example.footballanalyzer.Service.Auth.JwtService;
 import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -365,8 +366,17 @@ public class UserService {
         }
     }
 
-    public List<UserRequestDto> getAllRequests() {
-        List<UserRequest> userRequests = userRequestRepository.findAll();
+    public List<UserRequestDto> getAllRequests(String sortBy, String sortDirection) {
+        List<UserRequest> userRequests;
+        if (sortBy == null && sortDirection == null) {
+            userRequests = userRequestRepository.findAll();
+        } else {
+            if (Objects.equals(sortBy, "login")) {
+                sortBy = "user.login";
+            }
+            Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+            userRequests = userRequestRepository.findAll(sort);
+        }
         if (userRequests.isEmpty()) {
             throw new UsernameNotFoundException("Not found");
         }

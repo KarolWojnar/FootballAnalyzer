@@ -35,7 +35,14 @@
 
       <div class="example-table-container shadow">
         <div class="" *ngIf="!isLoadingResults">
+          <div class="d-flex justify-content-between">
           <h3>Przyszłe mecze</h3>
+            <input
+              class="shadow h-50 w-25"
+              [formControl]="filterValue"
+              placeholder="Filtruj drużyny"
+            />
+          </div>
           <table mat-table [dataSource]="data" class="example-table">
 
             <ng-container matColumnDef="matchDate">

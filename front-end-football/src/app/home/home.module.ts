@@ -7,6 +7,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [HomeComponent],
@@ -19,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
     NgOptimizedImage,
     MatListModule,
     MatIconModule,
+    ReactiveFormsModule,
   ],
   exports: [HomeComponent, MatTableModule, MatPaginatorModule],
 })

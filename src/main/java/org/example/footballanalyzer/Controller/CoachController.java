@@ -59,8 +59,8 @@ public class CoachController implements CoachApi {
     }
 
     @Override
-    public ResponseEntity<?> futureMatches(LocalDate date, int page, @Nullable Long leagueId) {
-        return footballService.closestMatches(date, page, leagueId);
+    public ResponseEntity<?> futureMatches(LocalDate date, int page, @Nullable Long leagueId, @Nullable String teamName) {
+        return footballService.closestMatches(date, page, leagueId, teamName);
     }
 
     @Override

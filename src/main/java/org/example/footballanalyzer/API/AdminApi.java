@@ -44,7 +44,7 @@ public interface AdminApi {
     ResponseEntity<?> unlockUser(@PathVariable Long id, @RequestParam boolean setLocked);
 
     @GetMapping("/requests")
-    ResponseEntity<?> getAllRequests();
+    ResponseEntity<?> getAllRequests(@RequestParam(required = false) String sortBy, @RequestParam(required = false) String sortDirection);
 
     @DeleteMapping("/requests/{id}")
     ResponseEntity<?> deleteRequest(@PathVariable Long id);

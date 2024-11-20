@@ -57,6 +57,17 @@
   .mat-list-item:hover {
     background-color: #444;
   }
+
+  input {
+    background-color: #2e2e2e;
+    color: #f1f1f1;
+    border: 1px solid #444;
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+    }
+  }
 }
 
 .light-theme {
@@ -69,6 +80,15 @@
     overflow: auto;
     padding: 16px 5px 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  input {
+    border: 2px solid rgba(68, 68, 68, 0.57);
+
+    &:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 4px rgba(0, 123, 255, 0.5);
+    }
   }
 
   table {
@@ -166,6 +186,16 @@
 .team-away {
   flex-grow: 1;
   text-align: start;
+}
+
+input {
+  padding: 8px;
+  border-radius: 4px;
+  width: 100%;
+
+  &:focus {
+    outline: none;
+  }
 }
 
 .league-flag {

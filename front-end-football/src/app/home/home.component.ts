@@ -7,10 +7,21 @@ import {
 } from '@angular/core';
 import { HomePageFixture } from '../models/home-page-fixture';
 import { MatPaginator } from '@angular/material/paginator';
-import { catchError, map, merge, of, startWith, switchMap } from 'rxjs';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  merge,
+  of,
+  startWith,
+  Subscription,
+  switchMap,
+} from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { League } from '../models/league';
 import { ThemeService } from '../services/theme.service';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-home',
@@ -22,10 +33,11 @@ export class HomeComponent implements AfterViewInit, OnInit {
   today: Date = new Date();
 
   leagueId!: number;
+  sub = new Subscription();
   data: HomePageFixture[] = [];
   leagues: League[] = [];
   resultsLength = 0;
-  isLoadingResults = true;
+  isLoadingResults = false;
   isRateLimitReached = false;
   isSmallScreen = false;
   isExtraSmallScreen = false;
@@ -45,6 +57,7 @@ export class HomeComponent implements AfterViewInit, OnInit {
   }
 
   displayedColumns: string[] = ['matchDate', 'homeTeam', 'awayTeam'];
+  filterValue = new FormControl('', { nonNullable: true });
 
   ngAfterViewInit(): void {
     this.getLeagues();
@@ -67,41 +80,44 @@ export class HomeComponent implements AfterViewInit, OnInit {
     league.selected = true;
     this.leagueId = league.leagueId;
     this.paginator.pageIndex = 0;
+    this.filterValue.setValue('');
     this.getMatches();
   }
 
   private getMatches() {
-    merge(this.paginator.page)
-      .pipe(
-        startWith({}),
-        switchMap(() => {
-          this.isLoadingResults = true;
-          return this.apiService
-            .getMatches(this.today, this.paginator.pageIndex, this.leagueId)
-            .pipe(catchError(() => of(null)));
-        }),
-        map((data) => {
-          this.isLoadingResults = false;
-          this.isRateLimitReached = data === null;
-
-          if (data === null) {
-            return [];
-          }
-
-          this.paginator._intl.itemsPerPageLabel = 'Mecze na stronie:';
-          this.paginator._intl.nextPageLabel = 'Następna strona';
-          this.paginator._intl.previousPageLabel = 'Poprzednia strona';
-          this.paginator._intl.lastPageLabel = 'Ostatnia strona';
-          this.paginator._intl.firstPageLabel = 'Pierwsza strona';
-          this.paginator._intl.getRangeLabel = (page, pageSize, length) => {
-            return `Strona ${page + 1} z ${Math.ceil(length / pageSize)}`;
-          };
-
-          this.resultsLength = data.emelents;
-          return data.fixtures;
-        }),
+    this.sub.add(
+      merge(
+        this.paginator.page,
+        this.filterValue.valueChanges.pipe(
+          debounceTime(500),
+          distinctUntilChanged(),
+        ),
       )
-      .subscribe((data) => (this.data = data));
+        .pipe(
+          startWith({}),
+          switchMap(() => {
+            return this.apiService
+              .getMatches(
+                this.today,
+                this.paginator.pageIndex,
+                this.leagueId,
+                this.filterValue.value.trim(),
+              )
+              .pipe(catchError(() => of(null)));
+          }),
+          map((data) => {
+            this.isRateLimitReached = data === null;
+
+            if (data === null) {
+              return [];
+            }
+
+            this.resultsLength = data.emelents || 0;
+            return data.fixtures;
+          }),
+        )
+        .subscribe((data) => (this.data = data)),
+    );
   }
 
   @HostListener('window:resize', [])
@@ -114,5 +130,9 @@ export class HomeComponent implements AfterViewInit, OnInit {
     return new Date(date).toLocaleDateString('pl-PL', {
       weekday: 'long',
     });
+  }
+
+  applyFilter(event: string) {
+    this.filterValue.setValue(event.trim());
   }
 }

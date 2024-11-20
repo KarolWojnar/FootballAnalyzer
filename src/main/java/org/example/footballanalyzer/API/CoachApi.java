@@ -29,7 +29,9 @@ public interface CoachApi {
     ResponseEntity<?> getStatsPlayers(@RequestBody DateReturn datesReturn);
 
     @GetMapping("/futureMatches")
-    ResponseEntity<?> futureMatches(@RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate, @RequestParam(value = "page") int page, @RequestParam(required = false) Long leagueId);
+    ResponseEntity<?> futureMatches(@RequestParam(value = "startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                    @RequestParam(value = "page") int page, @RequestParam(required = false) Long leagueId,
+                                    @RequestParam(required = false) String teamName);
 
     @GetMapping("/all-teams")
     ResponseEntity<?> getAllTeams();

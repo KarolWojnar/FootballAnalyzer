@@ -10,26 +10,28 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { MatDialogModule} from "@angular/material/dialog";
-import {MatInputModule} from "@angular/material/input";
-import {MatIconModule} from "@angular/material/icon";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [UsersComponent, RequestsComponent, TeamsComponent],
-    imports: [
-        CommonModule,
-        AdminRoutingModule,
-        HomeModule,
-        MatSelectModule,
-        MatExpansionModule,
-        MatDialogModule,
-        MatButtonModule,
-        MatProgressSpinnerModule,
-        ReactiveFormsModule,
-        FormsModule,
-        MatInputModule,
-        MatIconModule,
-    ],
+  imports: [
+    CommonModule,
+    AdminRoutingModule,
+    HomeModule,
+    MatSelectModule,
+    MatExpansionModule,
+    MatDialogModule,
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    ReactiveFormsModule,
+    FormsModule,
+    MatInputModule,
+    MatIconModule,
+    MatSortModule,
+  ],
 })
 export class AdminModule {}

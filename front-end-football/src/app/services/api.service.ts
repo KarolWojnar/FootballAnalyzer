@@ -44,13 +44,26 @@ export class ApiService {
   getMatches(
     today: Date,
     page: number,
-    leagueId: number,
+    leagueId?: number,
+    teamName?: string,
   ): Observable<ApiMatches> {
-    let requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}`;
+    let params = new HttpParams()
+      .set('startDate', today.toISOString().split('T')[0])
+      .set('page', page.toString());
+
     if (leagueId != null) {
-      requestUrl = `${this.apiUrl}/coach/futureMatches?startDate=${today.toISOString().split('T')[0]}&page=${page}&leagueId=${leagueId}`;
+      params = params.set('leagueId', leagueId.toString());
     }
-    return this.httpClient.get<ApiMatches>(requestUrl);
+    if (teamName?.trim().length) {
+      params = params.set('teamName', teamName.trim());
+    }
+
+    return this.httpClient.get<ApiMatches>(
+      `${this.apiUrl}/coach/futureMatches`,
+      {
+        params,
+      },
+    );
   }
 
   fetchPlayerData(teamName: any): Observable<PlayerStats[]> {
@@ -135,9 +148,26 @@ export class ApiService {
     return this.httpClient.post(requestUrl, request, { withCredentials: true });
   }
 
-  getRequests(): Observable<RequestProblem[]> {
+  getRequests(
+    sortBy?: string,
+    sortDirection?: string,
+  ): Observable<RequestProblem[]> {
+    let params = new HttpParams();
+
+    if (sortBy) {
+      if (sortBy === 'createdDate') {
+        sortBy = 'createDate';
+      }
+      params = params.set('sortBy', sortBy);
+    }
+
+    if (sortDirection) {
+      params = params.set('sortDirection', sortDirection);
+    }
+
     const requestUrl = `${this.apiUrl}/admin/requests`;
     return this.httpClient.get<RequestProblem[]>(requestUrl, {
+      params,
       withCredentials: true,
     });
   }

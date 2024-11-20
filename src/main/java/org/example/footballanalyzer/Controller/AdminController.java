@@ -8,6 +8,7 @@ import org.example.footballanalyzer.Service.FootballService;
 import org.example.footballanalyzer.Service.UserService;
 import org.json.JSONException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -98,9 +99,9 @@ public class AdminController implements AdminApi {
     }
 
     @Override
-    public ResponseEntity<?> getAllRequests() {
+    public ResponseEntity<?> getAllRequests(@Nullable String sortBy, @Nullable String sortDirection) {
         try {
-            return ResponseEntity.status(200).body(userService.getAllRequests());
+            return ResponseEntity.status(200).body(userService.getAllRequests(sortBy, sortDirection));
         } catch (UsernameNotFoundException e) {
             return ResponseEntity.status(404).body(new AuthResponse(Code.R3));
         }
