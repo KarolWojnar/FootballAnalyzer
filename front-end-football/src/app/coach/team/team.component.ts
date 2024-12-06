@@ -43,7 +43,7 @@ export class TeamComponent implements OnInit {
       },
       error: (err) => {
         if (err.error === 403) {
-          this.alertMessage = 'Brak uprawnień do przeglądania zawodników.';
+          this.alertMessage = 'Brak uprawnień do przeglądania drużyny.';
           return;
         }
 

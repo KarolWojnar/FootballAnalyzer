@@ -131,8 +131,4 @@ export class HomeComponent implements AfterViewInit, OnInit {
       weekday: 'long',
     });
   }
-
-  applyFilter(event: string) {
-    this.filterValue.setValue(event.trim());
-  }
 }

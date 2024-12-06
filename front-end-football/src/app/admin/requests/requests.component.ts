@@ -77,10 +77,6 @@ export class RequestsComponent implements OnInit, AfterViewInit {
     });
   }
 
-  ngOnInit(): void {
-    this.getRequestes();
-  }
-
   onSortChange(sort: Sort): void {
     if (this.sortBy == sort.active && this.sortDirection == sort.direction) {
       this.sortDirection = sort.direction == 'asc' ? 'desc' : 'asc';
@@ -90,6 +86,10 @@ export class RequestsComponent implements OnInit, AfterViewInit {
       this.sort.direction = sort.direction == 'asc' ? 'desc' : 'asc';
     }
     this.getRequestes(this.sortBy, this.sortDirection);
+  }
+
+  ngOnInit(): void {
+    this.getRequestes();
   }
 
   changeStatus(id: number, newStatus: string): void {

@@ -40,7 +40,7 @@
             <input
               class="shadow h-50 w-25"
               [formControl]="filterValue"
-              placeholder="Filtruj drużyny"
+              placeholder="Szukaj drużyny"
             />
           </div>
           <table mat-table [dataSource]="data" class="example-table">
@@ -86,7 +86,7 @@
           class="mt-1 rounded"
           lang="pl"
           [length]="resultsLength"
-          [pageSize]="5"
+          [pageSize]="10"
           aria-label="Select page of future matches">
         </mat-paginator>
       </div>
