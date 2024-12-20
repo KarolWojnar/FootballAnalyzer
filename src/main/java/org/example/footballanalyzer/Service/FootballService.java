@@ -49,7 +49,6 @@ public class FootballService {
 
     @Scheduled(cron = "0 0 * * * *")
     public void scheduleStatsFromApi() throws IOException, InterruptedException, JSONException {
-
         List<Fixture> fixtures = fixtureRepository.findAllByDateBeforeAndIsCountedOrderByDate(new Date(), false);
         for (Fixture fixture : fixtures) {
             log.info("Fixture date: {}", fixture.getDate());
@@ -79,7 +78,6 @@ public class FootballService {
 
     public ResponseEntity<?> saveAllByLeagueSeason(Long league, Long season) throws IOException, InterruptedException, JSONException, ParseException {
         int attempts = 0;
-
         while (attempts < apiKeyManager.getApiKeysLength()) {
             HttpResponse<String> responseFixturesByLeagueAndSeason = footballApiUtil.getFixturesByLeagueAndSeason(league, season, apiKeyManager.getApiKey());
 

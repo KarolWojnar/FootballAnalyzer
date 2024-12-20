@@ -20,7 +20,7 @@ public interface AdminApi {
     ResponseEntity<?> saveAllByLeagueSeason(@PathVariable Long league, @PathVariable Long season) throws IOException, InterruptedException, JSONException, ParseException;
 
     @GetMapping("/fixtures/collect")
-    ResponseEntity<?> collectFixtures();
+    ResponseEntity<?> collectFixtures() throws IOException, InterruptedException;
 
     @GetMapping("/leaguesFromCountry/{country}")
     ResponseEntity<?> findPossibleLeagues(@PathVariable String country);
