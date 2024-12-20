@@ -1,0 +1,52 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-container
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: footballanalyzer
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - app-network
+
+  backend:
+    image: backend-image
+    container_name: backend-container
+    build: ./
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/footballanalyzer?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: password
+    depends_on:
+      - db
+    networks:
+      - app-network
+    ports:
+      - "8080:8080"
+
+  frontend:
+    image: frontend-image
+    container_name: frontend-container
+    build: ./front-end-football
+    depends_on:
+      - backend
+    networks:
+      - app-network
+    ports:
+      - "4200:80"
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
