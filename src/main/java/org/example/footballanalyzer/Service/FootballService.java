@@ -51,10 +51,9 @@ public class FootballService {
     public void scheduleStatsFromApi() throws IOException, InterruptedException, JSONException {
         List<Fixture> fixtures = fixtureRepository.findAllByDateBeforeAndIsCountedOrderByDate(new Date(), false);
         for (Fixture fixture : fixtures) {
-            log.info("Fixture date: {}", fixture.getDate());
-            log.info("Fixture counted: {}", fixture.isCounted());
-            saveStatsFixtureByPlayer(fixture);
-            dataUtil.setFixtureAsCounted(fixture.getId());
+            if (updateFixture(fixture)) {
+                saveStatsFixtureByPlayer(fixture);
+            }
         }
         log.info("{} stats counted for {}", fixtures.size(), new Date());
     }
@@ -66,6 +65,36 @@ public class FootballService {
         fixtures.forEach(
                 this::saveCollectedFixture
         );
+    }
+
+    private boolean updateFixture(Fixture fixture) {
+        int attempts = 0;
+        while (attempts < apiKeyManager.getApiKeysLength()) {
+            try {
+                HttpResponse<String> responseFixtureById = footballApiUtil.getFixtureResultById(fixture.getFixtureId(), apiKeyManager.getApiKey());
+                if (responseFixtureById.statusCode() == 429) {
+                    apiKeyManager.switchToNextApiKey();
+                    attempts++;
+                } else if (responseFixtureById.statusCode() == 200) {
+                    JSONObject jsonResponse = new JSONObject(responseFixtureById.body());
+                    if (jsonResponse.has("response")) {
+                        JSONArray fixtures = jsonResponse.getJSONArray("response");
+                        JSONObject jsonGoals = fixtures.getJSONObject(0).getJSONObject("goals");
+                        if ((jsonGoals.optInt("home", -1) == -1) || (jsonGoals.optInt("away", -1) == -1)) {
+                            fixtureRepository.delete(fixture);
+                            return false;
+                        }
+                        int homeGoals = jsonGoals.getInt("home");
+                        int awayGoals = jsonGoals.getInt("away");
+                        fixtureRepository.updateFixtureGoals(fixture.getId(), homeGoals, awayGoals);
+                        return true;
+                    }
+                }
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return false;
     }
 
     public ResponseEntity<?> collectFixtures() {

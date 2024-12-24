@@ -29,6 +29,16 @@ public class FootballApiUtil {
         return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
     }
 
+    public HttpResponse<String> getFixtureResultById(Long fixtureId, String apiKey) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(defaultUrl + "fixtures?id=" + fixtureId))
+                .header(rapidKey, apiKey)
+                .header(rapidHost, "api-football-beta.p.rapidapi.com")
+                .method("GET", HttpRequest.BodyPublishers.noBody())
+                .build();
+        return HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
     public HttpResponse<String> getPlayersStatsByFixture(Long fixtureId, String apiKey) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(defaultUrl + "fixtures/players?fixture=" + fixtureId))

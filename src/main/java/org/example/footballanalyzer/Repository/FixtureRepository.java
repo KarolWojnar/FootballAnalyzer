@@ -48,4 +48,9 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
 
     @Query("SELECT f FROM Fixture f WHERE f.date > ?1 AND (f.homeTeam.name LIKE %?2% or f.awayTeam.name LIKE %?2%) ORDER BY f.date")
     Page<Fixture> findAllByTeam(Date startDate, String teamName, Pageable pageable);
+
+    @Modifying
+    @Transactional
+    @Query("update Fixture f set f.isCounted = true, f.homeGoals = ?2, f.awayGoals = ?3 where f.id = ?1")
+    void updateFixtureGoals(Long id, int homeGoals, int awayGoals);
 }
