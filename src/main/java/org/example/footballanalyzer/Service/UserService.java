@@ -234,7 +234,7 @@ public class UserService {
         if (user != null) {
             log.info("User id: {} has been sent reset password", user.getId());
             ResetOperations resetOperations = resetOperationsService.initResetOperation(user);
-            emailService.sedPasswordRecovery(user, resetOperations.getUuid());
+            emailService.sendPasswordRecovery(user, resetOperations.getUuid());
         } else {
             throw new IOException("Użytkownik nie istnieje");
         }

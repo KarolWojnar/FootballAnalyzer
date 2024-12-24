@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,9 +24,9 @@ public class EmailService {
     @Value("${front.url}")
     private String frontUrl;
 
-    public void sedActivation(UserEntity user) {
+    public void sendActivation(UserEntity user) {
         try {
-            String html = Files.readString(activeTemplate.getFile().toPath(), StandardCharsets.UTF_8);
+            String html = loadResourceContent(activeTemplate);
             html = html.replace("https://google.com", frontUrl + "/active/" + user.getUuid());
             emailConfiguration.sendMail(user.getEmail(), html, "Aktywacja konta", true);
         } catch (IOException e) {
@@ -32,9 +34,16 @@ public class EmailService {
         }
     }
 
-    public void sedPasswordRecovery(UserEntity user, String uuid) throws IOException {
-        String html = Files.readString(resetPasswordTemplate.getFile().toPath(), StandardCharsets.UTF_8);
+    public void sendPasswordRecovery(UserEntity user, String uuid) throws IOException {
+        String html = loadResourceContent(resetPasswordTemplate);
         html = html.replace("https://google.com", frontUrl + "/forgot-password/" + uuid);
         emailConfiguration.sendMail(user.getEmail(), html, "Odzyskaj hasło", true);
+    }
+
+    private String loadResourceContent(Resource resource) throws IOException {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        }
     }
 }

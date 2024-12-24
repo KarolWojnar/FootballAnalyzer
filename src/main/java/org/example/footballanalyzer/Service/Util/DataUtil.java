@@ -275,7 +275,7 @@ public class DataUtil {
                 .email(user.getEmail())
                 .build();
         userRepository.saveAndFlush(newUser);
-        emailService.sedActivation(newUser);
+        emailService.sendActivation(newUser);
         return ResponseEntity.ok().body(new AuthResponse(Code.SUCCESS));
     }
 }
