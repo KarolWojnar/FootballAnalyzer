@@ -135,7 +135,7 @@ public class DataUtil {
     @Transactional
     public void savePlayerStats(Player player, Fixture fixture, Team team, int offsides, JSONObject games, JSONObject shots,
                                 JSONObject goals, JSONObject passes, JSONObject tackles, JSONObject duels,
-                                JSONObject dribbles, JSONObject fouls, JSONObject cards, JSONObject penalty) {
+                                JSONObject dribbles, JSONObject fouls, JSONObject cards) {
         FixturesStats newFixturesStats = new FixturesStats();
         newFixturesStats.setPlayer(player);
         newFixturesStats.setFixture(fixture);
@@ -164,11 +164,6 @@ public class DataUtil {
         newFixturesStats.setFoulsDrawn(fouls.optInt("drawn", 0));
         newFixturesStats.setCardsYellow(cards.optInt("yellow", 0));
         newFixturesStats.setCardsRed(cards.optInt("red", 0));
-        newFixturesStats.setPenaltyWon(penalty.optInt("won", 0));
-        newFixturesStats.setPenaltyCommitted(penalty.optInt("commited", 0));
-        newFixturesStats.setPenaltyScored(penalty.optInt("scored", 0));
-        newFixturesStats.setPenaltyMissed(penalty.optInt("missed", 0));
-        newFixturesStats.setPenaltySaved(penalty.optInt("saved", 0));
 
         fixturesStatsRepository.save(newFixturesStats);
 

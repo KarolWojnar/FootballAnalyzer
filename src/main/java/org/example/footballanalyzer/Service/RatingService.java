@@ -55,11 +55,6 @@ public class RatingService {
         sumValues.put("sumFoulsCommited", sumValues.get("sumFoulsCommited") + fixture.getFoulsCommitted());
         sumValues.put("sumCardYellow", sumValues.get("sumCardYellow") + fixture.getCardsYellow());
         sumValues.put("sumCardRed", sumValues.get("sumCardRed") + fixture.getCardsRed());
-        sumValues.put("sumPenaltyWon", sumValues.get("sumPenaltyWon") + fixture.getPenaltyWon());
-        sumValues.put("sumPenaltyCommitted", sumValues.get("sumPenaltyCommitted") + fixture.getPenaltyCommitted());
-        sumValues.put("sumPenaltyScored", sumValues.get("sumPenaltyScored") + fixture.getPenaltyScored());
-        sumValues.put("sumPenaltySaved", sumValues.get("sumPenaltySaved") + fixture.getPenaltySaved());
-        sumValues.put("sumPenaltyMissed", sumValues.get("sumPenaltyMissed") + fixture.getPenaltyMissed());
     }
 
     public void updateMaxValues(Map<String, Double> maxValues, FixtureStatsTeam fixture) {
@@ -84,11 +79,6 @@ public class RatingService {
         maxValues.put("maxFoulsCommited", Math.max(maxValues.get("maxFoulsCommited"), fixture.getFoulsCommitted()));
         maxValues.put("maxCardYellow", Math.max(maxValues.get("maxCardYellow"), fixture.getCardsYellow()));
         maxValues.put("maxCardRed", Math.max(maxValues.get("maxCardRed"), fixture.getCardsRed()));
-        maxValues.put("maxPenaltyWon", Math.max(maxValues.get("maxPenaltyWon"), fixture.getPenaltyWon()));
-        maxValues.put("maxPenaltyCommitted", Math.max(maxValues.get("maxPenaltyCommitted"), fixture.getPenaltyCommitted()));
-        maxValues.put("maxPenaltyScored", Math.max(maxValues.get("maxPenaltyScored"), fixture.getPenaltyScored()));
-        maxValues.put("maxPenaltySaved", Math.max(maxValues.get("maxPenaltySaved"), fixture.getPenaltySaved()));
-        maxValues.put("maxPenaltyMissed", Math.max(maxValues.get("maxPenaltyMissed"), fixture.getPenaltyMissed()));
     }
 
     public void updateSumValuesPlayers(Map<String, Double> sumValues, FixturesStats fixture) {
@@ -113,11 +103,6 @@ public class RatingService {
         sumValues.put("sumFoulsCommited", sumValues.get("sumFoulsCommited") + fixture.getFoulsCommitted());
         sumValues.put("sumCardYellow", sumValues.get("sumCardYellow") + fixture.getCardsYellow());
         sumValues.put("sumCardRed", sumValues.get("sumCardRed") + fixture.getCardsRed());
-        sumValues.put("sumPenaltyWon", sumValues.get("sumPenaltyWon") + fixture.getPenaltyWon());
-        sumValues.put("sumPenaltyCommitted", sumValues.get("sumPenaltyCommitted") + fixture.getPenaltyCommitted());
-        sumValues.put("sumPenaltyScored", sumValues.get("sumPenaltyScored") + fixture.getPenaltyScored());
-        sumValues.put("sumPenaltySaved", sumValues.get("sumPenaltySaved") + fixture.getPenaltySaved());
-        sumValues.put("sumPenaltyMissed", sumValues.get("sumPenaltyMissed") + fixture.getPenaltyMissed());
     }
 
     public void updateMaxValuesPlayers(Map<String, Double> maxValues, FixturesStats fixture) {
@@ -142,11 +127,6 @@ public class RatingService {
         maxValues.put("maxFoulsCommited", Math.max(maxValues.get("maxFoulsCommited"), fixture.getFoulsCommitted()));
         maxValues.put("maxCardYellow", Math.max(maxValues.get("maxCardYellow"), fixture.getCardsYellow()));
         maxValues.put("maxCardRed", Math.max(maxValues.get("maxCardRed"), fixture.getCardsRed()));
-        maxValues.put("maxPenaltyWon", Math.max(maxValues.get("maxPenaltyWon"), fixture.getPenaltyWon()));
-        maxValues.put("maxPenaltyCommitted", Math.max(maxValues.get("maxPenaltyCommitted"), fixture.getPenaltyCommitted()));
-        maxValues.put("maxPenaltyScored", Math.max(maxValues.get("maxPenaltyScored"), fixture.getPenaltyScored()));
-        maxValues.put("maxPenaltySaved", Math.max(maxValues.get("maxPenaltySaved"), fixture.getPenaltySaved()));
-        maxValues.put("maxPenaltyMissed", Math.max(maxValues.get("maxPenaltyMissed"), fixture.getPenaltyMissed()));
     }
 
 
@@ -173,11 +153,6 @@ public class RatingService {
         sumValues.put("sumFoulsCommited", 0.0);
         sumValues.put("sumCardYellow", 0.0);
         sumValues.put("sumCardRed", 0.0);
-        sumValues.put("sumPenaltyWon", 0.0);
-        sumValues.put("sumPenaltyCommitted", 0.0);
-        sumValues.put("sumPenaltyScored", 0.0);
-        sumValues.put("sumPenaltySaved", 0.0);
-        sumValues.put("sumPenaltyMissed", 0.0);
         return sumValues;
     }
 
@@ -204,11 +179,6 @@ public class RatingService {
         maxValues.put("maxFoulsCommited", 0.001);
         maxValues.put("maxCardYellow", 0.001);
         maxValues.put("maxCardRed", 0.001);
-        maxValues.put("maxPenaltyWon", 0.001);
-        maxValues.put("maxPenaltyCommitted", 0.001);
-        maxValues.put("maxPenaltyScored", 0.001);
-        maxValues.put("maxPenaltySaved", 0.001);
-        maxValues.put("maxPenaltyMissed", 0.001);
         return maxValues;
     }
 

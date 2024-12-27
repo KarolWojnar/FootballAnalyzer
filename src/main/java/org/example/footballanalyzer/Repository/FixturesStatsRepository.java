@@ -20,8 +20,7 @@ public interface FixturesStatsRepository extends JpaRepository<FixturesStats, Lo
             "f.shotsOnGoal, f.goalsTotal, f.goalsConceded, f.assists, f.saves, f.passesTotal, " +
             "f.passesKey, f.passesAccuracy, f.tacklesTotal, f.tacklesBlocks, f.tacklesInterceptions, " +
             "f.duelsTotal, f.duelsWon, f.dribblesAttempts, f.dribblesSuccess, f.foulsDrawn, " +
-            "f.foulsCommitted, f.cardsYellow, f.cardsRed, f.penaltyWon, f.penaltyCommitted, " +
-            "f.penaltyScored, f.penaltySaved, f.penaltyMissed) " +
+            "f.foulsCommitted, f.cardsYellow, f.cardsRed) " +
             "FROM FixturesStats f WHERE f.team = :team AND f.minutes > 0 AND f.fixture.date BETWEEN :startDate AND :endDate")
     List<PlayerStatsDto> findAllPlayerStatsByTeam(Team team, Date startDate, Date endDate);
 

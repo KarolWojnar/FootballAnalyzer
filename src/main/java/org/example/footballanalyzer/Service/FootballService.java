@@ -238,8 +238,7 @@ public class FootballService {
         JSONObject dribbles = jsonStatistics.getJSONObject("dribbles");
         JSONObject fouls = jsonStatistics.getJSONObject("fouls");
         JSONObject cards = jsonStatistics.getJSONObject("cards");
-        JSONObject penalty = jsonStatistics.getJSONObject("penalty");
-        dataUtil.savePlayerStats(player, fixture, team, offsides, games, shots, goals, passes, tackles, duels, dribbles, fouls, cards, penalty);
+        dataUtil.savePlayerStats(player, fixture, team, offsides, games, shots, goals, passes, tackles, duels, dribbles, fouls, cards);
     }
 
     public void saveCollectedFixture(Fixture fixture) {
@@ -286,11 +285,6 @@ public class FootballService {
         teamStats.setTacklesBlocks(players.stream().mapToDouble(FixturesStats::getTacklesBlocks).sum() / playersCount);
         teamStats.setTacklesInterceptions(players.stream().mapToDouble(FixturesStats::getTacklesInterceptions).sum() / playersCount);
         teamStats.setTacklesTotal(players.stream().mapToDouble(FixturesStats::getTacklesTotal).sum() / playersCount);
-        teamStats.setPenaltyCommitted(players.stream().mapToDouble(FixturesStats::getPenaltyCommitted).sum() / playersCount);
-        teamStats.setPenaltyMissed(players.stream().mapToDouble(FixturesStats::getPenaltyMissed).sum() / playersCount);
-        teamStats.setPenaltySaved(players.stream().mapToDouble(FixturesStats::getPenaltySaved).sum() / playersCount);
-        teamStats.setPenaltyScored(players.stream().mapToDouble(FixturesStats::getPenaltyScored).sum() / playersCount);
-        teamStats.setPenaltyWon(players.stream().mapToDouble(FixturesStats::getPenaltyWon).sum() / playersCount);
         teamStats.setSaves(players.stream().mapToDouble(FixturesStats::getSaves).sum() / playersCount);
         teamStats.setShotsTotal(players.stream().mapToDouble(FixturesStats::getShotsTotal).sum() / playersCount);
         teamStats.setMinutes(players.stream().mapToDouble(FixturesStats::getMinutes).sum() / playersCount);

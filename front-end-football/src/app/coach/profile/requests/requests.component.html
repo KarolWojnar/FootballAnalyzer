@@ -3,12 +3,15 @@
     <div class="col-12 col-md-12 main-content">
 
 
-      <div class="d-flex justify-content-between" *ngIf="dataSource">
+      <div class="d-flex justify-content-between">
         <h3>Wszystkie zgłoszenia</h3>
         <div class="d-flex justify-content-end gap-3">
           <button mat-raised-button color="warn" (click)="sendRequest()">Wyślij zgłoszenie</button>
-          <button mat-raised-button class="button-new" (click)="onlyNewRequest()">{{ buttonFilter }}</button>
-          <button mat-raised-button class="button-save" (click)="saveChanges()">Zapisz zmiany</button>
+          <button *ngIf="dataSource" mat-raised-button class="button-new"
+                  (click)="onlyNewRequest()">{{ buttonFilter }}
+          </button>
+          <button *ngIf="dataSource" mat-raised-button class="button-save" (click)="saveChanges()">Zapisz zmiany
+          </button>
         </div>
       </div>
       <div class="example-table-container rounded shadow p-1">

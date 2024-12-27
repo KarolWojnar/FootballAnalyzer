@@ -33,8 +33,6 @@ public class PlayerStatsDto {
     private int foulsCommitted;
     private int cardsYellow;
     private int cardsRed;
-    private int penaltyWon;
-    private int penaltyCommitted;
 
     public PlayerStatsDto(long playerId, Date date, String position, String player, int minutes,
                           double rating, int offsides, int shotsTotal, int shotsOnGoal,
@@ -43,17 +41,11 @@ public class PlayerStatsDto {
                           int tacklesTotal, int tacklesBlocks, int tacklesInterceptions,
                           int duelsTotal, int duelsWon, int dribblesAttempts,
                           int dribblesSuccess, int foulsDrawn, int foulsCommitted, int cardsYellow,
-                          int cardsRed, int penaltyWon, int penaltyCommitted, int penaltyScored,
-                          int penaltySaved, int penaltyMissed
+                          int cardsRed
                           ) {
         this.playerId = playerId;
         this.date = date;
         this.position = position;
-        this.penaltyMissed = penaltyMissed;
-        this.penaltySaved = penaltySaved;
-        this.penaltyScored = penaltyScored;
-        this.penaltyCommitted = penaltyCommitted;
-        this.penaltyWon = penaltyWon;
         this.cardsRed = cardsRed;
         this.cardsYellow = cardsYellow;
         this.foulsCommitted = foulsCommitted;
@@ -79,8 +71,4 @@ public class PlayerStatsDto {
         this.minutes = minutes;
         this.player = player;
     }
-
-    private int penaltyScored;
-    private int penaltySaved;
-    private int penaltyMissed;
 }

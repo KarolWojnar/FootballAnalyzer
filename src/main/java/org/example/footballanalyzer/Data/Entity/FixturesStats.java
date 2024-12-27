@@ -48,9 +48,4 @@ public class FixturesStats {
     private int foulsCommitted;
     private int cardsYellow;
     private int cardsRed;
-    private int penaltyWon;
-    private int penaltyCommitted;
-    private int penaltyScored;
-    private int penaltySaved;
-    private int penaltyMissed;
 }

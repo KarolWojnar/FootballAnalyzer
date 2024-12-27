@@ -42,10 +42,5 @@ public class FixtureStatsTeam {
     private double foulsCommitted;
     private double cardsYellow;
     private double cardsRed;
-    private double penaltyWon;
-    private double penaltyCommitted;
-    private double penaltyScored;
-    private double penaltySaved;
-    private double penaltyMissed;
 
 }
