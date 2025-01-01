@@ -40,7 +40,7 @@ public interface FixtureRepository extends JpaRepository<Fixture, Long> {
 
     List<Fixture> findAllByDateBeforeAndIsCountedOrderByDate(Date date, boolean counted);
 
-    @Query(nativeQuery = true, value = "SELECT * FROM Fixture f WHERE (f.away_team_id = ?1 OR f.home_team_id = ?1) AND f.date > ?2 LIMIT 1")
+    @Query(nativeQuery = true, value = "SELECT * FROM fixture f WHERE (f.away_team_id = ?1 OR f.home_team_id = ?1) AND f.date > ?2 LIMIT 1")
     Optional<Fixture> findNextFixture(long team, Date today);
 
     @Query("SELECT f FROM Fixture f WHERE f.date > ?2 AND f.league.id = ?1 AND (f.homeTeam.name LIKE %?3% or f.awayTeam.name LIKE %?3%) ORDER BY f.date")

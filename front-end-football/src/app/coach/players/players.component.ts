@@ -61,8 +61,6 @@ export class PlayersComponent implements OnDestroy, AfterViewInit, OnInit {
     'foulsCommitted',
     'cardsYellow',
     'cardsRed',
-    'penaltyWon',
-    'penaltyCommitted',
   ];
   isDarkMode = true;
   formVisible: boolean = true;

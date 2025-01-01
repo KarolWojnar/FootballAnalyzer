@@ -1,4 +1,4 @@
-package org.example.footballanalyzer.Service.Util;
+package org.example.footballanalyzer.Service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +9,6 @@ import org.example.footballanalyzer.Data.Dto.UserDTO;
 import org.example.footballanalyzer.Data.Dto.UserRequestDto;
 import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Repository.*;
-import org.example.footballanalyzer.Service.EmailService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.data.domain.Page;
@@ -30,7 +29,7 @@ import java.util.*;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class DataUtil {
+public class DataService {
 
     private final LeagueRepository leagueRepository;
     private final TeamRepository teamRepository;

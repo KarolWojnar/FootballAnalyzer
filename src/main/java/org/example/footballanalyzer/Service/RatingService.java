@@ -277,7 +277,7 @@ public class RatingService {
 
     }
 
-    public Map<String, RatingRecord> getAvgByDates(String label, List<GroupRecord> groupedStats, String rounding, LocalDate startDate, LocalDate endDate, String name) {
+    public Map<String, RatingRecord> getAvgByDates(String label, List<GroupRecord> groupedStats, String rounding, LocalDate startDate, LocalDate endDate, String name, Map<String, Double> averageForPeriod) {
         Map<String, RatingRecord> result = new HashMap<>();
         Map<String, Double> periodRatings = new HashMap<>();
 
@@ -288,17 +288,26 @@ public class RatingService {
             intervalDays = 30;
         }
         if (intervalDays == 0 || ChronoUnit.DAYS.between(startDate, endDate) <= intervalDays) {
-            double averageForPeriod = calculateAverageForPeriod(groupedStats, startDate, endDate);
-            periodRatings.put(startDate.toString(), averageForPeriod);
+            periodRatings.put(startDate.toString(), teamRating(groupedStats, averageForPeriod));
         } else {
             LocalDate currentStart = startDate;
             while (!currentStart.isAfter(endDate)) {
+                LocalDate finalCurrentStart = currentStart;
                 LocalDate currentEnd = currentStart.plusDays(intervalDays - 1);
+                LocalDate finalCurrentEnd;
                 if (currentEnd.isAfter(endDate)) {
                     currentEnd = endDate;
+                    finalCurrentEnd = currentEnd;
+                } else {
+                    finalCurrentEnd = currentEnd;
                 }
-                double averageForPeriod = calculateAverageForPeriod(groupedStats, currentStart, currentEnd);
-                periodRatings.put(currentStart.toString(), averageForPeriod);
+                List<GroupRecord> filteredStats = groupedStats.stream()
+                        .filter(record -> {
+                            LocalDate recordDate = record.date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+                            return !recordDate.isBefore(finalCurrentStart) && !recordDate.isAfter(finalCurrentEnd);
+                        })
+                        .toList();
+                periodRatings.put(currentStart.toString(), teamRating(filteredStats, averageForPeriod));
                 currentStart = currentStart.plusDays(intervalDays);
             }
         }
@@ -308,7 +317,7 @@ public class RatingService {
         return result;
     }
 
-    private Double calculateAverageForPeriod(List<GroupRecord> groupedStats, LocalDate start, LocalDate end) {
+    public Map<String, Double> calculateAverageForPeriod(List<GroupRecord> groupedStats, LocalDate start, LocalDate end) {
         List<GroupRecord> filteredStats = groupedStats.stream()
                 .filter(record -> {
                     LocalDate recordDate = record.date().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
@@ -319,7 +328,7 @@ public class RatingService {
         return sumRatings(filteredStats);
     }
 
-    private Double sumRatings(List<GroupRecord> filteredStats) {
+    private Map<String, Double> sumRatings(List<GroupRecord> filteredStats) {
         var aggressionAvg = filteredStats.stream().mapToDouble(GroupRecord::aggression).sum() / filteredStats.size();
         var attackingAvg = filteredStats.stream().mapToDouble(GroupRecord::attacking).sum() / filteredStats.size();
         var defendingAvg = filteredStats.stream().mapToDouble(GroupRecord::defending).sum() / filteredStats.size();
@@ -332,21 +341,19 @@ public class RatingService {
         sumValues.put("defending", defendingAvg);
         sumValues.put("creativity", creativityAvg);
 
-        return teamRating(filteredStats, sumValues);
+        return sumValues;
     }
 
     private Double teamRating(List<GroupRecord> filteredStats, Map<String, Double> sumValues) {
 
         double rating = 0.0;
 
-        for (GroupRecord record : filteredStats) {
-            rating += record.attacking() * sumValues.get("attacking") +
-                    record.defending() * sumValues.get("defending") +
-                    record.creativity() * sumValues.get("creativity") -
-                    record.aggression() * sumValues.get("aggression") * 0.3;
-        }
+        rating += filteredStats.stream().mapToDouble(GroupRecord::attacking).sum() * sumValues.get("attacking");
+        rating += filteredStats.stream().mapToDouble(GroupRecord::defending).sum() * sumValues.get("defending");
+        rating += filteredStats.stream().mapToDouble(GroupRecord::creativity).sum() * sumValues.get("creativity");
+        rating -= filteredStats.stream().mapToDouble(GroupRecord::aggression).sum() * sumValues.get("aggression");
 
-        double weights = sumValues.values().stream().mapToDouble(Double::doubleValue).sum();
+        double weights = sumValues.get("attacking") + sumValues.get("defending") + sumValues.get("creativity") - sumValues.get("aggression");
 
         rating /= weights;
         rating /=  filteredStats.size();

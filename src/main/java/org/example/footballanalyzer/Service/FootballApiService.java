@@ -1,4 +1,4 @@
-package org.example.footballanalyzer.Service.Util;
+package org.example.footballanalyzer.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -13,7 +13,7 @@ import java.util.Date;
 
 @RequiredArgsConstructor
 @Component
-public class FootballApiUtil {
+public class FootballApiService {
 
     private final String defaultUrl = "https://api-football-beta.p.rapidapi.com/";
     private final String rapidHost = "x-rapidapi-host";

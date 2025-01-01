@@ -46,8 +46,6 @@ export class PlayerStats {
     foulsCommitted: number,
     cardsYellow: number,
     cardsRed: number,
-    penaltyWon: number,
-    penaltyCommitted: number,
   ) {
     this.playerId = playerId;
     this.date = date;
@@ -76,8 +74,6 @@ export class PlayerStats {
     this.foulsCommitted = foulsCommitted;
     this.cardsYellow = cardsYellow;
     this.cardsRed = cardsRed;
-    this.penaltyWon = penaltyWon;
-    this.penaltyCommitted = penaltyCommitted;
   }
 
   tacklesInterceptions: number;
@@ -89,6 +85,4 @@ export class PlayerStats {
   foulsCommitted: number;
   cardsYellow: number;
   cardsRed: number;
-  penaltyWon: number;
-  penaltyCommitted: number;
 }

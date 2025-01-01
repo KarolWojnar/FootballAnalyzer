@@ -123,28 +123,22 @@ export class FormService {
   endDateOpponent = new Date();
 
   setDates() {
-    let startDatePlayersLocal = localStorage.getItem('startDatePlayer');
-    let endDatePlayersLocal = localStorage.getItem('endDatePlayer');
-    if (startDatePlayersLocal && endDatePlayersLocal) {
-      this.startDatePlayer = new Date(startDatePlayersLocal);
-      this.startDatePlayer.setMonth(this.startDatePlayer.getMonth() + 1);
-      this.endDatePlayer = new Date(endDatePlayersLocal);
-    }
-    let startDateTeamLocal = localStorage.getItem('startDateTeam');
-    let endDateTeamLocal = localStorage.getItem('endDateTeam');
-    if (startDateTeamLocal && endDateTeamLocal) {
-      this.startDateTeam = new Date(startDateTeamLocal);
-      this.startDateTeam.setMonth(this.startDateTeam.getMonth() + 1);
-      this.endDateTeam = new Date(endDateTeamLocal);
+    let today = new Date();
+    this.endDatePlayer = today;
+    this.endDateTeam = today;
+    this.endDateOpponent = today;
+
+    let startDate = new Date(today);
+    startDate.setMonth(today.getMonth() - 1);
+
+    if (today.getMonth() === 0) {
+      startDate.setFullYear(today.getFullYear() - 1);
+      startDate.setMonth(11);
     }
 
-    let startDateOpponentLocal = localStorage.getItem('startDateOpponent');
-    let endDateOpponentLocal = localStorage.getItem('endDateOpponent');
-    if (startDateOpponentLocal && endDateOpponentLocal) {
-      this.startDateOpponent = new Date(startDateOpponentLocal);
-      this.startDateOpponent.setMonth(this.startDateOpponent.getMonth() + 1);
-      this.endDateOpponent = new Date(endDateOpponentLocal);
-    }
+    this.startDatePlayer = startDate;
+    this.startDateTeam = startDate;
+    this.startDateOpponent = startDate;
   }
 
   initPlayerStatsForm(): FormGroup<PlayerStatsForm> {
@@ -155,7 +149,9 @@ export class FormService {
           (this.startDatePlayer.getMonth() > 9 ? '-' : '-0') +
           this.startDatePlayer.getMonth() +
           (this.startDatePlayer.getDate() > 9 ? '-' : '-0') +
-          this.startDatePlayer.getDate(),
+          (this.startDatePlayer.getDate() > 28
+            ? '28'
+            : this.startDatePlayer.getDate()),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -183,7 +179,9 @@ export class FormService {
           (this.startDateTeam.getMonth() > 9 ? '-' : '-0') +
           this.startDateTeam.getMonth() +
           (this.startDateTeam.getDate() > 9 ? '-' : '-0') +
-          this.startDateTeam.getDate(),
+          (this.startDatePlayer.getDate() > 28
+            ? '28'
+            : this.startDatePlayer.getDate()),
         {
           validators: [Validators.required],
           nonNullable: true,
@@ -216,7 +214,9 @@ export class FormService {
           (this.startDateOpponent.getMonth() > 9 ? '-' : '-0') +
           this.startDateOpponent.getMonth() +
           (this.startDateOpponent.getDate() > 9 ? '-' : '-0') +
-          this.startDateOpponent.getDate(),
+          (this.startDatePlayer.getDate() > 28
+            ? '28'
+            : this.startDatePlayer.getDate()),
         {
           validators: [Validators.required],
           nonNullable: true,

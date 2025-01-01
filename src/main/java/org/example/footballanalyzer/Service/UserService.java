@@ -10,7 +10,6 @@ import org.example.footballanalyzer.Data.Entity.*;
 import org.example.footballanalyzer.Data.RoleName;
 import org.example.footballanalyzer.Repository.*;
 import org.example.footballanalyzer.Service.Auth.JwtService;
-import org.example.footballanalyzer.Service.Util.DataUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Sort;
@@ -49,7 +48,7 @@ public class UserService {
     private final JwtService jwtService;
     private final TeamRepository teamRepository;
     private final RoleRepository roleRepository;
-    private final DataUtil dataUtil;
+    private final DataService dataService;
     private final ResetOperationsRepository resetOperationsRepository;
     private final ResetOperationsService resetOperationsService;
     private final CookieService cookieService;
@@ -81,7 +80,7 @@ public class UserService {
 
         log.info("Creating user");
 
-        return dataUtil.saveUserToDb(user, optionalTeam);
+        return dataService.saveUserToDb(user, optionalTeam);
     }
 
     public List<UserEntityEditData> getAllUsers() {
@@ -115,7 +114,7 @@ public class UserService {
             UserEntity user = findUser();
             login = user.getLogin();
         }
-        return dataUtil.saveNewRequest(userRequest, requestData, login);
+        return dataService.saveNewRequest(userRequest, requestData, login);
     }
 
     public ResponseEntity<?> login(UserLoginData user, HttpServletResponse response) throws AuthenticationException {

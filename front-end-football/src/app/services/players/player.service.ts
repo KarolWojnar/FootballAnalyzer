@@ -68,8 +68,6 @@ export class PlayerService {
         foulsCommitted: acc.foulsCommitted + curr.foulsCommitted,
         cardsYellow: acc.cardsYellow + curr.cardsYellow,
         cardsRed: acc.cardsRed + curr.cardsRed,
-        penaltyWon: acc.penaltyWon + curr.penaltyWon,
-        penaltyCommitted: acc.penaltyCommitted + curr.penaltyCommitted,
       }),
       this.createEmptyPlayerStats(playerGroup[0].player),
     );
@@ -108,8 +106,6 @@ export class PlayerService {
       foulsCommitted: 0,
       cardsYellow: 0,
       cardsRed: 0,
-      penaltyWon: 0,
-      penaltyCommitted: 0,
     };
   }
 }
