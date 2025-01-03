@@ -56,7 +56,7 @@ public class FootballService {
         log.info("{} stats counted for {}", fixtures.size(), new Date());
     }
 
-    @Scheduled(cron = "0 17 * * * *")
+    @Scheduled(cron = "0 31 * * * *")
     public void scheduleCollectStats() {
         List<Fixture> fixtures = fixtureRepository.findAllCompleted();
         log.info("Collected fixtures: {}", fixtures.size());
@@ -392,6 +392,10 @@ public class FootballService {
         List<FixtureStatsTeam> teamStatsList = fixtureStatsTeamRepository.findAllByFixtureInAndMinutesGreaterThan(teamStats, 0);
         List<GroupRecord> groupedStats = groupRatings(teamStatsList);
 
+        for (GroupRecord record : groupedStats) {
+            System.out.println(record);
+        }
+
         boolean isOpponent = teamNames.length > 1;
 
         List<GroupRecord> coachTeam = groupedStats.stream().filter(record -> record.team().equals(teamNames[0])).toList();
@@ -411,6 +415,7 @@ public class FootballService {
         ratings.putAll(ratingService.getAvgOfList("teamRating", coachTeam, coachTeam.get(0).team()));
 
         Map<String, Double> averagePeriod = ratingService.calculateAverageForPeriod(groupedStats, startDate, endDate);
+
 
         ratings.putAll(ratingService.getAvgByDates("allTeamsForm", isOpponent ? opponentTeam : groupedStats, rounding, startDate, endDate, isOpponent ? opponentTeam.get(0).team() : null, averagePeriod));
         ratings.putAll(ratingService.getAvgByDates("teamForm", coachTeam, rounding, startDate, endDate, coachTeam.get(0).team(), averagePeriod));

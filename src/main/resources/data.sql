@@ -111,7 +111,7 @@ INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, r
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (1, 6, 2, 90, 'F', 5.5, 3, 2, 1, 0, 4, 0, 2, 25, 2, 20, 2, 0, 1, 5, 3, 2, 1, 2, 2, 0, 0);
+VALUES (1, 6, 2, 90, 'F', 5.5, 3, 2, 1, 0, 4, 0, 2, 25, 2, 20, 2, 0, 1, 5, 3, 2, 1, 2, 2, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
@@ -125,14 +125,14 @@ INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, r
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (1, 8, 2, 90, 'M', 5.0, 1, 1, 0, 0, 4, 0, 0, 15, 0, 11, 2, 1, 1, 3, 2, 1, 1, 0, 1, 0, 0);
+VALUES (1, 8, 2, 90, 'M', 5.0, 1, 1, 0, 0, 4, 0, 0, 15, 0, 11, 2, 1, 1, 3, 2, 1, 1, 0, 1, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (1, 9, 2, 90, 'D', 5.5, 0, 0, 0, 0, 4, 0, 0, 20, 0, 18, 4, 2, 2, 4, 3, 0, 0, 1, 1, 0, 0);
+VALUES (1, 9, 2, 90, 'D', 5.5, 0, 0, 0, 0, 4, 0, 0, 20, 0, 18, 4, 2, 2, 4, 3, 0, 0, 1, 1, 0, 1);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
@@ -223,77 +223,77 @@ INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, r
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 2, 1, 90, 'M', 7.5, 0, 4, 2, 1, 2, 1, 0, 45, 4, 31, 4, 1, 3, 8, 6, 5, 3, 2, 1, 0, 1);
+VALUES (3, 2, 1, 90, 'M', 7.5, 0, 4, 2, 1, 2, 0, 0, 45, 5, 31, 4, 1, 4, 8, 6, 5, 3, 2, 2, 0, 1);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 3, 1, 90, 'M', 7.0, 0, 3, 2, 0, 2, 0, 0, 50, 2, 45, 3, 1, 2, 6, 4, 3, 2, 2, 1, 0, 0);
+VALUES (3, 3, 1, 90, 'M', 7.0, 0, 3, 2, 0, 2, 0, 0, 50, 3, 45, 3, 2, 2, 6, 4, 3, 2, 3, 4, 0, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 4, 1, 90, 'D', 7.0, 0, 1, 1, 0, 2, 0, 0, 30, 1, 31, 5, 2, 3, 6, 4, 2, 2, 1, 1, 0, 0);
+VALUES (3, 4, 1, 90, 'D', 7.0, 0, 1, 1, 0, 2, 1, 0, 30, 1, 31, 5, 2, 6, 6, 4, 2, 2, 1, 1, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 5, 1, 90, 'G', 7.0, 0, 0, 0, 0, 2, 0, 4, 25, 0, 21, 1, 0, 2, 4, 2, 1, 1, 1, 0, 0, 0);
+VALUES (3, 5, 1, 90, 'G', 7.0, 0, 0, 0, 0, 2, 0, 4, 25, 0, 21, 1, 3, 2, 4, 2, 1, 1, 2, 0, 0, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 6, 2, 90, 'F', 7.5, 1, 5, 3, 1, 2, 1, 0, 40, 3, 33, 3, 1, 2, 7, 5, 4, 3, 2, 1, 0, 0);
+VALUES (3, 6, 2, 90, 'F', 7.5, 1, 5, 3, 1, 2, 1, 0, 40, 3, 33, 3, 1, 2, 7, 5, 4, 3, 2, 1, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 7, 2, 90, 'M', 7.5, 0, 4, 2, 1, 2, 1, 0, 45, 4, 36, 4, 1, 3, 8, 6, 5, 3, 2, 1, 0, 0);
+VALUES (3, 7, 2, 90, 'M', 7.5, 0, 4, 2, 1, 2, 0, 0, 45, 4, 36, 4, 3, 3, 8, 6, 5, 3, 1, 3, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 8, 2, 90, 'M', 7.0, 0, 3, 2, 0, 2, 0, 0, 50, 2, 41, 3, 1, 2, 6, 4, 3, 2, 2, 1, 0, 0);
+VALUES (3, 8, 2, 90, 'M', 7.0, 0, 3, 2, 0, 2, 2, 0, 50, 2, 41, 3, 1, 1, 6, 4, 3, 2, 2, 1, 0, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 9, 2, 90, 'D', 7.0, 0, 1, 1, 0, 2, 0, 0, 30, 1, 24, 5, 2, 3, 6, 4, 2, 2, 1, 1, 0, 0);
+VALUES (3, 9, 2, 90, 'D', 7.0, 0, 1, 1, 0, 2, 0, 0, 30, 5, 24, 5, 2, 3, 6, 4, 2, 2, 4, 1, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (3, 10, 2, 90, 'G', 7.0, 0, 0, 0, 0, 2, 0, 4, 25, 0, 22, 1, 0, 2, 4, 2, 1, 1, 1, 0, 0, 0);
+VALUES (3, 10, 2, 90, 'G', 7.0, 0, 0, 0, 0, 2, 0, 4, 25, 0, 22, 1, 1, 3, 4, 2, 1, 1, 1, 1, 0, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (4, 1, 1, 90, 'M', 6.5, 1, 4, 2, 1, 3, 1, 0, 40, 2, 29, 3, 1, 2, 6, 4, 3, 2, 1, 1, 0, 0);
+VALUES (4, 1, 1, 90, 'M', 6.5, 1, 4, 2, 1, 3, 0, 0, 40, 2, 29, 3, 1, 2, 6, 4, 3, 2, 1, 1, 0, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (4, 2, 1, 90, 'M', 6.0, 0, 3, 1, 0, 3, 0, 0, 35, 1, 31, 2, 0, 1, 5, 3, 2, 1, 1, 1, 0, 0);
+VALUES (4, 2, 1, 90, 'M', 6.0, 0, 3, 1, 0, 3, 0, 0, 35, 1, 31, 2, 0, 1, 5, 3, 2, 1, 1, 1, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
@@ -307,42 +307,42 @@ INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, r
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (4, 4, 1, 90, 'D', 6.0, 0, 1, 0, 0, 3, 0, 0, 25, 1, 21, 5, 2, 3, 4, 3, 1, 1, 1, 1, 0, 0);
+VALUES (4, 4, 1, 90, 'D', 6.0, 0, 1, 1, 0, 3, 1, 0, 25, 1, 21, 5, 2, 3, 4, 3, 1, 1, 1, 2, 0, 1);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (4, 5, 1, 90, 'G', 6.0, 0, 0, 0, 0, 3, 0, 5, 20, 0, 17, 1, 0, 2, 4, 3, 1, 0, 0, 0, 0, 0);
+VALUES (4, 5, 1, 90, 'G', 6.0, 0, 0, 0, 0, 3, 0, 5, 20, 0, 17, 1, 0, 2, 4, 3, 1, 0, 0, 3, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (4, 6, 2, 90, 'F', 8.0, 2, 6, 4, 2, 1, 2, 0, 50, 4, 44, 3, 1, 2, 8, 6, 5, 4, 2, 1, 0, 0);
+VALUES (4, 6, 2, 90, 'F', 8.0, 2, 6, 4, 2, 1, 0, 0, 50, 4, 44, 3, 1, 2, 8, 6, 5, 4, 2, 1, 0, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (4, 7, 2, 90, 'M', 7.5, 1, 5, 3, 1, 1, 1, 0, 45, 3, 41, 4, 1, 3, 7, 5, 4, 3, 2, 1, 0, 0);
+VALUES (4, 7, 2, 90, 'M', 7.5, 1, 5, 5, 1, 1, 1, 0, 45, 3, 41, 4, 1, 3, 7, 5, 4, 3, 2, 1, 0, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (4, 8, 2, 90, 'M', 7.5, 0, 4, 2, 0, 1, 0, 0, 40, 2, 33, 3, 1, 2, 6, 4, 3, 2, 1, 1, 0, 0);
+VALUES (4, 8, 2, 90, 'M', 7.5, 0, 4, 2, 0, 1, 0, 0, 40, 2, 33, 3, 1, 2, 6, 4, 3, 2, 1, 1, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (4, 9, 2, 90, 'D', 7.0, 0, 2, 1, 0, 1, 0, 0, 30, 1, 28, 5, 2, 3, 5, 3, 2, 1, 1, 1, 0, 0);
+VALUES (4, 9, 2, 90, 'D', 7.0, 0, 2, 1, 0, 1, 1, 0, 30, 1, 28, 5, 2, 3, 5, 3, 2, 1, 1, 4, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
@@ -356,14 +356,14 @@ INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, r
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (5, 1, 1, 90, 'M', 5.0, 1, 2, 1, 0, 4, 0, 0, 25, 1, 22, 3, 1, 1, 5, 3, 2, 1, 1, 1, 0, 0);
+VALUES (5, 1, 1, 90, 'M', 5.0, 1, 2, 1, 0, 4, 0, 0, 25, 1, 22, 3, 1, 1, 5, 3, 2, 1, 1, 1, 0, 1);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (5, 2, 1, 90, 'M', 5.0, 0, 2, 0, 0, 4, 0, 0, 30, 1, 25, 3, 1, 2, 4, 2, 2, 1, 1, 1, 0, 0);
+VALUES (5, 2, 1, 90, 'M', 5.0, 0, 2, 0, 0, 4, 0, 0, 30, 1, 25, 3, 1, 2, 4, 2, 2, 1, 1, 1, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
@@ -378,7 +378,6 @@ INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, r
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
 VALUES (5, 4, 1, 90, 'D', 5.0, 0, 1, 0, 0, 4, 0, 0, 25, 0, 22, 4, 2, 3, 5, 3, 1, 1, 1, 1, 0, 0);
-
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
@@ -391,14 +390,14 @@ INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, r
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (5, 6, 2, 90, 'F', 9.0, 2, 7, 5, 3, 0, 3, 0, 50, 4, 43, 3, 2, 3, 10, 8, 6, 5, 3, 1, 0, 0);
+VALUES (5, 6, 2, 90, 'F', 9.0, 2, 7, 5, 0, 0, 1, 0, 50, 4, 43, 3, 2, 3, 10, 8, 6, 5, 3, 1, 0, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (5, 7, 2, 90, 'M', 8.5, 1, 6, 4, 2, 0, 2, 0, 45, 3, 41, 4, 1, 2, 9, 7, 5, 4, 2, 1, 0, 0);
+VALUES (5, 7, 2, 90, 'M', 8.5, 1, 6, 4, 2, 0, 2, 0, 45, 3, 41, 4, 1, 2, 9, 7, 5, 4, 2, 1, 1, 0);
 
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
@@ -412,8 +411,7 @@ INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, r
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
                             tackles_interceptions, duels_total, duels_won, dribbles_attempts,
                             dribbles_success, fouls_drawn, fouls_committed, cards_yellow, cards_red)
-VALUES (5, 9, 2, 90, 'D', 7.5, 0, 3, 2, 0, 0, 0, 0, 35, 1, 33, 5, 2, 3, 6, 4, 2, 2, 1, 0, 0, 0);
-
+VALUES (5, 9, 2, 90, 'D', 7.5, 0, 3, 2, 1, 0, 0, 0, 35, 1, 33, 5, 2, 3, 6, 4, 2, 2, 1, 0, 0, 0);
 INSERT INTO fixtures_stats (fixture_id, player_id, team_id, minutes, position, rating, offsides,
                             shots_total, shots_on_goal, goals_total, goals_conceded, assists, saves,
                             passes_total, passes_key, passes_accuracy, tackles_total, tackles_blocks,
