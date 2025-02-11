@@ -129,7 +129,7 @@ export class FormService {
     this.endDateOpponent = today;
 
     let startDate = new Date(today);
-    startDate.setMonth(today.getMonth() - 1);
+    startDate.setMonth(today.getMonth());
 
     if (today.getMonth() === 0) {
       startDate.setFullYear(today.getFullYear() - 1);
